@@ -10,7 +10,6 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import curveImg from '../../assets/backgroundImage/curve-bgImg.png';
 import orderImg from '../../assets/HeroSection/img11.jpg'
-import LocationSearchBox from '../Common/LocationSearchBox';
 
 export default function Hero({ onLocationConfirm } = {}) {
   return (
@@ -22,11 +21,10 @@ export default function Hero({ onLocationConfirm } = {}) {
         pt: { xs: 5, md: 13 },
         pb: { xs: 8, md: 15 },
         p: { xs: 2, sm: 2.5, md: 3, lg: 3.5 },
-        minHeight: { xs: 'auto', md: '90vh', lg: '100vh' },
-        height: { xs: '750px',sm:'800px', md: '770px',lg:'750px' },
+        minHeight: { xs: 'auto', md: '90vh', lg: '90vh' },
+        height: { xs: '540px',sm:'500px', md: '580px',lg:'570px' },
       }}
     >
-      {/* low-opacity background image, like the reference */}
       
       <Box
       component="img"
@@ -105,7 +103,7 @@ export default function Hero({ onLocationConfirm } = {}) {
                 lg: 10,
                 xl: 15,
               },
-              mt: { xs: 0, sm: 0, md: 0, lg: 9 },
+              mt: { xs: 0, sm: 0, md: 0, lg: 15 },
             }}
           >
           <Box
@@ -132,7 +130,7 @@ export default function Hero({ onLocationConfirm } = {}) {
                 fontWeight: 800,
                 letterSpacing: '-0.5px',
                 fontFamily: '"Montserrat", sans-serif',
-                mt:{ xs: 9, sm: 9, md: 9,},
+                mt:{ xs: 9, sm: 9, md: 2,},
               }}
             >
               A one-stop place for all your{' '}
@@ -154,8 +152,6 @@ export default function Hero({ onLocationConfirm } = {}) {
               Order a day before the event. Place any order starting from 25pax.
             </Typography>
 
-            {/* Order image: MOBILE / TABLET ONLY (xs, sm, md) — sits between description and search field.
-                Hidden on lg+ (desktop/laptop), where the image instead renders in the right-side column below. */}
             <Box
               sx={{
                   display: { xs: 'flex', sm: 'flex', md: 'flex', lg: 'none' },
@@ -178,38 +174,37 @@ export default function Hero({ onLocationConfirm } = {}) {
                   mb:2
                 }}
               >
-              <Box
-                component="img"
-                src={orderImg}
-                alt="Order food"
-                sx={{
-                  width: {
-                    xs: '100%',
-                    sm: '90%',
-                    md: '90%',
-                  },
-                  maxWidth: {
-                    xs: 340,
-                    sm: 420,
-                    md: 490,
-                  },
-                  height: {
-                    xs: '200px',
-                    sm: '200px',
-                    md: '250px',
-                  },
-                  display: 'block',
-                  objectFit: 'cover',
-                  borderRadius: {
-                    xs: 2,
-                    sm: 3,
-                  },
-                  boxShadow: '0 20px 45px rgba(20,20,43,0.08)',
-                
-                }}
-              />
+                <Box
+                  component="img"
+                  src={orderImg}
+                  alt="Order food"
+                  sx={{
+                    width: {
+                      xs: '100%',
+                      sm: '90%',
+                      md: '90%',
+                    },
+                    maxWidth: {
+                      xs: 340,
+                      sm: 420,
+                      md: 490,
+                    },
+                    height: {
+                      xs: '200px',
+                      sm: '200px',
+                      md: '250px',
+                    },
+                    display: 'block',
+                    objectFit: 'cover',
+                    borderRadius: {
+                      xs: 2,
+                      sm: 3,
+                    },
+                    boxShadow: '0 20px 45px rgba(20,20,43,0.08)',
+                    mt: { xs: 3, sm: 3, md: 3, lg: 0 },
+                  }}
+                />
             </Box>
-            <LocationSearchBox onLocationConfirm={onLocationConfirm} />
           </Box>
 
           <Box

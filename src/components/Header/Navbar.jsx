@@ -18,6 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 import logo from '../../assets/CompanyLogo/logo.png'
+import LocationSearchBox from '../Common/LocationSearchBox';
 
 const navLinks = [
   { label: 'Home', active:true },
@@ -69,19 +70,36 @@ export default function Navbar() {
       }}
     >
       <Container maxWidth="lg" disableGutters>
-        <Toolbar sx={{ py: 1, px: { xs: 2, md: 0 } }}>
+        <Toolbar sx={{ py: 1, px: { xs: 2, sm: 2.5, md: 0 } }}>
           {/* Logo */}
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1, ml:5.5 }}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{ ml: { xs: 0, sm: 1, md: 3, lg: 1 }, flexGrow: { xs: 1, sm: 1, md: 0 } }}
+          >
             <Box
               component="img"
               src={logo}
               alt="Hogist Logo"
               sx={{
-                height: 60,
+                height: { xs: 42, sm: 48, md: 55, lg: 60 },
                 width: 'auto',
               }}
             />
           </Stack>
+
+          {/* Location pill (desktop/laptop): "CATER TO Chennai" with Delivery Location popover */}
+          <Box
+            sx={{
+              display: { xs: 'none', sm: 'none', md: 'flex' },
+              ml: { md: 2.5, lg: 2 },
+              mr: 'auto',
+              flexShrink: 0,
+            }}
+          >
+            <LocationSearchBox />
+          </Box>
 
           {/* Desktop nav */}
           <Stack
@@ -94,11 +112,11 @@ export default function Navbar() {
                 key={link.label}
                 onClick={() => setSelectedLink(link.label)}
                 sx={{
-                  px: 1.8,
+                  px: { md: 1.2, lg: 1.8 },
                   py: 0.2,
                   borderRadius: 999,
                   fontWeight: 600,
-                  fontSize: '1.15rem',
+                  fontSize: { md: '0.9rem', lg: '1.05rem', xl: '1.15rem' },
                   letterSpacing: '0.2px',
                   textTransform: 'none',
                   fontFamily: '"Montserrat", sans-serif',
@@ -127,13 +145,13 @@ export default function Navbar() {
           <Stack
             direction="row"
             spacing={1.5}
-            sx={{ display: { xs: 'none', md: 'flex' }, mr: 5 }}
+            sx={{ display: { xs: 'none', md: 'flex' }, mr: { md: 2.5, lg: 5 } }}
           >
            <Button
               variant="outlined"
               onClick={handleMenuOpen}
               sx={{
-                px: 2.5,
+                px: { md: 1.5, lg: 2.5 },
                 color: isMenuOpen
                   ? (scrolled ? '#fff' : '#c60000')
                   : (scrolled ? 'primary.main' : '#fff'),
@@ -174,7 +192,7 @@ export default function Navbar() {
                 sx: {
                   mt: 3,
                   borderRadius: 2,
-                  minWidth: 210,
+                  minWidth: { xs: 180, sm: 210 },
                   py: 0.5,
                 },
               }}
@@ -183,7 +201,7 @@ export default function Navbar() {
                 onClick={handleMenuClose}
                 sx={{
                   color: 'red',
-                  fontSize: '1rem',
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
                   py: 1,
                   fontFamily: '"Roboto", sans-serif',
                 }}
@@ -195,7 +213,7 @@ export default function Navbar() {
                 onClick={handleMenuClose}
                 sx={{
                   color: 'red',
-                  fontSize: '1rem',
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
                   py: 1,
                   fontFamily: '"Roboto", sans-serif',
                 }}
@@ -207,7 +225,7 @@ export default function Navbar() {
                 onClick={handleMenuClose}
                 sx={{
                   color: 'red',
-                  fontSize: '1rem',
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
                   py: 1,
                   fontFamily: '"Roboto", sans-serif',
                 }}
@@ -216,6 +234,11 @@ export default function Navbar() {
               </MenuItem>
             </Menu>
           </Stack>
+
+          {/* Location pill (mobile/tablet): shown next to the menu icon */}
+          <Box sx={{ display: { xs: 'flex', sm: 'flex', md: 'none' }, mr: 1, flexShrink: 0 }}>
+            <LocationSearchBox />
+          </Box>
 
           {/* Mobile toggle */}
           <IconButton
@@ -228,7 +251,7 @@ export default function Navbar() {
       </Container>
 
       <Drawer anchor="right" open={mobileOpen} onClose={() => setMobileOpen(false)}>
-        <Box sx={{ width: 260, pt: 1 }}>
+        <Box sx={{ width: { xs: 240, sm: 280, md: 300 }, pt: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 1 }}>
             <IconButton onClick={() => setMobileOpen(false)}>
               <CloseIcon />
