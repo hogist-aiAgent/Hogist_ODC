@@ -18,7 +18,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 import logo from '../../assets/CompanyLogo/logo.png'
-import LocationSearchBox from '../Common/LocationSearchBox';
 
 const navLinks = [
   { label: 'Home', active:true },
@@ -72,12 +71,7 @@ export default function Navbar() {
       <Container maxWidth="lg" disableGutters>
         <Toolbar sx={{ py: 1, px: { xs: 2, sm: 2.5, md: 0 } }}>
           {/* Logo */}
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            sx={{ ml: { xs: 0, sm: 1, md: 3, lg: 1 }, flexGrow: { xs: 1, sm: 1, md: 0 } }}
-          >
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1, ml: { xs: 0, sm: 1, md: 3, lg: 1 } }}>
             <Box
               component="img"
               src={logo}
@@ -88,18 +82,6 @@ export default function Navbar() {
               }}
             />
           </Stack>
-
-          {/* Location pill (desktop/laptop): "CATER TO Chennai" with Delivery Location popover */}
-          <Box
-            sx={{
-              display: { xs: 'none', sm: 'none', md: 'flex' },
-              ml: { md: 2.5, lg: 2 },
-              mr: 'auto',
-              flexShrink: 0,
-            }}
-          >
-            <LocationSearchBox />
-          </Box>
 
           {/* Desktop nav */}
           <Stack
@@ -235,11 +217,6 @@ export default function Navbar() {
             </Menu>
           </Stack>
 
-          {/* Location pill (mobile/tablet): shown next to the menu icon */}
-          <Box sx={{ display: { xs: 'flex', sm: 'flex', md: 'none' }, mr: 1, flexShrink: 0 }}>
-            <LocationSearchBox />
-          </Box>
-
           {/* Mobile toggle */}
           <IconButton
             sx={{ display: { xs: 'flex', md: 'none' } }}
@@ -281,4 +258,4 @@ export default function Navbar() {
       </Drawer>
     </AppBar>
   );
-}
+} 

@@ -5,7 +5,7 @@ import {
   Stack,
   Divider,
   Paper,
-  Popover,
+  Dialog,
   List,
   ListItemButton,
   ListItemText,
@@ -26,34 +26,133 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CloseIcon from '@mui/icons-material/Close';
 
-const CHENNAI_VIEWBOX = '79.90,13.35,80.35,12.60';
+// Photon (OpenStreetMap data, komoot) bounding box: minLon,minLat,maxLon,maxLat
+// Widened to cover Chennai + Chengalpattu + Kanchipuram districts (not just Chennai city)
+const CHENNAI_BBOX = '79.45,12.00,80.35,13.35';
+
+// Parsed once so we can do a real numeric containment check on returned coordinates,
+// instead of relying only on text matching against inconsistent OSM address fields.
+const [BBOX_MIN_LON, BBOX_MIN_LAT, BBOX_MAX_LON, BBOX_MAX_LAT] = CHENNAI_BBOX
+  .split(',')
+  .map(Number);
+
+const isWithinBboxCoords = (lon, lat) =>
+  typeof lon === 'number' &&
+  typeof lat === 'number' &&
+  !Number.isNaN(lon) &&
+  !Number.isNaN(lat) &&
+  lon >= BBOX_MIN_LON &&
+  lon <= BBOX_MAX_LON &&
+  lat >= BBOX_MIN_LAT &&
+  lat <= BBOX_MAX_LAT;
 
 const CHENNAI_METRO_KEYWORDS = [
+  // Chennai district / city
   'chennai',
-  'tambaram',
-  'chengalpattu',
-  'chengalpet',
-  'kanchipuram',
-  'tiruvallur',
-  'thiruvallur',
   'red hills',
   'redhills',
   'ponneri',
   'avadi',
   'ambattur',
   'poonamallee',
-  'sriperumbudur',
-  'maraimalai nagar',
-  'guduvancheri',
   'pallavaram',
   'pammal',
-  'urapakkam',
+  'chromepet',
+  'perungalathur',
+  'st thomas mount',
+  'tambaram',
+  // OMR / IT corridor (falls under Chengalpattu district but commonly considered Chennai)
+  'siruseri',
+  'sholinganallur',
+  'navalur',
+  'perungudi',
+  'thoraipakkam',
+  'semmancheri',
+  'padur',
+  'karapakkam',
+  'egattur',
+  'omr',
+  'kottivakkam',
+  'palavakkam',
+  'injambakkam',
+  // Chengalpattu district
+  'chengalpattu',
+  'chengalpet',
+  'maraimalai nagar',
+  'guduvancheri',
   'vandalur',
+  'urapakkam',
+  'kelambakkam',
+  'thiruporur',
+  'mahabalipuram',
+  'mamallapuram',
+  'thirukalukundram',
+  'thirukazhukundram',
+  'cheyyur',
+  'madurantakam',
+  // Kanchipuram district
+  'kanchipuram',
+  'kancheepuram',
+  'sriperumbudur',
+  'oragadam',
+  'walajabad',
+  'uthiramerur',
+  'kundrathur',
+  'tiruvallur',
+  'thiruvallur',
 ];
 
-// Checks a lowercased blob of address text against the Chennai metro keyword list
+// Checks a lowercased blob of address text against the Chennai/Chengalpattu/Kanchipuram keyword list
 const isWithinChennaiMetro = (cityFieldsText) =>
   CHENNAI_METRO_KEYWORDS.some((keyword) => cityFieldsText.includes(keyword));
+
+const photonFeatureToLocationItem = (feature) => {
+  const p = feature.properties || {};
+  const [lon, lat] = feature.geometry?.coordinates || [];
+
+  const streetLine = [p.housenumber, p.street].filter(Boolean).join(' ');
+
+  const nameParts = [p.name, streetLine, p.district, p.city, p.state, p.country].filter(Boolean);
+  const displayName = nameParts
+    .filter((value, idx, arr) => arr.indexOf(value) === idx) // dedupe consecutive repeats
+    .join(', ');
+
+  return {
+    place_id: p.osm_id ?? `${p.osm_type || 'feat'}-${p.name || 'unknown'}-${Math.random()}`,
+    display_name: displayName || p.name || 'Unknown location',
+    lon,
+    lat,
+    address: {
+      city: p.city,
+      town: p.town,
+      suburb: p.district || p.locality,
+      county: p.county,
+      state_district: p.state,
+      street: streetLine || p.street,
+    },
+  };
+};
+
+// Combined check: trust the actual returned coordinates first (this is the ground truth,
+// since Photon was already asked to restrict to CHENNAI_BBOX). Only fall back to text
+// keyword matching if coordinates are missing for some reason (e.g. reverse geocode edge cases).
+const isLocationInServiceArea = (item) => {
+  if (isWithinBboxCoords(item.lon, item.lat)) return true;
+
+  const addr = item.address || {};
+  const cityFields = [
+    addr.city,
+    addr.town,
+    addr.suburb,
+    addr.county,
+    addr.state_district,
+    item.display_name,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+  return isWithinChennaiMetro(cityFields);
+};
 
 export default function LocationSearchBox({ onLocationConfirm } = {}) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -70,7 +169,7 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
 
   const isPopoverOpen = Boolean(anchorEl);
 
-  // True when there WERE results from Nominatim, but none of them fall inside Chennai
+  // True when there WERE results from Photon, but none of them fall inside the service area
   const showNoService =
     !isSearching &&
     locationQuery.trim().length >= 3 &&
@@ -105,32 +204,22 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
     debounceRef.current = setTimeout(async () => {
       try {
         setIsSearching(true);
-        const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6&viewbox=${CHENNAI_VIEWBOX}&bounded=1&q=${encodeURIComponent(
+        // Photon: OSM-data-based, purpose-built for autocomplete/partial-word search
+        const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(
           locationQuery
-        )}`;
-        const res = await fetch(url, {
-          headers: { 'Accept-Language': 'en' },
-        });
+        )}&bbox=${CHENNAI_BBOX}&limit=8&lang=en`;
+        const res = await fetch(url);
         const data = await res.json();
+        const features = data.features || [];
 
-        setRawResultsCount(data.length);
+        setRawResultsCount(features.length);
 
-        // Extra safety filter: only keep results within the Chennai metro area
-        const chennaiOnly = data.filter((item) => {
-          const addr = item.address || {};
-          const cityFields = [
-            addr.city,
-            addr.town,
-            addr.suburb,
-            addr.county,
-            addr.state_district,
-            item.display_name,
-          ]
-            .filter(Boolean)
-            .join(' ')
-            .toLowerCase();
-          return isWithinChennaiMetro(cityFields);
-        });
+        const mapped = features.map(photonFeatureToLocationItem);
+
+        // Safety filter: keep results that are actually within the service area.
+        // Coordinates (ground truth, already bbox-restricted by Photon) are checked first;
+        // keyword text matching is only a fallback for the rare case coordinates are missing.
+        const chennaiOnly = mapped.filter(isLocationInServiceArea);
 
         setSuggestions(chennaiOnly);
         setShowSuggestions(true);
@@ -162,7 +251,7 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
     setRawResultsCount(0);
   };
 
-  // Detect current location via browser Geolocation API, then reverse-geocode via Nominatim
+  // Detect current location via browser Geolocation API, then reverse-geocode via Photon
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser.');
@@ -174,31 +263,31 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
       async (position) => {
         try {
           const { latitude, longitude } = position.coords;
-          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`;
-          const res = await fetch(url, {
-            headers: { 'Accept-Language': 'en' },
-          });
+          const url = `https://photon.komoot.io/reverse?lon=${longitude}&lat=${latitude}&lang=en`;
+          const res = await fetch(url);
           const data = await res.json();
+          const feature = (data.features && data.features[0]) || null;
 
-          const addr = data.address || {};
-          const cityFields = [
-            addr.city,
-            addr.town,
-            addr.suburb,
-            addr.county,
-            addr.state_district,
-            data.display_name,
-          ]
-            .filter(Boolean)
-            .join(' ')
-            .toLowerCase();
+          if (!feature) {
+            alert('Could not detect your location. Please try again.');
+            return;
+          }
 
-          if (isWithinChennaiMetro(cityFields)) {
-            const label =
-              addr.suburb || addr.neighbourhood || addr.city_district || addr.city || data.display_name;
+          const mapped = photonFeatureToLocationItem(feature);
+
+          // Reverse geocode has no bbox param, so this check matters most here.
+          // Use the device's own coordinates (always present) as the primary check,
+          // falling back to the returned feature's text fields if needed.
+          const withinArea =
+            isWithinBboxCoords(longitude, latitude) || isLocationInServiceArea(mapped);
+
+          if (withinArea) {
+            // Build a street + area label, same pattern as manual suggestion selection,
+            // instead of only showing the suburb/city name.
+            const label = mapped.display_name.split(',').slice(0, 2).join(',');
             skipNextSearchRef.current = true;
             setLocationQuery(label);
-            setConfirmedLocation({ label, full: data.display_name });
+            setConfirmedLocation({ label, full: mapped.display_name });
             setShowSuggestions(false);
             setSuggestions([]);
             setRawResultsCount(0);
@@ -230,85 +319,71 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
 
   return (
     <>
-      {/* Header pill trigger: "CATER TO Chennai" */}
+      {/* Header trigger: search-bar style pill (icon + "find nearest food here" + set location) */}
       <Stack
         direction="row"
         alignItems="center"
-        spacing={0.6}
         onClick={handleOpenPopover}
         sx={{
           cursor: 'pointer',
-          bgcolor: 'rgba(0,0,0,0.035)',
-          border: '1px solid rgba(0,0,0,0.08)',
+          bgcolor: '#fff',
+          border: '1px solid rgba(0,0,0,0.06)',
           borderRadius: 1,
-          px: { xs: 1.1, sm: 1.6 },
-          py: { xs: 0.5, sm: 0.6 },
-          minWidth: { xs: 0, sm: 148 },
-          flexShrink: 0,
+          pl: { xs: 1, sm: 1.2, md: 1.5 },
+          pr: { xs: 1.5, sm: 2, md: 2.5 },
+          py: { xs: 0.9, sm: 1.1, md: 1.3 },
+          minWidth: { xs: 220, sm: 320, md: 420, lg: 460 },
+          maxWidth: { xs: '100%',sm:300, md: 480 },
+          width: '100%',
+          boxShadow: '0 8px 24px rgba(20,20,43,0.10)',
           '&:hover': {
-            bgcolor: 'rgba(0,0,0,0.06)',
+            boxShadow: '0 10px 28px rgba(20,20,43,0.14)',
           },
-        }}
+        }} 
       >
-        <LocationOnIcon sx={{ color: 'error.main', fontSize: { xs: '1.1rem', sm: '1.3rem' }, flexShrink: 0 }} />
-        <Box sx={{ textAlign: 'left', lineHeight: 1.1 }}>
-          <Typography
-            sx={{
-              fontSize: { xs: '0.55rem', sm: '0.62rem' },
-              color: 'text.secondary',
-              fontWeight: 700,
-              letterSpacing: '0.5px',
-              fontFamily: '"open sans", sans-serif',
-              display: { xs: 'none', sm: 'block' },
-            }}
-          >
-            CATER TO
-          </Typography>
+        <SearchIcon sx={{ color: 'primary.main', fontSize: { xs: '1.3rem', sm: '1.5rem' }, flexShrink: 0, mr: { xs: 1, sm: 1.5 } }} />
+        <Box sx={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
           <Typography
             noWrap
             sx={{
-              fontSize: { xs: '0.75rem', sm: '0.88rem' },
+              fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
               fontWeight: 800,
               color: 'text.primary',
               fontFamily: '"Montserrat", sans-serif',
-              maxWidth: { xs: 70, sm: 130 },
             }}
           >
-            Chennai
+            Cater to Chennai
           </Typography>
         </Box>
-        <ExpandMoreIcon
-          sx={{
-            color: 'text.secondary',
-            fontSize: '1.1rem',
-            flexShrink: 0,
-            transition: 'transform 0.2s ease',
-            transform: isPopoverOpen ? 'rotate(180deg)' : 'none',
-          }}
-        />
-      </Stack>
+      
+          {/* <ExpandMoreIcon
+            sx={{
+              color: 'text.secondary',
+              fontSize: '1.1rem',
+              transition: 'transform 0.2s ease',
+              transform: isPopoverOpen ? 'rotate(180deg)' : 'none',
+            }}
+          /> */}
+        </Stack>
+      
 
-      <Popover
+      <Dialog
         open={isPopoverOpen}
-        anchorEl={anchorEl}
         onClose={handleClosePopover}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         PaperProps={{
           elevation: 6,
           sx: {
-            mt: 1.5,
-            borderRadius: 3,
-            width: { xs: 320, sm: 440 },
+            m: { xs: 2, sm: 3 },
+            borderRadius: 2,
+            width: { xs: '100%', sm: 440 },
             maxWidth: '92vw',
             p: { xs: 2, sm: 3 },
             boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
           },
         }}
       >
-        {/* Title */}
-        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
-          {/* <LocationOnIcon sx={{ color: 'warning.main', fontSize: '1.4rem' }} /> */}
+        {/* Title + Detect my location (moved here, next to the title) */}
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
           <Typography
             sx={{
               fontWeight: 800,
@@ -319,6 +394,31 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
           >
             DELIVERY LOCATION
           </Typography>
+
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={0.5}
+            onClick={handleUseCurrentLocation}
+            sx={{ cursor: 'pointer' }}
+          >
+            {isLocating ? (
+              <CircularProgress size={14} />
+            ) : (
+              <MyLocationIcon sx={{ fontSize: '1rem', color: 'error.main' }} />
+            )}
+            <Typography
+              sx={{
+                fontSize: { xs: '0.75rem', sm: '0.82rem' },
+                color: 'error.main',
+                fontWeight: 700,
+                textDecoration: 'underline',
+                fontFamily: '"open sans", sans-serif',
+              }}
+            >
+              Detect my location
+            </Typography>
+          </Stack>
         </Stack>
 
         {/* Quick confirmed-location strip with Next button */}
@@ -350,7 +450,7 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
               variant="contained"
               color="error"
               size="small"
-              endIcon={<ArrowForwardIcon sx={{ fontSize: '1rem' }} />}
+              endIcon={<ArrowForwardIcon sx={{ fontSize: '1rem', }} />}
               sx={{
                 borderRadius: 999,
                 textTransform: 'none',
@@ -372,7 +472,7 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
               value="Chennai"
               IconComponent={() => null}
               sx={{
-                borderRadius: 2,
+                borderRadius: 1,
                 fontSize: { xs: '0.78rem', sm: '0.85rem' },
                 fontWeight: 600,
                 fontFamily: '"open sans", sans-serif',
@@ -409,7 +509,7 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
             }}
             sx={{
               '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
+                borderRadius: 1,
                 fontSize: { xs: '0.8rem', sm: '0.9rem' },
                 fontFamily: '"open sans", sans-serif',
               },
@@ -428,43 +528,16 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
           Enter Pincode if society is not visible
         </Typography>
 
-        <Stack direction="row" justifyContent="flex-end">
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={0.5}
-            onClick={handleUseCurrentLocation}
-            sx={{ cursor: 'pointer' }}
-          >
-            {isLocating ? (
-              <CircularProgress size={14} />
-            ) : (
-              <MyLocationIcon sx={{ fontSize: '1rem', color: 'error.main' }} />
-            )}
-            <Typography
-              sx={{
-                fontSize: { xs: '0.75rem', sm: '0.82rem' },
-                color: 'error.main',
-                fontWeight: 700,
-                textDecoration: 'underline',
-                fontFamily: '"open sans", sans-serif',
-              }}
-            >
-              Detect my location
-            </Typography>
-          </Stack>
-        </Stack>
-
         {/* Autocomplete suggestions list, filtered to Chennai & nearby areas */}
         {isDropdownOpen && locationQuery.trim().length >= 3 && (
           <Paper
             variant="outlined"
             sx={{
               mt: 1.5,
-              borderRadius: 2,
+              borderRadius: 1,
               overflow: 'hidden',
               boxSizing: 'border-box',
-              maxHeight: { xs: 180, sm: 220 },
+              maxHeight: { xs: 180, sm: 130 },
               overflowY: 'auto',
               border: '1px solid rgba(0,0,0,0.08)',
               scrollbarWidth: 'none',
@@ -513,7 +586,7 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
                       mt: 0.5,
                     }}
                   >
-                    We currently deliver only within Chennai and its nearby areas (e.g. Tambaram, Chengalpattu, Red Hills). Please try another area.
+                    We currently deliver only within Chennai, Chengalpattu and Kanchipuram districts (e.g. Tambaram, Chengalpattu, Kanchipuram, Red Hills). Please try another area.
                   </Typography>
                 </Box>
               )}
@@ -526,14 +599,14 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
                       color: 'text.secondary',
                     }}
                   >
-                    No matching places found in Chennai or nearby areas.
+                    No matching places found in Chennai, Chengalpattu or Kanchipuram districts.
                   </Typography>
                 </Box>
               )}
             </List>
           </Paper>
         )}
-      </Popover>
+      </Dialog>
     </>
   );
 }

@@ -10,6 +10,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import curveImg from '../../assets/backgroundImage/curve-bgImg.png';
 import orderImg from '../../assets/HeroSection/img11.jpg'
+import LocationSearchBox from '../Common/LocationSearchBox';
 
 export default function Hero({ onLocationConfirm } = {}) {
   return (
@@ -18,11 +19,10 @@ export default function Hero({ onLocationConfirm } = {}) {
         position: 'relative',
         overflow: 'hidden',
         bgcolor: '#fff',
-        pt: { xs: 5, md: 13 },
-        pb: { xs: 8, md: 15 },
-        p: { xs: 2, sm: 2.5, md: 3, lg: 3.5 },
-        minHeight: { xs: 'auto', md: '90vh', lg: '90vh' },
-        height: { xs: '540px',sm:'500px', md: '580px',lg:'570px' },
+        pt: { xs: 5, md: 10 },
+        pb: { xs: 6, md: 8 },
+        p: { xs: 2, sm: 2, md: 1, lg: 3 },
+        minHeight: { xs: 'auto', md: '90vh', lg: '96vh' },
       }}
     >
       
@@ -61,14 +61,14 @@ export default function Hero({ onLocationConfirm } = {}) {
           bottom: 0,
           left: 0,
           right: 0,
-          height: { xs: 100, sm: 130, md: 160, lg: 190 },
+          height: { xs: 100, sm: 130, md: 100, lg: 100 },
           background:
             'linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,.92) 40%, rgba(255,255,255,0) 100%)',
           zIndex: 0,
         }}
       />
 
-       <Box
+     <Box
       component="img"
         src={curveImg}
         alt=""
@@ -76,18 +76,19 @@ export default function Hero({ onLocationConfirm } = {}) {
           position: "absolute",
           top:"0",
           right: 0,
-          width: 990,
-          height: 570,
+          width: {md:700,lg:880, xl:1150},
+          height: {md:550, lg: 550, xl: 690},
           zIndex:1,
           display: { xs: 'none', sm: 'none', md: 'block' },
         }}
       />
 
+
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Box
             sx={{
               display: 'flex',
-              flexDirection: { xs: 'column', lg: 'row' },
+              flexDirection: { xs: 'column', md: 'row' },
               alignItems: {
                 xs: 'center',
                 sm: 'center',
@@ -95,7 +96,7 @@ export default function Hero({ onLocationConfirm } = {}) {
                 lg: 'center',
               },
               justifyContent: 'space-between',
-              textAlign: { xs: 'center', lg: 'left' },
+              textAlign: { xs: 'center',sm: 'center',md: 'left', lg: 'left' },
               gap: {
                 xs: 5,
                 sm: 6,
@@ -103,22 +104,22 @@ export default function Hero({ onLocationConfirm } = {}) {
                 lg: 10,
                 xl: 15,
               },
-              mt: { xs: 0, sm: 0, md: 0, lg: 15 },
+              mt: { xs: 0, sm: 0, md: 13, lg: 18, xl: 20 },
             }}
           >
           <Box
             sx={{
-              flex: { xs: '1 1 100%', lg: '1 1 50%' },
+              flex: { xs: '1 1 100%', md: '1 1 50%' },
               maxWidth: {
                 xs: '100%',
-                lg: '56%',
+                md: '56%',
               },
               width: '100%',
               position: 'relative',
               zIndex: 50,
               display: 'flex',
               flexDirection: 'column',
-              alignItems: { xs: 'center', lg: 'flex-start' },
+              alignItems: { xs: 'center', md: 'flex-start' },
             }}
           >
             <Typography
@@ -130,7 +131,7 @@ export default function Hero({ onLocationConfirm } = {}) {
                 fontWeight: 800,
                 letterSpacing: '-0.5px',
                 fontFamily: '"Montserrat", sans-serif',
-                mt:{ xs: 9, sm: 9, md: 2,},
+                mt:{ xs: 9, sm: 6, md: 9,lg:-3},
               }}
             >
               A one-stop place for all your{' '}
@@ -146,15 +147,33 @@ export default function Hero({ onLocationConfirm } = {}) {
                 fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
                 letterSpacing: '0.1px',
                 fontFamily: '"open sans", sans-serif',
-                mb: 3,
+                mb: 2,
               }}
             >
               Order a day before the event. Place any order starting from 25pax.
             </Typography>
 
+            {/* Location pill: "CATER TO Chennai" with Delivery Location popover, moved here from Navbar */}
+      <Box
+        sx={{
+          position: 'relative',
+          zIndex: 50,
+          display: 'flex',
+          justifyContent: { xs: 'center', sm: 'center', md: 'center', lg: 'flex-start' },
+          width: '100%',
+          mt: { xs: -1, sm: 0, md: 0, lg: 3 },
+          mb: { xs: 0, sm: 1, md: 1 },
+          pl: { xs: 0, sm: 0, md: 0, lg: 0 },
+        }}
+      >
+        <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'center', md: 'center', lg: 'flex-start' } }}>
+          <LocationSearchBox onLocationConfirm={onLocationConfirm} />
+        </Container>
+      </Box>
+
             <Box
               sx={{
-                  display: { xs: 'flex', sm: 'flex', md: 'flex', lg: 'none' },
+                  display: { xs: 'flex', sm: 'flex', md: 'none' },
                   flex: {
                     xs: '1 1 100%',
                   },
@@ -201,7 +220,7 @@ export default function Hero({ onLocationConfirm } = {}) {
                       sm: 3,
                     },
                     boxShadow: '0 20px 45px rgba(20,20,43,0.08)',
-                    mt: { xs: 3, sm: 3, md: 3, lg: 0 },
+                    mt: { xs: 3, sm: 2, md: 0, lg: 0 },
                   }}
                 />
             </Box>
@@ -209,7 +228,7 @@ export default function Hero({ onLocationConfirm } = {}) {
 
           <Box
             sx={{
-              display: { xs: 'none', sm: 'none', md: 'none', lg: 'flex' },
+              display: { xs: 'none', sm: 'none', md: 'flex' },
               flex: '1 1 45%',
               maxWidth: '45%',
               width: '100%',
@@ -234,8 +253,11 @@ export default function Hero({ onLocationConfirm } = {}) {
               }}
             />
           </Box>
+          
         </Box>
+      
       </Container>
+      
     </Box>
   );
 }

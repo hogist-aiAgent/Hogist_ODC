@@ -1,23 +1,26 @@
-import { Box, Container, Stack, Typography } from '@mui/material';
+import { Box, Container, Stack, Typography, Button } from '@mui/material';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import PaymentIcon from '@mui/icons-material/Payment';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import Choose from '../../assets/HowItWorks/chooseTransparent.png'
+import Payment from '../../assets/HowItWorks/paymentTransparent.png'
+import Delivery from '../../assets/HowItWorks/deliveyTransparent.png'
 
 const steps = [
   {
-    icon: <RestaurantMenuIcon sx={{ fontSize: { xs: 26, sm: 30, md: 34 } }} />,
+    img: Choose,
     title: 'Choose your Order',
     desc: 'Browse through our selection by cuisine, price or rating. View pictures of delicious dishes and select your choices by adding to your cart.',
     color: '#E80200',
   },
   {
-    icon: <PaymentIcon sx={{ fontSize: { xs: 26, sm: 30, md: 34 } }} />,
+    img: Payment,
     title: 'Make Payment',
     desc: 'Choose the payment you are most comfortable with - Cash, Card or UPI.',
     color: '#F9E830',
   },
   {
-    icon: <LocalShippingIcon sx={{ fontSize: { xs: 26, sm: 30, md: 34 } }} />,
+    img: Delivery,
     title: 'Get Delivered',
     desc: 'We collect your order, once the food is ready and deliver it to your location. Order on the go, skip the line and save time on takeaway orders. Yes, it\u2019s that SIMPLE! Try it now!',
     color: '#00E6E8',
@@ -29,7 +32,7 @@ const CIRCLE_BG = '#FFFFFF';
 
 export default function HowItWorks() {
   return (
-    <Box sx={{ bgcolor: '#Fff', py: { xs: 0, md: 4 }, mb: { xs: 6, md: 2 }, mt: { xs: 0, } }}>
+    <Box sx={{ bgcolor: '#Fff', py: { xs: 0, md: 0,lg:3 }, mb: { xs: 6, md: 2 }, mt: { xs: 2, } }}>
       <Container maxWidth="lg" sx={{ px: { xs: 2.5, sm: 3, md: 3 } }}>
         <Typography
           variant="h3"
@@ -49,111 +52,83 @@ export default function HowItWorks() {
           sx={{
             position: 'relative',
             display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: { xs: 'stretch', md: 'flex-start' },
-            gap: { xs: 4, sm: 5, md: 0 },
+            flexDirection: { xs: 'column', sm: 'row' },
+            flexWrap: { sm: 'wrap', md: 'nowrap' },
+            alignItems: { xs: 'center', sm: 'flex-start' },
+            justifyContent: 'center',
+            gap: { xs: 6, sm: 4, md: 4, lg: 5 },
           }}
         >
-          {/* Horizontal connector line (desktop/tablet only), spans between first and last icon centers */}
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'block' },
-              position: 'absolute',
-              top: { md: 32, lg: 36 },
-              left: '16.6667%',
-              right: '16.6667%',
-              height: '2px',
-              bgcolor: LINE_COLOR,
-              zIndex: 0,
-            }}
-          />
-
-          {steps.map((step, i) => (
-            <Box
+          {steps.map((step) => (
+            <Stack
               key={step.title}
+              spacing={2}
+              alignItems="center"
+              textAlign="center"
               sx={{
-                position: 'relative',
-                flex: { md: 1 },
-                display: 'flex',
-                flexDirection: { xs: 'row', md: 'column' },
-                alignItems: { xs: 'flex-start', md: 'center' },
-                gap: { xs: 1.5, sm: 2, md: 2 },
+                flex: { sm: '1 1 45%', md: '1 1 0' },
+                minWidth: { sm: 220 },
+                maxWidth: { xs: 320, sm: 260, md: 300, lg: 320 },
+                px: { xs: 0, sm: 1, md: 2 },
               }}
             >
-            
-              {i < steps.length - 1 && (
-                <Box
-                  sx={{
-                    display: { xs: 'block', md: 'none' },
-                    position: 'absolute',
-                    top: { xs: 56, sm: 64 },
-                    bottom: { xs: -32, sm: -40 },
-                    left: { xs: 28, sm: 32 },
-                    width: '2px',
-                    bgcolor: LINE_COLOR,
-                    transform: 'translateX(-50%)',
-                    zIndex: 0,
-                  }}
-                />
-              )}
-
-              {/* Icon */}
+              {/* Icon image */}
               <Box
+                component="img"
+                src={step.img}
+                alt={step.title}
                 sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  flexShrink: 0,
+                  width: { xs: 110, sm: 100, md: 130, lg: 150 },
+                  height: { xs: 110, sm: 100, md: 130, lg: 150 },
+                  objectFit: 'contain',
+                }}
+              />
+
+              <Typography
+                variant="h6"
+                sx={{
+                  fontFamily: '"open sans", sans-serif',
+                  fontWeight: 800,
+                  fontSize: { xs: 18, sm: 18, md: 20, lg: 22 },
+                  color: 'text.primary',
                 }}
               >
-                <Box
-                  sx={{
-                    width: { xs: 56, sm: 64, md: 72 },
-                    height: { xs: 56, sm: 64, md: 72 },
-                    borderRadius: '50%',
-                    bgcolor: CIRCLE_BG,
-                    border: `2px solid ${step.color}`,
-                    color: step.color,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    zIndex: 1,
-                    flexShrink: 0,
-                  }}
-                >
-                  {step.icon}
-                </Box>
-              </Box>
+                {step.title}
+              </Typography>
 
-              <Stack
-                spacing={1}
-                alignItems={{ xs: 'flex-start', md: 'center' }}
-                textAlign={{ xs: 'left', md: 'center' }}
-                sx={{ pt: { md: 1 }, minWidth: 0 }}
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  maxWidth: { xs: '100%', sm: '100%', md: 300, lg: 320 },
+                  fontFamily: '"open sans", sans-serif',
+                  fontSize: { xs: 13, sm: 13, md: 14 },
+                }}
               >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontFamily: '"open sans", sans-serif',
-                    fontSize: { xs: 16, sm: 18, md: 20 },
-                  }}
-                >
-                  {step.title}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    maxWidth: { xs: '100%', md: 320 },
-                    fontFamily: '"open sans", sans-serif',
-                    fontSize: { xs: 13, sm: 14, md: 14 },
-                  }}
-                >
-                  {step.desc}
-                </Typography>
-              </Stack>
-            </Box>
+                {step.desc}
+              </Typography>
+
+              {/* <Button
+                variant="contained"
+                sx={{
+                  mt: 1,
+                  px: 4,
+                  py: 1,
+                  borderRadius: 999,
+                  textTransform: 'none',
+                  fontWeight: 700,
+                  fontFamily: '"open sans", sans-serif',
+                  bgcolor: 'primary.main',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    bgcolor: 'primary.dark',
+                    boxShadow: 'none',
+                  },
+                }}
+              >
+                Check Out
+              </Button> */}
+            </Stack>
           ))}
         </Box>
       </Container>
