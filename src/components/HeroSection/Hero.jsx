@@ -5,7 +5,7 @@ import {
   Button,
 } from '@mui/material';
 import { useRef } from 'react';
-import bgImg from '../../assets/backgroundImage/Desktopt.png';
+import bgImg from '../../assets/backgroundImage/Desktopu.png';
 import IconButton from '@mui/material/IconButton';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import PaymentIcon from '@mui/icons-material/Payment';
@@ -36,7 +36,7 @@ const locationSearchRef = useRef(null);
       sx={{
         position: 'relative',
         overflow: 'hidden',
-        bgcolor: '#fff',
+        bgcolor: '#efe6dd',
         pt: { xs: 5, md: 4, lg: 5, xl: 8 },
         pb: { xs: 6, md: 5, lg: 6, xl: 7 },
         p: { xs: 2, sm: 2, md: 1, lg: 3 },

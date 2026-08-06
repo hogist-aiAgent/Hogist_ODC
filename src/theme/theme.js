@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#E4032E',      // Hogist red
+      main: '#9a0002',      // Hogist red
       dark: '#B4021F',
       light: '#FF4D5E',
       contrastText: '#fff',

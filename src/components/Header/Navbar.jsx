@@ -62,7 +62,7 @@ export default function Navbar() {
       position="fixed"
       elevation={0}
       sx={{
-        bgcolor: scrolled ? '#fff' : 'transparent',
+        bgcolor: scrolled ? '#efe6dd' : 'transparent',
         boxShadow: scrolled ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
         transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
         // borderBottom: '1px solid #F0F0F3',
@@ -149,17 +149,17 @@ export default function Navbar() {
                   textTransform: 'none',
                   fontFamily: '"Montserrat", sans-serif',
                   color: selectedLink === link.label
-                    ? (scrolled ? '#fff' : '#e80200')
-                    : (scrolled ? '#e80200' : '#fff'),
+                    ? (scrolled ? '#efe6dd' : '#9a0002')
+                    : (scrolled ? '#9a0002' : '#efe6dd'),
                   bgcolor: selectedLink === link.label
-                    ? (scrolled ? '#e80200' : '#fff')
+                    ? (scrolled ? '#9a0002' : '#efe6dd')
                     : 'transparent',
                   '&:hover': {
                     
                     bgcolor: selectedLink === link.label
-                      ? (scrolled ? '#e80200' : '#fff')
+                      ? (scrolled ? '#9a0002' : '#efe6dd')
                       : (scrolled
-                          ? 'rgba(228,3,46,0.06)'
+                          ? 'rgba(154,0,2,0.06)'
                           : 'rgba(255,255,255,0.12)'),
                   },
                   '@media (min-width:1400px) and (max-width:1600px)': {
@@ -200,9 +200,9 @@ export default function Navbar() {
                 fontFamily: '"open sans", sans-serif',
                 fontSize: { md: '0.78rem', lg: '0.87rem' },
                 bgcolor: 'primary.main',
-                color: '#fff',
+                color: '#efe6dd',
                 boxShadow: 'none',
-                border: '1.5px solid #fff',
+                border: '1.5px solid #efe6dd',
                 
                 '@media (min-width:1400px) and (max-width:1600px)': {
                   px: 2.2,
@@ -325,9 +325,9 @@ export default function Navbar() {
                   textTransform: 'none',
                   fontWeight: 700,
                   bgcolor: 'primary.main',
-                  color: '#fff',
+                  color: '#efe6dd',
                   boxShadow: 'none',
-                  border: '1.5px solid #fff',
+                  border: '1.5px solid #efe6dd',
                   '&:hover': { bgcolor: 'primary.dark', boxShadow: 'none' },
                 }}
                 onClick={handleMenuOpen}
