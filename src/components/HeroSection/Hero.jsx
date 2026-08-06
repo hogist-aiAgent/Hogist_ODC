@@ -2,24 +2,43 @@ import {
   Box,
   Container,
   Typography,
+  Button,
 } from '@mui/material';
-import bgImg from '../../assets/backgroundImage/Desktop - 1.png';
+import { useRef } from 'react';
+import bgImg from '../../assets/backgroundImage/Desktopt.png';
 import IconButton from '@mui/material/IconButton';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import PaymentIcon from '@mui/icons-material/Payment';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import orderImg from '../../assets/HeroSection/img11.jpg'
 import LocationSearchBox from '../Common/LocationSearchBox';
+import VerifiedUserRoundedIcon from '@mui/icons-material/VerifiedUserRounded';
+import SearchIcon from '@mui/icons-material/Search';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded';
+import AccessTimeFilledRoundedIcon from '@mui/icons-material/AccessTimeFilledRounded';
+import WorkspacePremiumRoundedIcon from '@mui/icons-material/WorkspacePremiumRounded';
+import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
+
+const trustFeatures = [
+  { icon: StorefrontRoundedIcon, title: '200+', subtitle: 'Partner Kitchens' },
+  { icon: AccessTimeFilledRoundedIcon, title: 'On-Time', subtitle: 'Every Time' },
+  { icon: WorkspacePremiumRoundedIcon, title: 'QHSE', subtitle: 'Compliant' },
+  { icon: SupportAgentRoundedIcon, title: 'Dedicated', subtitle: 'Support' },
+];
+
 
 export default function Hero({ onLocationConfirm } = {}) {
+const locationSearchRef = useRef(null);
+
   return (
     <Box
       sx={{
         position: 'relative',
         overflow: 'hidden',
         bgcolor: '#fff',
-        pt: { xs: 5, md: 10 },
-        pb: { xs: 6, md: 8 },
+        pt: { xs: 5, md: 4, lg: 5, xl: 8 },
+        pb: { xs: 6, md: 5, lg: 6, xl: 7 },
         p: { xs: 2, sm: 2, md: 1, lg: 3 },
         minHeight: { xs: 'auto', md: '90vh', lg: '100vh', xl: '90vh' },
         display: { xs: 'block', sm: 'block', md: 'block', lg: 'flex', xl: 'block' },
@@ -27,7 +46,7 @@ export default function Hero({ onLocationConfirm } = {}) {
         justifyContent: { lg: 'center' },
       }}
     >
-      
+
       <Box
       component="img"
       src={bgImg}
@@ -46,30 +65,7 @@ export default function Hero({ onLocationConfirm } = {}) {
         display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
       }}
     />
-      {/* <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: { xs: 140, sm: 180, md: 220, lg: 260 },
-          background:
-            'linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,.88) 40%, rgba(255, 255, 255, 0.06) 100%)',
-          zIndex: 0,
-        }}
-      />
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: { xs: 100, sm: 130, md: 100, lg: 100 },
-          background:
-            'linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,.92) 40%, rgba(255,255,255,0) 100%)',
-          zIndex: 0,
-        }}
-      /> */}
+    
 
      {/* <Box
       component="img"
@@ -115,11 +111,16 @@ export default function Hero({ onLocationConfirm } = {}) {
               gap: {
                 xs: 5,
                 sm: 6,
-                md: 8,
-                lg: 9,
-                xl: 15,
+                md: 5,
+                lg: 6,
+                xl: 9,
               },
-              mt: { xs: 0, sm: 0, md: 10, lg: 5, xl: 20 },
+              mt: { xs: 7, sm: 7, md: 14, lg: 2, xl: 5 },
+
+              '@media (min-width:1400px) and (max-width:1600px)': {
+                mt: 2,
+                gap: 6,
+              },
             }}
           >
           <Box
@@ -137,54 +138,227 @@ export default function Hero({ onLocationConfirm } = {}) {
               alignItems: { xs: 'center', md: 'flex-start' },
             }}
           >
+            {/* Trust badge pill */}
+            <Box
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.8,
+                bgcolor: '#fff',
+                boxShadow: '0 10px 30px rgba(20,20,43,0.12)',
+                border: '1px solid rgba(0, 0, 0, 0.23)',
+                color: 'primary.main',
+                fontWeight: 600,
+                fontFamily: '"open sans", sans-serif',
+                fontSize: { xs: '0.72rem', sm: '0.78rem', md: '0.75rem', lg: '0.8rem' },
+                px: { xs: 1.6, md: 1.8 },
+                py: { xs: 0.7, md: 0.7 },
+                borderRadius: 999,
+                mb: { xs: 2, md: 1.8 },
+
+                '@media (min-width:1400px) and (max-width:1600px)': {
+                  fontSize: '0.9rem',
+                  px: 1.8,
+                  py: 0.7,
+                  mb: 1.8,
+                },
+              }}
+            >
+              <VerifiedUserRoundedIcon sx={{ fontSize: { xs: 16, md: 18 } }} />
+              Trusted by 30+ Companies in Chennai
+            </Box>
+
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: 28, sm: 36, md: 40, lg: 49 },
+                fontSize: { xs: 28, sm: 36, md: 33, lg: 42, xl: 49 },
                 lineHeight: 1.15,
-                mb: 2,
+                mb: 1.5,
                 fontWeight: 800,
                 letterSpacing: '-0.5px',
                 fontFamily: '"Montserrat", sans-serif',
-                mt:{ xs: 9, sm: 6, md: 9,lg:0},
+                mt:{ xs: 1, sm: 1, md: 1,lg:0},
+
+                '@media (min-width:1400px) and (max-width:1600px)': {
+                  fontSize: 58,
+                },
               }}
             >
-              Find Your Food{' '}
-                Delivered Fresh & Hot
-              
+              A one-stop place for all your Food and Party{' '}
+              <Box
+                component="span"
+                sx={{
+                  position: 'relative',
+                  display: 'inline-block',
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: { xs: -3, md: -5 },
+                    height: { xs: 3, md: 4 },
+                    bgcolor: 'primary.main',
+                    borderRadius: 4,
+                  },
+                }}
+              >
+                Orders.
+              </Box>
             </Typography>
 
             <Typography
               variant="body2"
               sx={{
-                color: 'primary.main',
-                fontWeight: 600,
-                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem', lg: '1.3rem' },
+                color: 'text.secondary',
+                fontWeight: 500,
+                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem', lg: '1rem', xl: '1.05rem' },
                 letterSpacing: '0.1px',
                 fontFamily: '"open sans", sans-serif',
-                mb: 2,
+                mb: 2.5,
+
+                '@media (min-width:1400px) and (max-width:1600px)': {
+                  fontSize: '1.3em',
+                  mb: 2.5,
+                },
               }}
             >
-              You can order delivery, order catering, and book a table as your wish at your nearest location.
+              Order a day before the event.
+              <br />
+              Place any order starting from{' '}
+              <Box component="span" sx={{ color: 'primary.main', fontWeight: 800 }}>
+                25 pax
+              </Box>
+              .
             </Typography>
 
-            {/* Location pill: "CATER TO Chennai" with Delivery Location popover, moved here from Navbar */}
-      <Box
-        sx={{
-          position: 'relative',
-          zIndex: 50,
-          display: 'flex',
-          justifyContent: { xs: 'center', sm: 'center', md: 'center', lg: 'flex-start' },
-          width: '100%',
-          mt: { xs: -1, sm: 0, md: 0, lg: 3 },
-          mb: { xs: 0, sm: 1, md: 1 },
-          ml: { xs: 0, sm: 0, md: 0, lg: -3},
-        }}
-      >
-        <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'center', md: 'center', lg: 'flex-start' } }}>
-          <LocationSearchBox onLocationConfirm={onLocationConfirm} />
-        </Container>
-      </Box>
+            {/* Location / search pill: "Cater to Chennai" with Search action, moved here from Navbar */}
+            <Box
+              sx={{
+                position: 'relative',
+                zIndex: 50,
+                display: 'flex',
+                justifyContent: { xs: 'center', sm: 'center', md: 'center', lg: 'flex-start' },
+                width: '100%',
+                mt: { xs: 0, sm: 0, md: 0, lg: 0 },
+                mb: { xs: 3, sm: 3, md: 2.5, lg: 3 },
+                ml: { xs: 0, sm: 0, md: -3.5, lg: -1}
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                  maxWidth: { xs: '100%', sm: 480, md: 440, lg: 480 },
+                  bgcolor: '#fff',
+                  borderRadius: 999,
+                  boxShadow: '0 10px 30px rgba(20,20,43,0.12)',
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  pl: { xs: 1.5, md: 1.8 },
+                  pr: { xs: 0.6, md: 0.6 },
+                  py: { xs: 0.6, md: 0.5 },
+                  gap: 1,
+
+                  '@media (min-width:1400px) and (max-width:1600px)': {
+                    maxWidth: 480,
+                    pl: 2,
+                    py: 0.9,
+                  },
+                }}
+              >
+                  <SearchIcon sx={{ color: 'primary.main', fontSize: { xs: 20, md: 20 }, flexShrink: 0 }} />
+
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <LocationSearchBox ref={locationSearchRef} onLocationConfirm={onLocationConfirm}
+                  />
+                  </Box>
+
+                <Button
+                  onClick={() => locationSearchRef.current?.open()}
+                  sx={{
+                    flexShrink: 0,
+                    bgcolor: 'primary.main',
+                    color: '#fff',
+                    borderRadius: 999,
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    fontFamily: '"open sans", sans-serif',
+                    fontSize: { xs: '0.75rem', md: '0.8rem' },
+                    px: { xs: 2, md: 2.2 },
+                    py: { xs: 0.9, md: 0.9 },
+                    '&:hover': { bgcolor: 'primary.dark' },
+                  }}
+                  endIcon={<ArrowForwardIcon sx={{ fontSize: 16 }} />}
+                >
+                  Search
+                </Button>
+              </Box>
+            </Box>
+
+            {/* Trust features strip */}
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: { xs: 'center', md: 'flex-start' },
+                gap: { xs: 3, sm: 2.5, md: 1.6, lg: 2.5, xl: 3 },
+                width: '100%',
+
+                '@media (min-width:1400px) and (max-width:1600px)': {
+                  gap: 3,
+                },
+              }}
+            >
+              {trustFeatures.map(({ icon: Icon, title, subtitle }) => (
+                <Box
+                  key={title + subtitle}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: { xs: 34, md: 34, lg: 39 },
+                      height: { xs: 34, md: 34, lg: 39 },
+                      borderRadius: '50%',
+                      bgcolor: 'rgba(232,2,0,0.08)',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon sx={{ color: 'primary.main', fontSize: { xs: 18, md: 18, lg: 20 } }} />
+                  </Box>
+                  <Box sx={{ textAlign: 'left' }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 800,
+                        fontSize: { xs: '0.78rem', md: '0.8rem', lg: '0.85rem' },
+                        fontFamily: '"Montserrat", sans-serif',
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {title}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: { xs: '0.68rem', md: '0.7rem', lg: '0.73rem' },
+                        color: 'text.secondary',
+                        fontFamily: '"open sans", sans-serif',
+                        lineHeight: 1.2,
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {subtitle}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
 
             <Box
               sx={{
@@ -204,7 +378,7 @@ export default function Hero({ onLocationConfirm } = {}) {
                   alignItems: 'center',
                   position: 'relative',
                   zIndex: 2,
-                  mt: { xs: 0, sm: 0, md: 1, },
+                  mt: { xs: 3, sm: 3, md: 1, },
                   mb:2
                 }}
               >
@@ -259,20 +433,26 @@ export default function Hero({ onLocationConfirm } = {}) {
               alt="Order food"
               sx={{
                 width: '100%',
-                maxWidth: { lg: 540, xl: 650 },
-                height: { lg: '375px', xl: '350px' },
+                maxWidth: { md: 460, lg: 500, xl: 650 },
+                height: { md: 330, lg: 400, xl: 350 },
                 display: 'block',
                 objectFit: 'cover',
-                borderRadius: 3,
-                boxShadow: '0 20px 45px rgba(20,20,43,0.08)',
+                borderRadius: 6,
+                border: '3.5px solid #fff',
+                boxShadow: '0 20px 45px rgba(20,20,43,0.15)',
+
+                '@media (min-width:1400px) and (max-width:1600px)': {
+                  maxWidth: 560,
+                  height: 500,
+                },
               }}
             />
           </Box>
-          
+
         </Box>
-      
+
       </Container>
-      
+
     </Box>
   );
 }

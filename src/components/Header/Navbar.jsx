@@ -17,6 +17,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
+import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
 import logo from '../../assets/CompanyLogo/logo.png'
 
 const navLinks = [
@@ -72,21 +73,23 @@ export default function Navbar() {
           maxWidth="lg"
           disableGutters
           sx={{
-            '@media (min-width: 1400px) and (max-width: 1450px)': {
-              maxWidth: '1320px',
+            px: { xs: 0, },
+            '@media (min-width: 1400px) and (max-width: 1600px)': {
+              maxWidth: '100%',
               width: '100%',
-              px: 2,
+              px: 4,
             },
           }}
         >
           <Toolbar
             sx={{
-              py: 1,
+              py: { xs: 1, md: 0.7, lg: 1 },
               px: { xs: 2, sm: 2.5, md: 0 },
 
-              '@media (min-width: 1400px) and (max-width: 1450px)': {
+              '@media (min-width: 1400px) and (max-width: 1600px)': {
                 justifyContent: 'space-between',
                 px: 0,
+                py: 0.8,
               },
             }}
           >          {/* Logo */}
@@ -96,9 +99,9 @@ export default function Navbar() {
                 spacing={1}
                 sx={{
                   flexGrow: 1,
-                  ml: { xs: 0, sm: 1, md: 3, lg: 1 },
+                  ml: { xs: 0, sm: 1, md: 2, lg: 1 },
 
-                  '@media (min-width:1400px) and (max-width:1450px)': {
+                  '@media (min-width:1400px) and (max-width:1600px)': {
                     ml: 0,
                   },
                 }}
@@ -109,8 +112,12 @@ export default function Navbar() {
               src={logo}
               alt="Hogist Logo"
               sx={{
-                height: { xs: 42, sm: 48, md: 55, lg: 66  },
+                height: { xs: 42, sm: 48, md: 48, lg: 60, xl: 66  },
                 width: 'auto',
+
+                '@media (min-width:1400px) and (max-width:1600px)': {
+                  height: 60,
+                },
               }}
             />
           </Stack>
@@ -119,18 +126,25 @@ export default function Navbar() {
           <Stack
             direction="row"
             spacing={0.5}
-            sx={{ display: { xs: 'none', md: 'flex' }, mr: {xs:'auto', sm:2,md:2} }}
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              mr: { xs: 'auto', sm: 2, md: 1.5, lg: 2 },
+
+              '@media (min-width:1400px) and (max-width:1600px)': {
+                mr: 0.5,
+              },
+            }}
           >
             {navLinks.map((link) => (
               <Button
                 key={link.label}
                 onClick={() => setSelectedLink(link.label)}
                 sx={{
-                  px: { md: 1.2, lg: 1.8 },
-                  py: 0.2,
+                  px: { md: 1.3, lg: 1.5,},
+                  py: { md: 0.6, lg: 0.7 },
                   borderRadius: 999,
                   fontWeight: 600,
-                  fontSize: { md: '0.9rem', lg: '1.2rem', xl: '1.15rem' },
+                  fontSize: { md: '0.8rem', lg: '0.9rem', xl: '0.95rem' },
                   letterSpacing: '0.2px',
                   textTransform: 'none',
                   fontFamily: '"Montserrat", sans-serif',
@@ -148,6 +162,11 @@ export default function Navbar() {
                           ? 'rgba(228,3,46,0.06)'
                           : 'rgba(255,255,255,0.12)'),
                   },
+                  '@media (min-width:1400px) and (max-width:1600px)': {
+                    px: 3.7,
+                    py: 0.7,
+                    fontSize: '1rem',
+                  },
                 }}
               >
                 {link.label}
@@ -161,39 +180,43 @@ export default function Navbar() {
               spacing={1.5}
               sx={{
                 display: { xs: 'none', md: 'flex' },
-                mr: { md: 2.5, lg: 5 },
+                mr: { md: 2, lg: 4 },
 
-                '@media (min-width:1400px) and (max-width:1650px)': {
+                '@media (min-width:1400px) and (max-width:1600px)': {
                   mr: 0,
                 },
               }}
             >
            <Button
-              variant="outlined"
+              variant="contained"
               onClick={handleMenuOpen}
+              startIcon={<LocalPhoneRoundedIcon sx={{ fontSize: { md: 15, lg: 17 } }} />}
               sx={{
-                px: { md: 1.5, lg: 2.5 },
-                color: isMenuOpen
-                  ? (scrolled ? '#fff' : '#e80200')
-                  : (scrolled ? 'primary.main' : '#fff'),
-                borderColor: scrolled ? 'primary.main' : '#fff',
-                bgcolor: isMenuOpen
-                  ? (scrolled ? '#e80200' : '#fff')
-                  : 'transparent',
+                px: { md: 1.8, lg: 2.6 },
+                py: { md: 0.7, lg: 0.85 },
+                borderRadius: 999,
+                textTransform: 'none',
+                fontWeight: 700,
+                fontFamily: '"open sans", sans-serif',
+                fontSize: { md: '0.78rem', lg: '0.87rem' },
+                bgcolor: 'primary.main',
+                color: '#fff',
+                boxShadow: 'none',
+                border: '1.5px solid #fff',
+                
+                '@media (min-width:1400px) and (max-width:1600px)': {
+                  px: 2.2,
+                  py: 0.85,
+                  fontSize: '0.87rem',
+                },
+
                 '&:hover': {
-                  color: isMenuOpen
-                    ? (scrolled ? '#fff' : '#e80200')
-                    : (scrolled ? 'primary.main' : '#fff'),
-                  borderColor: scrolled ? 'primary.dark' : '#fff',
-                  bgcolor: isMenuOpen
-                    ? (scrolled ? '#e80200' : '#fff')
-                    : (scrolled
-                        ? 'rgba(228,3,46,0.06)'
-                        : 'rgba(255,255,255,0.12)'),
+                  bgcolor: 'primary.dark',
+                  boxShadow: 'none',
                 },
               }}
             >
-              <RestaurantMenuOutlinedIcon />
+              Get in Touch
             </Button>
 
             <Menu
@@ -276,7 +299,17 @@ export default function Navbar() {
 
           <List>
             {navLinks.map((link) => (
-              <ListItemButton key={link.label} selected={link.active}>
+              <ListItemButton
+                key={link.label}
+                selected={selectedLink === link.label}
+                onClick={() => setSelectedLink(link.label)}
+                sx={{
+                  '&.Mui-selected': {
+                    bgcolor: 'rgba(232,2,0,0.08)',
+                    color: 'primary.main',
+                  },
+                }}
+              >
                 <ListItemText primary={link.label} />
               </ListItemButton>
             ))}
@@ -284,12 +317,22 @@ export default function Navbar() {
             <Box sx={{ px: 2, pt: 2 }}>
               <Button
                 fullWidth
-                variant="outlined"
-                color="primary"
-                sx={{ mb: 1.5 }}
+                variant="contained"
+                startIcon={<LocalPhoneRoundedIcon sx={{ fontSize: 16 }} />}
+                sx={{
+                  mb: 1.5,
+                  borderRadius: 999,
+                  textTransform: 'none',
+                  fontWeight: 700,
+                  bgcolor: 'primary.main',
+                  color: '#fff',
+                  boxShadow: 'none',
+                  border: '1.5px solid #fff',
+                  '&:hover': { bgcolor: 'primary.dark', boxShadow: 'none' },
+                }}
                 onClick={handleMenuOpen}
               >
-                <RestaurantMenuOutlinedIcon />
+                Get in Touch
               </Button>
             </Box>
           </List>
@@ -297,4 +340,4 @@ export default function Navbar() {
       </Drawer>
     </AppBar>
   );
-} 
+}

@@ -1,4 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import {   useState,
+  useEffect,
+  useRef,
+  forwardRef,
+  useImperativeHandle, } from 'react';
 import {
   Box,
   Typography,
@@ -26,12 +30,9 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CloseIcon from '@mui/icons-material/Close';
 
-// Photon (OpenStreetMap data, komoot) bounding box: minLon,minLat,maxLon,maxLat
-// Widened to cover Chennai + Chengalpattu + Kanchipuram districts (not just Chennai city)
+
 const CHENNAI_BBOX = '79.45,12.00,80.35,13.35';
 
-// Parsed once so we can do a real numeric containment check on returned coordinates,
-// instead of relying only on text matching against inconsistent OSM address fields.
 const [BBOX_MIN_LON, BBOX_MIN_LAT, BBOX_MAX_LON, BBOX_MAX_LAT] = CHENNAI_BBOX
   .split(',')
   .map(Number);
@@ -133,9 +134,6 @@ const photonFeatureToLocationItem = (feature) => {
   };
 };
 
-// Combined check: trust the actual returned coordinates first (this is the ground truth,
-// since Photon was already asked to restrict to CHENNAI_BBOX). Only fall back to text
-// keyword matching if coordinates are missing for some reason (e.g. reverse geocode edge cases).
 const isLocationInServiceArea = (item) => {
   if (isWithinBboxCoords(item.lon, item.lat)) return true;
 
@@ -154,7 +152,7 @@ const isLocationInServiceArea = (item) => {
   return isWithinChennaiMetro(cityFields);
 };
 
-export default function LocationSearchBox({ onLocationConfirm } = {}) {
+const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [locationQuery, setLocationQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -181,6 +179,12 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
   const handleOpenPopover = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  useImperativeHandle(ref, () => ({
+  open: () => {
+    setAnchorEl(document.body);
+  },
+}));
 
   const handleClosePopover = () => {
     setAnchorEl(null);
@@ -216,9 +220,6 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
 
         const mapped = features.map(photonFeatureToLocationItem);
 
-        // Safety filter: keep results that are actually within the service area.
-        // Coordinates (ground truth, already bbox-restricted by Photon) are checked first;
-        // keyword text matching is only a fallback for the rare case coordinates are missing.
         const chennaiOnly = mapped.filter(isLocationInServiceArea);
 
         setSuggestions(chennaiOnly);
@@ -275,15 +276,10 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
 
           const mapped = photonFeatureToLocationItem(feature);
 
-          // Reverse geocode has no bbox param, so this check matters most here.
-          // Use the device's own coordinates (always present) as the primary check,
-          // falling back to the returned feature's text fields if needed.
           const withinArea =
             isWithinBboxCoords(longitude, latitude) || isLocationInServiceArea(mapped);
 
           if (withinArea) {
-            // Build a street + area label, same pattern as manual suggestion selection,
-            // instead of only showing the suburb/city name.
             const label = mapped.display_name.split(',').slice(0, 2).join(',');
             skipNextSearchRef.current = true;
             setLocationQuery(label);
@@ -319,62 +315,29 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
 
   return (
     <>
-      {/* Header trigger: search-bar style pill (icon + "find nearest food here" + set location) */}
-      <Stack
-        direction="row"
-        alignItems="center"
+
+      <Box
         onClick={handleOpenPopover}
         sx={{
           cursor: 'pointer',
-          bgcolor: '#fff',
-          border: '1px solid rgba(0,0,0,0.06)',
-          borderRadius: 1,
-          pl: { xs: 1, sm: 1.2, md: 1.5 },
-          pr: { xs: 1.5, sm: 2, md: 2.5 },
-          py: { xs: 0.9, sm: 1.1, md: 1.3 },
-          minWidth: { xs: 220, sm: 320, md: 420, lg: 460 },
-          maxWidth: { xs: '100%',sm:300, md: 480 },
           width: '100%',
-          boxShadow: '0 8px 24px rgba(20,20,43,0.10)',
-          '&:hover': {
-            boxShadow: '0 10px 28px rgba(20,20,43,0.14)',
-          },
-        }} 
+          display: 'flex',
+          alignItems: 'center',
+          minHeight: { xs: 30, sm: 32, md: 34 },
+        }}
       >
-        <SearchIcon sx={{ color: 'primary.main', fontSize: { xs: '1.3rem', sm: '1.5rem' }, flexShrink: 0, mr: { xs: 1, sm: 1.5 } }} />
-        <Box sx={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
-          <Typography
-            noWrap
-            sx={{
-              fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
-              fontWeight: 500,
-              color: '#e80200',
-              fontFamily: '"Montserrat", sans-serif',
-            }}
-          >
-            find nearest food here
-          </Typography>
-        </Box>
-       <Typography
-                    sx={{
-                      fontSize: { xs: '0.8rem', sm: '0.9rem' },
-                      color: 'text.secondary',
-                      fontFamily: '"open sans", sans-serif',
-                    }}
-                  >
-                    set location
-                  </Typography>
-          <ArrowDropDownIcon
-            sx={{
-              color: 'text.secondary',
-              fontSize: '1.5rem',
-              transition: 'transform 0.2s ease',
-              transform: isPopoverOpen ? 'rotate(180deg)' : 'none',
-              mt: { xs: 0.1, sm: 0.2 },
-            }}
-          />
-        </Stack>
-      
+        <Typography
+          noWrap
+          sx={{
+            fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
+            fontWeight: 500,
+            color: confirmedLocation ? 'text.primary' : 'text.secondary',
+            fontFamily: '"open sans", sans-serif',
+          }}
+        >
+          {confirmedLocation ? confirmedLocation.label : 'Choose delivery location'}
+        </Typography>
+      </Box>
 
       <Dialog
         open={isPopoverOpen}
@@ -618,4 +581,6 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
       </Dialog>
     </>
   );
-}
+});
+
+export default LocationSearchBox;

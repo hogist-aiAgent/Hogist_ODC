@@ -8,7 +8,7 @@ import TrustedClients from './components/TrustedClients';
 // import Gallery from './components/Gallery';
 // import AppDownload from './components/AppDownload';
 // import Testimonials from './components/Testimonials';
-// import Footer from './components/Footer';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -23,7 +23,8 @@ function App() {
       <Gallery />
       <AppDownload />
       <Testimonials />
-      <Footer /> */}
+       */}
+       <Footer />
     </>
   );
 }
