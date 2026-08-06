@@ -3,12 +3,11 @@ import {
   Container,
   Typography,
 } from '@mui/material';
-import bgImg from '../../assets/backgroundImage/background-img.jpeg';
+import bgImg from '../../assets/backgroundImage/Desktop - 1.png';
 import IconButton from '@mui/material/IconButton';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import PaymentIcon from '@mui/icons-material/Payment';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import curveImg from '../../assets/backgroundImage/curve-bgImg.png';
 import orderImg from '../../assets/HeroSection/img11.jpg'
 import LocationSearchBox from '../Common/LocationSearchBox';
 
@@ -22,7 +21,10 @@ export default function Hero({ onLocationConfirm } = {}) {
         pt: { xs: 5, md: 10 },
         pb: { xs: 6, md: 8 },
         p: { xs: 2, sm: 2, md: 1, lg: 3 },
-        minHeight: { xs: 'auto', md: '90vh', lg: '96vh' },
+        minHeight: { xs: 'auto', md: '90vh', lg: '100vh', xl: '90vh' },
+        display: { xs: 'block', sm: 'block', md: 'block', lg: 'flex', xl: 'block' },
+        flexDirection: { lg: 'column' },
+        justifyContent: { lg: 'center' },
       }}
     >
       
@@ -37,13 +39,14 @@ export default function Hero({ onLocationConfirm } = {}) {
         height: '100%',
         objectFit: 'cover',
         objectPosition: 'center center',
-        opacity: 0.18,
+        // opacity: 0.18,
         zIndex: 0,
         pointerEvents: 'none',
         userSelect: 'none',
+        display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
       }}
     />
-      <Box
+      {/* <Box
         sx={{
           position: 'absolute',
           top: 0,
@@ -66,9 +69,9 @@ export default function Hero({ onLocationConfirm } = {}) {
             'linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,.92) 40%, rgba(255,255,255,0) 100%)',
           zIndex: 0,
         }}
-      />
+      /> */}
 
-     <Box
+     {/* <Box
       component="img"
         src={curveImg}
         alt=""
@@ -76,15 +79,27 @@ export default function Hero({ onLocationConfirm } = {}) {
           position: "absolute",
           top:"0",
           right: 0,
-          width: {md:700,lg:880, xl:1150},
-          height: {md:550, lg: 550, xl: 690},
+          width: {md:700,lg:1100, xl:1150},
+          height: {md:550, lg: 700, xl: 690},
           zIndex:1,
           display: { xs: 'none', sm: 'none', md: 'block' },
         }}
-      />
+      /> */}
 
 
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+      <Container
+          maxWidth="lg"
+          sx={{
+            position: 'relative',
+            zIndex: 1,
+
+            /* Only around 1440px screens */
+            '@media (min-width:1400px) and (max-width:1600px)': {
+              maxWidth: '1320px',
+              px: 1,
+            },
+          }}
+        >
         <Box
             sx={{
               display: 'flex',
@@ -101,10 +116,10 @@ export default function Hero({ onLocationConfirm } = {}) {
                 xs: 5,
                 sm: 6,
                 md: 8,
-                lg: 10,
+                lg: 9,
                 xl: 15,
               },
-              mt: { xs: 0, sm: 0, md: 13, lg: 18, xl: 20 },
+              mt: { xs: 0, sm: 0, md: 10, lg: 5, xl: 20 },
             }}
           >
           <Box
@@ -125,17 +140,17 @@ export default function Hero({ onLocationConfirm } = {}) {
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: 28, sm: 36, md: 40,  },
+                fontSize: { xs: 28, sm: 36, md: 40, lg: 49 },
                 lineHeight: 1.15,
                 mb: 2,
                 fontWeight: 800,
                 letterSpacing: '-0.5px',
                 fontFamily: '"Montserrat", sans-serif',
-                mt:{ xs: 9, sm: 6, md: 9,lg:-3},
+                mt:{ xs: 9, sm: 6, md: 9,lg:0},
               }}
             >
-              A one-stop place for all your{' '}
-                Food and Party Orders.
+              Find Your Food{' '}
+                Delivered Fresh & Hot
               
             </Typography>
 
@@ -144,13 +159,13 @@ export default function Hero({ onLocationConfirm } = {}) {
               sx={{
                 color: 'primary.main',
                 fontWeight: 600,
-                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
+                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem', lg: '1.3rem' },
                 letterSpacing: '0.1px',
                 fontFamily: '"open sans", sans-serif',
                 mb: 2,
               }}
             >
-              Order a day before the event. Place any order starting from 25pax.
+              You can order delivery, order catering, and book a table as your wish at your nearest location.
             </Typography>
 
             {/* Location pill: "CATER TO Chennai" with Delivery Location popover, moved here from Navbar */}
@@ -163,7 +178,7 @@ export default function Hero({ onLocationConfirm } = {}) {
           width: '100%',
           mt: { xs: -1, sm: 0, md: 0, lg: 3 },
           mb: { xs: 0, sm: 1, md: 1 },
-          pl: { xs: 0, sm: 0, md: 0, lg: 0 },
+          ml: { xs: 0, sm: 0, md: 0, lg: -3},
         }}
       >
         <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'center', md: 'center', lg: 'flex-start' } }}>
@@ -245,7 +260,7 @@ export default function Hero({ onLocationConfirm } = {}) {
               sx={{
                 width: '100%',
                 maxWidth: { lg: 540, xl: 650 },
-                height: { lg: '300px', xl: '350px' },
+                height: { lg: '375px', xl: '350px' },
                 display: 'block',
                 objectFit: 'cover',
                 borderRadius: 3,

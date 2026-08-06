@@ -42,7 +42,7 @@ export default function HowItWorks() {
             fontFamily: '"Montserrat", sans-serif',
             fontSize: { xs: 24, sm: 30, md: 38 },
             mb: { xs: 4, md: 6 },
-            color: '#c60000',
+            color: '#e80200',
           }}
         >
           How it's work
@@ -78,8 +78,8 @@ export default function HowItWorks() {
                 src={step.img}
                 alt={step.title}
                 sx={{
-                  width: { xs: 110, sm: 100, md: 130, lg: 150 },
-                  height: { xs: 110, sm: 100, md: 130, lg: 150 },
+                  width: { xs: 110, sm: 100, md: 130, lg: 230 },
+                  height: { xs: 110, sm: 100, md: 130, lg: 200 },
                   objectFit: 'contain',
                 }}
               />

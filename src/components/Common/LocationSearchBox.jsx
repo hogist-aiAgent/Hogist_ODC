@@ -20,7 +20,7 @@ import {
   IconButton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -347,23 +347,32 @@ export default function LocationSearchBox({ onLocationConfirm } = {}) {
             noWrap
             sx={{
               fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
-              fontWeight: 800,
-              color: 'text.primary',
+              fontWeight: 500,
+              color: '#e80200',
               fontFamily: '"Montserrat", sans-serif',
             }}
           >
-            Cater to Chennai
+            find nearest food here
           </Typography>
         </Box>
-      
-          {/* <ExpandMoreIcon
+       <Typography
+                    sx={{
+                      fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                      color: 'text.secondary',
+                      fontFamily: '"open sans", sans-serif',
+                    }}
+                  >
+                    set location
+                  </Typography>
+          <ArrowDropDownIcon
             sx={{
               color: 'text.secondary',
-              fontSize: '1.1rem',
+              fontSize: '1.5rem',
               transition: 'transform 0.2s ease',
               transform: isPopoverOpen ? 'rotate(180deg)' : 'none',
+              mt: { xs: 0.1, sm: 0.2 },
             }}
-          /> */}
+          />
         </Stack>
       
 

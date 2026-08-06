@@ -68,16 +68,48 @@ export default function Navbar() {
         color: 'text.primary',
       }}
     >
-      <Container maxWidth="lg" disableGutters>
-        <Toolbar sx={{ py: 1, px: { xs: 2, sm: 2.5, md: 0 } }}>
-          {/* Logo */}
-          <Stack direction="row" alignItems="center" spacing={1} sx={{ flexGrow: 1, ml: { xs: 0, sm: 1, md: 3, lg: 1 } }}>
-            <Box
+      <Container 
+          maxWidth="lg"
+          disableGutters
+          sx={{
+            '@media (min-width: 1400px) and (max-width: 1450px)': {
+              maxWidth: '1320px',
+              width: '100%',
+              px: 2,
+            },
+          }}
+        >
+          <Toolbar
+            sx={{
+              py: 1,
+              px: { xs: 2, sm: 2.5, md: 0 },
+
+              '@media (min-width: 1400px) and (max-width: 1450px)': {
+                justifyContent: 'space-between',
+                px: 0,
+              },
+            }}
+          >          {/* Logo */}
+              <Stack
+                direction="row"
+                alignItems="center"
+                spacing={1}
+                sx={{
+                  flexGrow: 1,
+                  ml: { xs: 0, sm: 1, md: 3, lg: 1 },
+
+                  '@media (min-width:1400px) and (max-width:1450px)': {
+                    ml: 0,
+                  },
+                }}
+              >       
+              
+             <Box
               component="img"
               src={logo}
               alt="Hogist Logo"
               sx={{
-                height: { xs: 42, sm: 48, md: 55, lg: 60 },
+                height: { xs: 42, sm: 48, md: 55, lg: 66  },
                 width: 'auto',
               }}
             />
@@ -98,20 +130,20 @@ export default function Navbar() {
                   py: 0.2,
                   borderRadius: 999,
                   fontWeight: 600,
-                  fontSize: { md: '0.9rem', lg: '1.05rem', xl: '1.15rem' },
+                  fontSize: { md: '0.9rem', lg: '1.2rem', xl: '1.15rem' },
                   letterSpacing: '0.2px',
                   textTransform: 'none',
                   fontFamily: '"Montserrat", sans-serif',
                   color: selectedLink === link.label
-                    ? (scrolled ? '#fff' : '#c60000')
-                    : (scrolled ? '#c60000' : '#fff'),
+                    ? (scrolled ? '#fff' : '#e80200')
+                    : (scrolled ? '#e80200' : '#fff'),
                   bgcolor: selectedLink === link.label
-                    ? (scrolled ? '#c60000' : '#fff')
+                    ? (scrolled ? '#e80200' : '#fff')
                     : 'transparent',
                   '&:hover': {
                     
                     bgcolor: selectedLink === link.label
-                      ? (scrolled ? '#c60000' : '#fff')
+                      ? (scrolled ? '#e80200' : '#fff')
                       : (scrolled
                           ? 'rgba(228,3,46,0.06)'
                           : 'rgba(255,255,255,0.12)'),
@@ -125,29 +157,36 @@ export default function Navbar() {
 
           {/* CTA */}
           <Stack
-            direction="row"
-            spacing={1.5}
-            sx={{ display: { xs: 'none', md: 'flex' }, mr: { md: 2.5, lg: 5 } }}
-          >
+              direction="row"
+              spacing={1.5}
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                mr: { md: 2.5, lg: 5 },
+
+                '@media (min-width:1400px) and (max-width:1650px)': {
+                  mr: 0,
+                },
+              }}
+            >
            <Button
               variant="outlined"
               onClick={handleMenuOpen}
               sx={{
                 px: { md: 1.5, lg: 2.5 },
                 color: isMenuOpen
-                  ? (scrolled ? '#fff' : '#c60000')
+                  ? (scrolled ? '#fff' : '#e80200')
                   : (scrolled ? 'primary.main' : '#fff'),
                 borderColor: scrolled ? 'primary.main' : '#fff',
                 bgcolor: isMenuOpen
-                  ? (scrolled ? '#c60000' : '#fff')
+                  ? (scrolled ? '#e80200' : '#fff')
                   : 'transparent',
                 '&:hover': {
                   color: isMenuOpen
-                    ? (scrolled ? '#fff' : '#c60000')
+                    ? (scrolled ? '#fff' : '#e80200')
                     : (scrolled ? 'primary.main' : '#fff'),
                   borderColor: scrolled ? 'primary.dark' : '#fff',
                   bgcolor: isMenuOpen
-                    ? (scrolled ? '#c60000' : '#fff')
+                    ? (scrolled ? '#e80200' : '#fff')
                     : (scrolled
                         ? 'rgba(228,3,46,0.06)'
                         : 'rgba(255,255,255,0.12)'),
