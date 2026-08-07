@@ -27,6 +27,27 @@ const trustFeatures = [
   { icon: SupportAgentRoundedIcon, title: 'Dedicated', subtitle: 'Support' },
 ];
 
+// Minimal entrance animation keyframes for hero content
+const fadeSlideUp = {
+  '@keyframes heroFadeSlideUp': {
+    '0%': { opacity: 0, transform: 'translateY(16px)' },
+    '100%': { opacity: 1, transform: 'translateY(0)' },
+  },
+};
+
+const fadeSlideRight = {
+  '@keyframes heroFadeSlideRight': {
+    '0%': { opacity: 0, transform: 'translateX(24px)' },
+    '100%': { opacity: 1, transform: 'translateX(0)' },
+  },
+};
+
+const fadeIn = {
+  '@keyframes heroFadeIn': {
+    '0%': { opacity: 0, transform: 'scale(0.98)' },
+    '100%': { opacity: 1, transform: 'scale(1)' },
+  },
+};
 
 export default function Hero({ onLocationConfirm } = {}) {
 const locationSearchRef = useRef(null);
@@ -162,6 +183,10 @@ const locationSearchRef = useRef(null);
                   py: 0.7,
                   mb: 1.8,
                 },
+
+                ...fadeSlideUp,
+                opacity: 0,
+                animation: 'heroFadeSlideUp 0.6s ease 0.1s forwards',
               }}
             >
               <VerifiedUserRoundedIcon sx={{ fontSize: { xs: 16, md: 18 } }} />
@@ -182,6 +207,10 @@ const locationSearchRef = useRef(null);
                 '@media (min-width:1400px) and (max-width:1600px)': {
                   fontSize: 58,
                 },
+
+                ...fadeSlideUp,
+                opacity: 0,
+                animation: 'heroFadeSlideUp 0.65s ease 0.22s forwards',
               }}
             >
               A one-stop place for all your Food and Party{' '}
@@ -220,6 +249,10 @@ const locationSearchRef = useRef(null);
                   fontSize: '1.3em',
                   mb: 2.5,
                 },
+
+                ...fadeSlideUp,
+                opacity: 0,
+                animation: 'heroFadeSlideUp 0.65s ease 0.34s forwards',
               }}
             >
               Order a day before the event.
@@ -241,7 +274,11 @@ const locationSearchRef = useRef(null);
                 width: '100%',
                 mt: { xs: 0, sm: 0, md: 0, lg: 0 },
                 mb: { xs: 3, sm: 3, md: 2.5, lg: 3 },
-                ml: { xs: 0, sm: 0, md: -3.5, lg: -1}
+                ml: { xs: 0, sm: 0, md: -3.5, lg: -1},
+
+                ...fadeSlideUp,
+                opacity: 0,
+                animation: 'heroFadeSlideUp 0.65s ease 0.46s forwards',
               }}
             >
               <Box
@@ -307,6 +344,10 @@ const locationSearchRef = useRef(null);
                 '@media (min-width:1400px) and (max-width:1600px)': {
                   gap: 3,
                 },
+
+                ...fadeSlideUp,
+                opacity: 0,
+                animation: 'heroFadeSlideUp 0.65s ease 0.58s forwards',
               }}
             >
               {trustFeatures.map(({ icon: Icon, title, subtitle }) => (
@@ -410,6 +451,10 @@ const locationSearchRef = useRef(null);
                     },
                     boxShadow: '0 20px 45px rgba(20,20,43,0.08)',
                     mt: { xs: 3, sm: 2, md: 0, lg: 0 },
+
+                    ...fadeIn,
+                    opacity: 0,
+                    animation: 'heroFadeIn 0.7s ease 0.3s forwards',
                   }}
                 />
             </Box>
@@ -445,6 +490,10 @@ const locationSearchRef = useRef(null);
                   maxWidth: 560,
                   height: 500,
                 },
+
+                ...fadeSlideRight,
+                opacity: 0,
+                animation: 'heroFadeSlideRight 0.75s ease 0.25s forwards',
               }}
             />
           </Box>

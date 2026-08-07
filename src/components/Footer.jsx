@@ -1,112 +1,290 @@
-import { Box, Container, Grid, Stack, Typography, IconButton, Link } from '@mui/material';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-// import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
-import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
+import React from "react";
+import { Box, Container, Typography, Link, Stack, IconButton } from "@mui/material";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import XIcon from "@mui/icons-material/X";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
+import AppleIcon from "@mui/icons-material/Apple";
+import logo from '../assets/CompanyLogo/logo.png';
+import PlayStoreButton from '../assets/Footer/GooglePlayButton.webp'
+import AppStoreButton from '../assets/Footer/GooglePlayButton.webp'
 
-const columns = [
+// Brand tokens — keep in sync with the shared MUI theme
+const BRAND_RED = "#D6293E";
+const BG_DARK = "#1A1A1F";
+const TEXT_MUTED = "#8A8A93";
+const TEXT_LINK = "#B7B7BE";
+const DIVIDER = "rgba(255,255,255,0.08)";
+
+const ourInfoLinks = [
+  { label: "Home", href: "https://hogist.com/application/" },
+  { label: "About Us", href: "https://hogist.com/application/about-us" },
+  { label: "Our Services", href: "https://hogist.com/application/service" },
+  { label: "Contact Us", href: "https://hogist.com/application/contact-us" },
   {
-    title: 'About Us',
-    isText: true,
-    text: 'We serve as one stop solution alias marketplace for all the bulk food orders needs thus providing hygienic & quality food and setting up impeccable customer service by offering a versatile and flexible service with consistency and presentation that will leave an ever lasting impression.',
-  },
-  {
-    title: 'Our Info',
-    links: ['Home', 'About Us', 'Our Services', 'Contact Us', 'Download App'],
-  },
-  {
-    title: 'Our Services',
-    links: ['Catering Service', 'Industrial Catering', 'Corporate Catering', 'Cafeteria'],
+    label: "Download App",
+    href: "https://hogist.com/application/mainhome/https://play.google.com/store/apps/details?id=com.hogist",
   },
 ];
 
+const ourServicesLinks = [
+  { label: "Catering Service", href: "https://hogist.com/application/site/login-page" },
+  { label: "Industrial Catering", href: "https://hogist.com/application/site/login-page" },
+  { label: "Corporate Catering", href: "https://hogist.com/application/site/login-page" },
+  { label: "Cafeteria", href: "https://hogist.com/application/site/login-page" },
+];
+
+const contactLinks = [
+  {
+    label: "2nd Floor, Kakani Towers, No:34 Khader Nawaz Khan Road, Nungambakkam, Chennai 600 006.",
+    href: "https://hogist.com/application/",
+  },
+  { label: "support@hogist.com", href: "mailto:support@hogist.com" },
+  { label: "+91 - 9962667733", href: "tel:+919962667733" },
+];
+
+// const legalLinks = [
+//   { label: "Terms of Service", href: "#" },
+//   { label: "Cookie Policy", href: "#" },
+//   { label: "Privacy Policy", href: "#" },
+// ];
+
+const socialLinks = [
+  { icon: FacebookIcon, href: "#", label: "Facebook" },
+  { icon: InstagramIcon, href: "#", label: "Instagram" },
+  { icon: LinkedInIcon, href: "#", label: "LinkedIn" },
+  { icon: YouTubeIcon, href: "#", label: "YouTube" },
+];
+
+// Reusable column heading
+function ColHeading({ children }) {
+  return (
+    <Typography
+      sx={{
+        fontFamily: "'Montserrat', sans-serif",
+        fontWeight: 700,
+        fontSize: 15,
+        color: "#fff",
+        mb: 2,
+      }}
+    >
+      {children}
+    </Typography>
+  );
+}
+
+function FooterLink({ href, children, sx }) {
+  return (
+    <Link
+      href={href}
+      underline="none"
+      sx={{
+        display: "block",
+        fontFamily: "'open sans', sans-serif",
+        fontSize: 14,
+        lineHeight: 1.6,
+        color: TEXT_LINK,
+        transition: "color .15s ease",
+        "&:hover": { color: "#fff" },
+        "&:focus-visible": {
+          outline: `2px solid ${BRAND_RED}`,
+          outlineOffset: "3px",
+          borderRadius: "2px",
+        },
+        ...sx,
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
+
 export default function Footer() {
   return (
-    <Box sx={{ bgcolor: '#1A1A2E', color: 'rgba(255,255,255,0.8)', pt: { xs: 6, md: 8 }, pb: 3 }}>
-      <Container maxWidth="lg">
-        <Grid container spacing={5}>
-          {columns.map((col) => (
-            <Grid item xs={12} sm={6} md={3} key={col.title}>
-              <Typography variant="h6" sx={{ color: '#fff', mb: 2 }}>
-                {col.title}
-              </Typography>
-              {col.isText ? (
-                <Typography variant="body2" sx={{ lineHeight: 1.8 }}>
-                  {col.text}
-                </Typography>
-              ) : (
-                <Stack spacing={1.2}>
-                  {col.links.map((link) => (
-                    <Link
-                      key={link}
-                      href="#"
-                      underline="none"
-                      color="inherit"
-                      sx={{ '&:hover': { color: 'primary.light' } }}
-                    >
-                      {link}
-                    </Link>
-                  ))}
-                </Stack>
-              )}
-            </Grid>
-          ))}
+    <Box component="footer" sx={{ bgcolor: BG_DARK, pt: { xs: 5, md: 8, lg:3 }, pb: { xs: 4, md: 5,lg:4 } }}>
+      <Container
+        maxWidth={false}
+        sx={{
+          maxWidth: { xs: "100%", xl: 1440 },
+          px: { xs: 2.5, sm: 3.5, md: 20,lg:20, xl: 6 },
+          alignItems:'center',
+          
+        }}
+      >
+        {/* ---- logo row (standalone) ---- */}
+        <Box sx={{ mb: { xs: 4, md: 2 }, ml:{xs:-1, lg:-2 } }}>
+          <Box
+            component="img"
+            src={logo}
+            alt="Hogist Logo"
+            sx={{
+              display: "block",
+              height: { xs: 42, sm: 48, md: 48, lg: 60, xl: 66 },
+              width: "auto",
+              '@media (min-width:1400px) and (max-width:1600px)': {
+                height: 60,
+              },
+            }}
+          />
+        </Box>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" sx={{ color: '#fff', mb: 2 }}>
-              Contact Us
-            </Typography>
-            <Stack spacing={1.5}>
-              <Stack direction="row" spacing={1.5}>
-                <LocationOnOutlinedIcon fontSize="small" sx={{ mt: 0.3 }} />
-                <Typography variant="body2">
-                  Hogist Technologies Pvt. Ltd. 2nd Floor, Kakani Towers,
-                  No.34, Khader Nawaz Khan Road, Nungambakkam, Chennai 600 006.
-                </Typography>
-              </Stack>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <MailOutlineOutlinedIcon fontSize="small" />
-                <Typography variant="body2">support@hogist.com</Typography>
-              </Stack>
-              <Stack direction="row" spacing={1.5} alignItems="center">
-                <PhoneOutlinedIcon fontSize="small" />
-                <Typography variant="body2">+91 - 9962667733</Typography>
-              </Stack>
-            </Stack>
-
-            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-              <IconButton size="small" sx={{ color: '#fff', bgcolor: 'rgba(255,255,255,0.08)' }}>
-                <FacebookIcon fontSize="small" />
-              </IconButton>
-              <IconButton size="small" sx={{ color: '#fff', bgcolor: 'rgba(255,255,255,0.08)' }}>
-                <TwitterIcon fontSize="small" />
-              </IconButton>
-              <IconButton size="small" sx={{ color: '#fff', bgcolor: 'rgba(255,255,255,0.08)' }}>
-                <InstagramIcon fontSize="small" />
-              </IconButton>
-            </Stack>
-          </Grid>
-        </Grid>
-
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          justifyContent="space-between"
-          alignItems="center"
-          spacing={1}
-          sx={{ mt: 6, pt: 3, borderTop: '1px solid rgba(255,255,255,0.1)' }}
+        {/* ---- columns row ---- */}
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: { xs: 4, sm: 4, md: 3.72, xl: 3 },
+            pb: { xs: 5, md: 6, lg:2 },
+          }}
         >
-          <Typography variant="body2">© 2026 Copyright HOGIST</Typography>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <RestaurantIcon fontSize="small" />
-            <Typography variant="body2" sx={{ fontWeight: 700, color: '#fff' }}>
-              HOGIST
-            </Typography>
-          </Stack>
-        </Stack>
+          {/* Our Info - Mobile: 2 cols, Tablet(768px): 2 cols, Desktop(1024px+): original */}
+          <Box sx={{ 
+            flex: { 
+              xs: "1 1 28%", 
+              sm: "1 1 3%", 
+              md: "1 1 18%", 
+              lg: "1 1 13%" 
+            }, 
+            minWidth: 0 
+          }}>
+            <ColHeading>Our Info</ColHeading>
+            <Stack spacing={1.6}>
+              {ourInfoLinks.map((item) => (
+                <FooterLink key={item.label} href={item.href}>
+                  {item.label}
+                </FooterLink>
+              ))}
+            </Stack>
+          </Box>
+
+          {/* Our Services - Mobile: 2 cols, Tablet(768px): 2 cols, Desktop(1024px+): original */}
+          <Box sx={{ 
+            flex: { 
+              xs: "1 1 48%", 
+              sm: "1 1 5%", 
+              md: "1 1 20%", 
+              lg: "1 1 14%" 
+            }, 
+            minWidth: 0 
+          }}>
+            <ColHeading>Our Services</ColHeading>
+            <Stack spacing={1.6}>
+              {ourServicesLinks.map((item) => (
+                <FooterLink key={item.label} href={item.href}>
+                  {item.label}
+                </FooterLink>
+              ))}
+            </Stack>
+          </Box>
+
+          {/* Contact Us - Mobile: 1 col(full width), Tablet(768px): 2 cols, Desktop(1024px+): original */}
+          <Box sx={{ 
+            flex: { 
+              xs: "1 1 40%", 
+              sm: "1 1 15%", 
+              md: "1 1 25%", 
+              lg: "1 1 16%" 
+            }, 
+            minWidth: 0 
+          }}>
+            <ColHeading>Contact Us</ColHeading>
+            <Stack spacing={2}>
+              <FooterLink href={contactLinks[0].href} sx={{ display: "flex", gap: 1.25 }}>
+                <LocationOnOutlinedIcon sx={{ fontSize: 18, color: BRAND_RED, mt: "1px", flexShrink: 0 }} />
+                <span>{contactLinks[0].label}</span>
+              </FooterLink>
+              <FooterLink href={contactLinks[1].href} sx={{ display: "flex", gap: 1.25, alignItems: "center" }}>
+                <EmailOutlinedIcon sx={{ fontSize: 18, color: BRAND_RED, flexShrink: 0 }} />
+                <span>{contactLinks[1].label}</span>
+              </FooterLink>
+              <FooterLink href={contactLinks[2].href} sx={{ display: "flex", gap: 1.25, alignItems: "center" }}>
+                <PhoneOutlinedIcon sx={{ fontSize: 18, color: BRAND_RED, flexShrink: 0 }} />
+                <span>{contactLinks[2].label}</span>
+              </FooterLink>
+            </Stack>
+          </Box>
+
+          {/* Social Links - Mobile: 1 col(full width), Tablet(768px): 2 cols, Desktop(1024px+): original */}
+          <Box sx={{ 
+            flex: { 
+              xs: "1 1 50%", 
+              sm: "1 1 10%", 
+              md: "1 1 20%", 
+              lg: "1 1 15%" 
+            }, 
+            minWidth: 0 
+          }}>
+            <ColHeading>Social Links</ColHeading>
+            <Stack direction="row" flexWrap="wrap" gap={1.25} sx={{ mb: 2.5 }}>
+              {socialLinks.map(({ icon: Icon, href, label }) => (
+                <IconButton
+                  key={label}
+                  component="a"
+                  href={href}
+                  aria-label={label}
+                  size="small"
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    bgcolor: "#fff",
+                    color: BG_DARK,
+                    transition: "background-color .15s ease, color .15s ease, transform .15s ease",
+                    "&:hover": {
+                      bgcolor: BRAND_RED,
+                      color: "#fff",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                >
+                  <Icon sx={{ fontSize: 16 }} />
+                </IconButton>
+              ))}
+            </Stack>
+
+            {/* App / Play store badges — stacked vertically like zomato */}
+            <Stack spacing={1.25} sx={{ alignItems: "flex-start" }}>
+              <Link
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ display: "inline-flex", lineHeight: 0 }}
+              >
+                <Box
+                  component="img"
+                  src={AppStoreButton}
+                  alt="Download on the App Store"
+                  sx={{ display: "block", height: 36, width: "auto" }}
+                />
+              </Link>
+              <Link
+                href="https://play.google.com/store/apps/details?id=com.hogist"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ display: "inline-flex", lineHeight: 0 }}
+              >
+                <Box
+                  component="img"
+                  src={PlayStoreButton}
+                  alt="Get it on Google Play"
+                  sx={{ display: "block", height: 36, width: "auto" }}
+                />
+              </Link>
+            </Stack>
+          </Box>
+        </Box>
+
+        <Box sx={{ borderTop: `1px solid ${DIVIDER}` }} />
+
+        {/* ---- bottom legal bar ---- */}
+        <Box sx={{ pt: { xs: 2.5, sm: 3 } }}>
+          <Typography sx={{ fontSize: { xs: 11, sm: 12.5 }, color: TEXT_MUTED, fontFamily: "'Plus Jakarta Sans', sans-serif", lineHeight: 1.7 }}>
+            © {new Date().getFullYear()} Hogist Technologies Pvt. Ltd. All rights reserved.
+          </Typography>
+        </Box>
       </Container>
     </Box>
   );
