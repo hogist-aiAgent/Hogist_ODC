@@ -6,9 +6,9 @@ import TrustedClients from './components/TrustedClients';
 // import WhatWeHave from './components/WhatWeHave';
 // import IsoBanner from './components/IsoBanner';
 // import Gallery from './components/Gallery';
-// import AppDownload from './components/AppDownload';
+import AppDownload from './components/AppDownload/AppDownload';
 // import Testimonials from './components/Testimonials';
-import Footer from './components/Footer';
+import Footer from './components/Footer/Footer';
 
 function App() {
   return (
@@ -21,9 +21,9 @@ function App() {
       {/* <WhatWeHave />
       <IsoBanner />
       <Gallery />
-      <AppDownload />
       <Testimonials />
        */}
+       <AppDownload />
        <Footer />
     </>
   );
