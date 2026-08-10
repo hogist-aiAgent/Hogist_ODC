@@ -110,13 +110,13 @@ const marqueeLogos = [...clientLogos, ...clientLogos];
 export default function TrustedClients() {
   return (
     <Box  sx={{
-    py: { xs: 2, md: 3 },
+    py: { xs: 2, md: 0 },
     overflow: 'hidden',
-    background:
-      'radial-gradient(ellipse at center, #ca3939 0%, #a21f1f 45%, #72001b 100%)',
+    // background:
+    //   'radial-gradient(ellipse at center, #ca3939 0%, #a21f1f 45%, #72001b 100%)',
   }}>
       <Container maxWidth="lg">
-        <Stack alignItems="center" spacing={1} sx={{ mb: 5 }}>
+        {/* <Stack alignItems="center" spacing={1} sx={{ mb: 5 }}>
           <Typography
           variant="h3"
           sx={{
@@ -125,15 +125,15 @@ export default function TrustedClients() {
             fontFamily: '"Montserrat", sans-serif',
             fontSize: { xs: 24, sm: 30, md: 38 },
             mb: { xs: 4, md: 6 },
-            color: '#fff',
+            color: '#9a0002',
           }}
         >
           Our Trusted Clients
         </Typography>
-          <Typography variant="body2" color="#fff" sx={{ fontFamily: '"open sans", sans-serif',}}>
+          <Typography variant="body2" color="#9a0002" sx={{ fontFamily: '"open sans", sans-serif',}}>
             Trusted by the world&apos;s best companies. Join the ranks of the elite.
           </Typography>
-        </Stack>
+        </Stack> */}
       </Container>
 
       {/* Keyframes for the continuous right-to-left marquee scroll */}
@@ -150,12 +150,12 @@ export default function TrustedClients() {
         `}
       </style>
 
-      {/* Full-bleed scrolling track. Sits outside the Container on purpose so
-          the logos can slide edge-to-edge across the full page width. */}
       <Box
         sx={{
           position: 'relative',
           width: '100%',
+          maxWidth: 1000,
+          mx: 'auto',
           overflow: 'hidden',
           // Fade the logos out near the left/right edges instead of a hard cut
           maskImage:
@@ -186,8 +186,8 @@ export default function TrustedClients() {
               key={i}
               sx={{
                 flexShrink: 0,
-                width: { xs: 88, sm: 108, md: 130, lg: 150 },
-                height: { xs: 48, sm: 58, md: 68, lg: 76 },
+                width: { xs: 88, sm: 108, md: 130, lg: 100 },
+                height: { xs: 48, sm: 58, md: 68, lg: 70 },
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -206,6 +206,8 @@ export default function TrustedClients() {
                   height: 'auto',
                   objectFit: 'contain',
                   display: 'block',
+                  filter: 'grayscale(100%)',
+                  opacity: 0.7,
                 }}
               />
             </Box>

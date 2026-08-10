@@ -1,4 +1,5 @@
 import CssBaseline from '@mui/material/CssBaseline';
+import Preloader from './components/Common/Preloader/Preloader'
 import Navbar from './components/Header/Navbar';
 import Hero from './components/HeroSection/Hero';
 import HowItWorks from './components/HowItWorks/HowItWorks';
@@ -9,11 +10,13 @@ import TrustedClients from './components/TrustedClients';
 import AppDownload from './components/AppDownload/AppDownload';
 // import Testimonials from './components/Testimonials';
 import Footer from './components/Footer/Footer';
+import ServiceAreas from './components/Serviceareas/ServicesAreas' 
 
 function App() {
   return (
     <>
       <CssBaseline />
+      <Preloader />
       <Navbar />
       <Hero />
       <HowItWorks />
@@ -24,6 +27,7 @@ function App() {
       <Testimonials />
        */}
        <AppDownload />
+       <ServiceAreas/>
        <Footer />
     </>
   );
