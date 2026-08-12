@@ -39,7 +39,7 @@ const DEFAULT_AREAS = [
 const INITIAL_VISIBLE_COUNT = 11;
 
 export default function ServiceAreas({
-  title = "Areas with food delivery",
+  title = "Areas with Bulk food delivery",
   areas = DEFAULT_AREAS,
   hrefPrefix = "/order-food-online-in",
 }) {
@@ -120,7 +120,7 @@ export default function ServiceAreas({
                     overflowWrap: { xs: "break-word", sm: "normal" },
                   }}
                 >
-                  Order food online in {area}
+                  Order Bulk food online in {area}
                 </Typography>
               </ButtonBase>
             </Box>

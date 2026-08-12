@@ -311,7 +311,7 @@ const locationSearchRef = useRef(null);
                   </Box>
 
                 <Button
-                  onClick={() => locationSearchRef.current?.open()}
+                  onClick={() => locationSearchRef.current?.confirm()}
                   sx={{
                     flexShrink: 0,
                     bgcolor: 'primary.main',
@@ -327,7 +327,7 @@ const locationSearchRef = useRef(null);
                   }}
                   endIcon={<ArrowForwardIcon sx={{ fontSize: 16 }} />}
                 >
-                  Search
+                  Next
                 </Button>
               </Box>
             </Box>

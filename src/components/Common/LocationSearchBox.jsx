@@ -1,33 +1,28 @@
-import {   useState,
+import {
+  useState,
   useEffect,
   useRef,
   forwardRef,
-  useImperativeHandle, } from 'react';
+  useImperativeHandle,
+} from 'react';
 import {
   Box,
   Typography,
   Stack,
-  Divider,
   Paper,
-  Dialog,
+  Popper,
+  ClickAwayListener,
   List,
   ListItemButton,
   ListItemText,
   ListItemIcon,
-  Button,
   CircularProgress,
-  FormControl,
-  Select,
-  MenuItem,
   TextField,
   InputAdornment,
   IconButton,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CloseIcon from '@mui/icons-material/Close';
 
 
@@ -153,7 +148,6 @@ const isLocationInServiceArea = (item) => {
 };
 
 const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
-  const [anchorEl, setAnchorEl] = useState(null);
   const [locationQuery, setLocationQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -164,8 +158,10 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
   const debounceRef = useRef(null);
 
   const skipNextSearchRef = useRef(false);
+  const fieldWrapRef = useRef(null);
+  const inputRef = useRef(null);
 
-  const isPopoverOpen = Boolean(anchorEl);
+  const isDropdownOpen = showSuggestions;
 
   // True when there WERE results from Photon, but none of them fall inside the service area
   const showNoService =
@@ -174,20 +170,40 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
     suggestions.length === 0 &&
     rawResultsCount > 0;
 
-  const isDropdownOpen = showSuggestions;
+  useImperativeHandle(
+    ref,
+    () => ({
+      open: () => {
+        setShowSuggestions(true);
+        inputRef.current?.focus();
+      },
+      confirm: () => {
+        if (confirmedLocation) {
+          if (typeof onLocationConfirm === 'function') {
+            onLocationConfirm(confirmedLocation);
+          }
+        } else {
+          // No location picked yet — draw attention to the field instead of doing nothing
+          setShowSuggestions(true);
+          inputRef.current?.focus();
+        }
+      },
+    }),
+    [confirmedLocation, onLocationConfirm]
+  );
 
-  const handleOpenPopover = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleFieldFocus = () => {
+    setShowSuggestions(true);
   };
 
-  useImperativeHandle(ref, () => ({
-  open: () => {
-    setAnchorEl(document.body);
-  },
-}));
+  const handleFieldClick = () => {
+    setShowSuggestions(true);
+  };
 
-  const handleClosePopover = () => {
-    setAnchorEl(null);
+  const handleCloseDropdown = (event) => {
+    if (fieldWrapRef.current && fieldWrapRef.current.contains(event.target)) {
+      return;
+    }
     setShowSuggestions(false);
   };
 
@@ -235,11 +251,19 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
     return () => clearTimeout(debounceRef.current);
   }, [locationQuery]);
 
+  const handleQueryChange = (e) => {
+    setLocationQuery(e.target.value);
+    // Typing again after a location was already confirmed should clear the confirmation
+    if (confirmedLocation) setConfirmedLocation(null);
+  };
+
   const handleClearQuery = () => {
     setLocationQuery('');
     setSuggestions([]);
     setRawResultsCount(0);
-    setShowSuggestions(false);
+    setConfirmedLocation(null);
+    setShowSuggestions(true);
+    inputRef.current?.focus();
   };
 
   const handleSelectSuggestion = (item) => {
@@ -252,7 +276,6 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
     setRawResultsCount(0);
   };
 
-  // Detect current location via browser Geolocation API, then reverse-geocode via Photon
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser.');
@@ -303,283 +326,223 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
     );
   };
 
-  const handleNext = () => {
-    if (!confirmedLocation) return;
-    if (typeof onLocationConfirm === 'function') {
-      onLocationConfirm(confirmedLocation);
-    }
-    // Hide the confirmed-location strip and close the popover once confirmed
-    setConfirmedLocation(null);
-    handleClosePopover();
-  };
-
   return (
-    <>
-
-      <Box
-        onClick={handleOpenPopover}
-        sx={{
-          cursor: 'pointer',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          minHeight: { xs: 30, sm: 32, md: 34 },
+    <Box ref={fieldWrapRef} sx={{ width: '100%', position: 'relative' }}>
+      <TextField
+        fullWidth
+        variant="standard"
+        placeholder="Choose delivery location"
+        value={locationQuery}
+        onChange={handleQueryChange}
+        onFocus={handleFieldFocus}
+        onClick={handleFieldClick}
+        inputRef={inputRef}
+        InputProps={{
+          disableUnderline: true,
+          endAdornment: isSearching ? (
+            <InputAdornment position="end">
+              <CircularProgress size={16} />
+            </InputAdornment>
+          ) : locationQuery ? (
+            <InputAdornment position="end">
+              <IconButton size="small" onClick={handleClearQuery} edge="end">
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </InputAdornment>
+          ) : null,
         }}
-      >
-        <Typography
-          noWrap
-          sx={{
+        sx={{
+          '& .MuiInputBase-input': {
+            p: 0,
             fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
             fontWeight: 500,
             color: confirmedLocation ? 'text.primary' : 'text.secondary',
             fontFamily: '"open sans", sans-serif',
-          }}
-        >
-          {confirmedLocation ? confirmedLocation.label : 'Choose delivery location'}
-        </Typography>
-      </Box>
-
-      <Dialog
-        open={isPopoverOpen}
-        onClose={handleClosePopover}
-        PaperProps={{
-          elevation: 6,
-          sx: {
-            m: { xs: 2, sm: 3 },
-            borderRadius: 2,
-            width: { xs: '100%', sm: 440 },
-            maxWidth: '92vw',
-            p: { xs: 2, sm: 3 },
-            boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
+          },
+          '& .MuiInputBase-input::placeholder': {
+            color: 'text.secondary',
+            opacity: 1,
           },
         }}
+      />
+
+      <Popper
+        open={isDropdownOpen}
+        anchorEl={fieldWrapRef.current}
+        placement="bottom-start"
+        style={{ zIndex: 1000, }}
+        modifiers={[
+          { name: 'offset', options: { offset: [0, 10] } },
+          {
+            name: 'flip',
+            options: { fallbackPlacements: ['top-start', 'bottom-start'] },
+          },
+          {
+            name: 'preventOverflow',
+            options: { boundary: 'clippingParents', padding: 8, altAxis: true },
+          },
+
+          {
+            name: 'sameWidth',
+            enabled: true,
+            phase: 'beforeWrite',
+            requires: ['computeStyles'],
+            fn: ({ state }) => {
+              const referenceWidth = state.rects.reference.width;
+              const viewportWidth = window.innerWidth;
+              const desiredMin =
+                viewportWidth < 400 ? 300 : viewportWidth < 600 ? 340 : viewportWidth < 960 ? 380 : 300;
+              const safeMin = Math.min(desiredMin, viewportWidth - 24);
+              state.styles.popper.width = `${Math.max(referenceWidth, safeMin)}px`;
+            },
+            effect: ({ state }) => {
+              const referenceWidth = state.elements.reference.offsetWidth;
+              const viewportWidth = window.innerWidth;
+              const desiredMin =
+                viewportWidth < 400 ? 300 : viewportWidth < 600 ? 340 : viewportWidth < 960 ? 380 : 420;
+              const safeMin = Math.min(desiredMin, viewportWidth - 24);
+              state.elements.popper.style.width = `${Math.max(referenceWidth, safeMin)}px`;
+            },
+          },
+        ]}
       >
-        {/* Title + Detect my location (moved here, next to the title) */}
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}>
-          <Typography
-            sx={{
-              fontWeight: 800,
-              fontSize: { xs: '0.95rem', sm: '1.05rem' },
-              letterSpacing: '0.3px',
-              fontFamily: '"Montserrat", sans-serif',
-            }}
-          >
-            DELIVERY LOCATION
-          </Typography>
-
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={0.5}
-            onClick={handleUseCurrentLocation}
-            sx={{ cursor: 'pointer' }}
-          >
-            {isLocating ? (
-              <CircularProgress size={14} />
-            ) : (
-              <MyLocationIcon sx={{ fontSize: '1rem', color: 'error.main' }} />
-            )}
-            <Typography
-              sx={{
-                fontSize: { xs: '0.75rem', sm: '0.82rem' },
-                color: 'error.main',
-                fontWeight: 700,
-                textDecoration: 'underline',
-                fontFamily: '"open sans", sans-serif',
-              }}
-            >
-              Detect my location
-            </Typography>
-          </Stack>
-        </Stack>
-
-        {/* Quick confirmed-location strip with Next button */}
-        {confirmedLocation && (
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            sx={{
-              mb: 2,
-              pb: 2,
-              borderBottom: '1px solid rgba(0,0,0,0.08)',
-            }}
-          >
-            <LocationOnIcon sx={{ color: 'error.main', fontSize: '1.1rem', flexShrink: 0 }} />
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography noWrap sx={{ fontSize: { xs: '0.78rem', sm: '0.85rem' }, fontFamily: '"open sans", sans-serif' }}>
-                <Box component="span" sx={{ color: 'error.main', fontWeight: 700 }}>
-                  Chennai
-                </Box>
-                <Box component="span" sx={{ color: 'text.secondary' }}>
-                  {' '}
-                  · {confirmedLocation.label}
-                </Box>
-              </Typography>
-            </Box>
-            <Button
-              onClick={handleNext}
-              variant="contained"
-              color="error"
-              size="small"
-              endIcon={<ArrowForwardIcon sx={{ fontSize: '1rem', }} />}
-              sx={{
-                borderRadius: 999,
-                textTransform: 'none',
-                fontWeight: 700,
-                flexShrink: 0,
-                boxShadow: 'none',
-                fontSize: { xs: '0.7rem', sm: '0.8rem' },
-              }}
-            >
-              Next
-            </Button>
-          </Stack>
-        )}
-
-        {/* City dropdown + area search */}
-        <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-          <FormControl size="small" sx={{ minWidth: { xs: 96, sm: 112 }, flexShrink: 0 }}>
-            <Select
-              value="Chennai"
-              IconComponent={() => null}
-              sx={{
-                borderRadius: 1,
-                fontSize: { xs: '0.78rem', sm: '0.85rem' },
-                fontWeight: 600,
-                fontFamily: '"open sans", sans-serif',
-                '& .MuiSelect-select': {
-                  pr: '14px !important',
-                },
-              }}
-            >
-              <MenuItem value="Chennai" sx={{ fontSize: '0.85rem' }}>
-                Chennai
-              </MenuItem>
-            </Select>
-          </FormControl>
-
-          <TextField
-            fullWidth
-            size="small"
-            placeholder="Search your area, colony, or locality..."
-            value={locationQuery}
-            onChange={(e) => setLocationQuery(e.target.value)}
-            onFocus={() => setShowSuggestions(true)}
-            InputProps={{
-              endAdornment: isSearching ? (
-                <InputAdornment position="end">
-                  <CircularProgress size={16} />
-                </InputAdornment>
-              ) : locationQuery ? (
-                <InputAdornment position="end">
-                  <IconButton size="small" onClick={handleClearQuery} edge="end">
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </InputAdornment>
-              ) : null,
-            }}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 1,
-                fontSize: { xs: '0.8rem', sm: '0.9rem' },
-                fontFamily: '"open sans", sans-serif',
-              },
-            }}
-          />
-        </Stack>
-
-        <Typography
-          sx={{
-            fontSize: { xs: '0.65rem', sm: '0.72rem' },
-            color: 'text.secondary',
-            mb: 1,
-            fontFamily: '"open sans", sans-serif',
-          }}
-        >
-          Enter Pincode if society is not visible
-        </Typography>
-
-        {/* Autocomplete suggestions list, filtered to Chennai & nearby areas */}
-        {isDropdownOpen && locationQuery.trim().length >= 3 && (
+        <ClickAwayListener onClickAway={handleCloseDropdown}>
           <Paper
-            variant="outlined"
+            elevation={6}
             sx={{
-              mt: 1.5,
               borderRadius: 1,
               overflow: 'hidden',
-              boxSizing: 'border-box',
-              maxHeight: { xs: 180, sm: 130 },
-              overflowY: 'auto',
-              border: '1px solid rgba(0,0,0,0.08)',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              '&::-webkit-scrollbar': {
-                display: 'none',
-              },
+              boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
+              border: '1px solid rgba(0,0,0,0.06)',
+              mt: 1,
+        
             }}
           >
-            <List dense disablePadding>
-              {suggestions.length > 0 &&
-                suggestions.map((item) => (
-                  <ListItemButton key={item.place_id} onClick={() => handleSelectSuggestion(item)}>
-                    <ListItemIcon sx={{ minWidth: 32 }}>
-                      <LocationOnIcon sx={{ color: 'error.main', fontSize: '1.1rem' }} />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={item.display_name.split(',').slice(0, 2).join(',')}
-                      secondary={item.display_name}
-                      primaryTypographyProps={{
-                        sx: { fontSize: { xs: '0.82rem', sm: '0.92rem' }, fontWeight: 600 },
-                      }}
-                      secondaryTypographyProps={{
-                        noWrap: true,
-                        sx: { fontSize: '0.72rem' },
-                      }}
-                    />
-                  </ListItemButton>
-                ))}
-
-              {locationQuery.trim().length >= 3 && suggestions.length === 0 && showNoService && (
-                <Box sx={{ px: 2, py: 2 }}>
-                  <Typography
-                    sx={{
-                      fontSize: { xs: '0.78rem', sm: '0.85rem' },
-                      color: 'error.main',
-                      fontWeight: 700,
-                    }}
-                  >
-                    Service not available in this location
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: '0.72rem',
-                      color: 'text.secondary',
-                      mt: 0.5,
-                    }}
-                  >
-                    We currently deliver only within Chennai, Chengalpattu and Kanchipuram districts (e.g. Tambaram, Chengalpattu, Kanchipuram, Red Hills). Please try another area.
-                  </Typography>
-                </Box>
+            {/* Detect my location */}
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={0.8}
+              onClick={handleUseCurrentLocation}
+              sx={{
+                cursor: 'pointer',
+                px: { xs: 1, sm: 2 },
+                py: { xs: 1.1, sm: 1 },
+                '&:hover': { bgcolor: 'rgba(232,2,0,0.04)' },
+                '&:active': { bgcolor: 'rgba(232,2,0,0.08)' },
+              
+              }}
+            >
+              {isLocating ? (
+                <CircularProgress size={14} />
+              ) : (
+                <MyLocationIcon sx={{ fontSize: '1rem', color: 'error.main' }} />
               )}
+              <Typography
+                sx={{
+                  fontSize: { xs: '0.75rem', sm: '0.82rem' },
+                  color: 'error.main',
+                  fontWeight: 700,
+                  fontFamily: '"open sans", sans-serif',
+                }}
+              >
+                Detect my location
+              </Typography>
+            </Stack>
 
-              {locationQuery.trim().length >= 3 && suggestions.length === 0 && !showNoService && !isSearching && (
-                <Box sx={{ px: 2, py: 2 }}>
-                  <Typography
-                    sx={{
-                      fontSize: { xs: '0.78rem', sm: '0.85rem' },
-                      color: 'text.secondary',
-                    }}
-                  >
-                    No matching places found in Chennai, Chengalpattu or Kanchipuram districts.
-                  </Typography>
-                </Box>
-              )}
-            </List>
+            <Typography
+              sx={{
+                fontSize: { xs: '0.65rem', sm: '0.72rem' },
+                color: 'text.secondary',
+                fontFamily: '"open sans", sans-serif',
+                px: { xs: 1.5, sm: 2 },
+                pb: 1,
+              }}
+            >
+              Enter Pincode if society is not visible
+            </Typography>
+
+            {locationQuery.trim().length >= 3 && (
+              <List
+                dense
+                disablePadding
+                sx={{
+                  maxHeight: { xs: 100, sm: 60, md: 100, lg: 100 },
+                  overflowY: 'auto',
+                  overscrollBehavior: 'contain',
+                  borderTop: '1px solid rgba(0,0,0,0.08)',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  '&::-webkit-scrollbar': {
+                    display: 'none',
+                  },
+                }}
+              >
+                {suggestions.length > 0 &&
+                  suggestions.map((item) => (
+                    <ListItemButton
+                      key={item.place_id}
+                      onClick={() => handleSelectSuggestion(item)}
+                      sx={{ px: { xs: 1.5, sm: 2 }, py: { xs: 0.2, sm: 0 } }}
+                    >
+                      <ListItemIcon sx={{ minWidth: { xs: 28, sm: 32 } }}>
+                        <LocationOnIcon sx={{ color: 'error.main', fontSize: '1.1rem' }} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={item.display_name.split(',').slice(0, 2).join(',')}
+                        secondary={item.display_name}
+                        primaryTypographyProps={{
+                          sx: { fontSize: { xs: '0.82rem', sm: '0.92rem' }, fontWeight: 600 },
+                        }}
+                        secondaryTypographyProps={{
+                          noWrap: true,
+                          sx: { fontSize: '0.72rem' },
+                        }}
+                      />
+                    </ListItemButton>
+                  ))}
+
+                {suggestions.length === 0 && showNoService && (
+                  <Box sx={{ px: { xs: 1.5, sm: 2 }, py: 2 }}>
+                    <Typography
+                      sx={{
+                        fontSize: { xs: '0.78rem', sm: '0.85rem' },
+                        color: 'error.main',
+                        fontWeight: 700,
+                      }}
+                    >
+                      Service not available in this location
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: '0.72rem',
+                        color: 'text.secondary',
+                        mt: 0.5,
+                      }}
+                    >
+                      We currently deliver only within Chennai, Chengalpattu and Kanchipuram districts (e.g. Tambaram, Chengalpattu, Kanchipuram, Red Hills). Please try another area.
+                    </Typography>
+                  </Box>
+                )}
+
+                {suggestions.length === 0 && !showNoService && !isSearching && (
+                  <Box sx={{ px: { xs: 1.5, sm: 2 }, py: 2 }}>
+                    <Typography
+                      sx={{
+                        fontSize: { xs: '0.78rem', sm: '0.85rem' },
+                        color: 'text.secondary',
+                      }}
+                    >
+                      No matching places found in Chennai, Chengalpattu or Kanchipuram districts.
+                    </Typography>
+                  </Box>
+                )}
+              </List>
+            )}
           </Paper>
-        )}
-      </Dialog>
-    </>
+        </ClickAwayListener>
+      </Popper>
+    </Box>
   );
 });
 
