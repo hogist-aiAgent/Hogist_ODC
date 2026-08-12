@@ -371,6 +371,9 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
         anchorEl={fieldWrapRef.current}
         placement="bottom-start"
         style={{ zIndex: 1000, }}
+        sx={{
+          minWidth: { xs: 200, sm: 340, md: 300, lg: 370 },
+        }}
         modifiers={[
           { name: 'offset', options: { offset: [0, 10] } },
           {
@@ -388,20 +391,10 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
             phase: 'beforeWrite',
             requires: ['computeStyles'],
             fn: ({ state }) => {
-              const referenceWidth = state.rects.reference.width;
-              const viewportWidth = window.innerWidth;
-              const desiredMin =
-                viewportWidth < 400 ? 300 : viewportWidth < 600 ? 340 : viewportWidth < 960 ? 380 : 300;
-              const safeMin = Math.min(desiredMin, viewportWidth - 24);
-              state.styles.popper.width = `${Math.max(referenceWidth, safeMin)}px`;
+              state.styles.popper.width = `${state.rects.reference.width}px`;
             },
             effect: ({ state }) => {
-              const referenceWidth = state.elements.reference.offsetWidth;
-              const viewportWidth = window.innerWidth;
-              const desiredMin =
-                viewportWidth < 400 ? 300 : viewportWidth < 600 ? 340 : viewportWidth < 960 ? 380 : 420;
-              const safeMin = Math.min(desiredMin, viewportWidth - 24);
-              state.elements.popper.style.width = `${Math.max(referenceWidth, safeMin)}px`;
+              state.elements.popper.style.width = `${state.elements.reference.offsetWidth}px`;
             },
           },
         ]}
@@ -415,6 +408,7 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
               boxShadow: '0 20px 60px rgba(0,0,0,0.18)',
               border: '1px solid rgba(0,0,0,0.06)',
               mt: 1,
+              mb:1
         
             }}
           >
