@@ -327,7 +327,7 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
   };
 
   return (
-    <Box ref={fieldWrapRef} sx={{ width: '100%', position: 'relative' }}>
+    <Box ref={fieldWrapRef} sx={{ width: '100%', position: 'relative', }}>
       <TextField
         fullWidth
         variant="standard"
@@ -372,7 +372,7 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
         placement="bottom-start"
         style={{ zIndex: 1000, }}
         sx={{
-          minWidth: { xs: 200, sm: 340, md: 300, lg: 370 },
+          minWidth: { xs: 250, sm: 340, md: 300, lg: 370 },
         }}
         modifiers={[
           { name: 'offset', options: { offset: [0, 10] } },
@@ -465,10 +465,20 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
                   overflowY: 'auto',
                   overscrollBehavior: 'contain',
                   borderTop: '1px solid rgba(0,0,0,0.08)',
-                  scrollbarWidth: 'none',
-                  msOverflowStyle: 'none',
+                  scrollbarWidth: 'thin',
+                  scrollbarColor: 'rgba(232,2,0,0.35) transparent',
                   '&::-webkit-scrollbar': {
-                    display: 'none',
+                    width: 5,
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: 'transparent',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: 'rgba(232,2,0,0.35)',
+                    borderRadius: 10,
+                  },
+                  '&::-webkit-scrollbar-thumb:hover': {
+                    backgroundColor: 'rgba(232,2,0,0.55)',
                   },
                 }}
               >
