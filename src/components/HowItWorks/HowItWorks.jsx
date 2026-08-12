@@ -378,7 +378,7 @@ export default function HowItWorks() {
             px: { xs: 2.5, md: 4 },
             py: { xs: 3, md: 2.5 },
             overflowX: { xs: 'auto', md: 'visible' },
-            mb: { xs: 4, md: 5 },
+            mb: { xs: 2, md: 2 },
             '&::-webkit-scrollbar': { display: 'none' },
             scrollbarWidth: 'none',
           }}

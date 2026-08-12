@@ -12,6 +12,7 @@ import AppDownload from './components/AppDownload/AppDownload';
 import Footer from './components/Footer/Footer';
 import ServiceAreas from './components/Serviceareas/ServicesAreas' 
 import WhatHogistOffers from './components/WhatOffers/WhatHogistOffers'
+import WhyHogist from './components/Whyhogist/Whyhogist';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
       <Gallery />
       <Testimonials />
        */}
+       <WhyHogist/>
        <AppDownload />
        <ServiceAreas/>
        <Footer />
