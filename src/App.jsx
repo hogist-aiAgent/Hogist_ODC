@@ -11,6 +11,7 @@ import AppDownload from './components/AppDownload/AppDownload';
 // import Testimonials from './components/Testimonials';
 import Footer from './components/Footer/Footer';
 import ServiceAreas from './components/Serviceareas/ServicesAreas' 
+import WhatHogistOffers from './components/WhatOffers/WhatHogistOffers'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Preloader />
       <Navbar />
       <Hero />
+      <WhatHogistOffers/>
       <HowItWorks />
       <TrustedClients />
       {/* <WhatWeHave />

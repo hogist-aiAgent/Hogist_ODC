@@ -12,7 +12,7 @@ const DEFAULT_AREAS = [
   "Nungambakkam",
   "Tambaram",
   "Chengalpattu",
-  "Red hills",
+  "Redhills",
   "Velachery",
   "Guindy",
   "T. Nagar",
@@ -120,7 +120,7 @@ export default function ServiceAreas({
                     overflowWrap: { xs: "break-word", sm: "normal" },
                   }}
                 >
-                  Order Bulk food online in {area}
+                  Order bulk food online in {area}
                 </Typography>
               </ButtonBase>
             </Box>
