@@ -71,7 +71,7 @@ export default function ServiceAreas({
           sx={{
             display: "flex",
             flexWrap: "wrap",
-            gap: { xs: 1.5, sm: 2, md: 1.3 },
+            gap: { xs: 2, sm: 2, md: 1.3 },
             pl:{xs:1,sm:6,md:6},
             pr:{xs:1,sm:6,md:6}
           }}
@@ -81,7 +81,7 @@ export default function ServiceAreas({
               key={area}
               sx={{
                 flex: {
-                  xs: "0 0 calc(33.333% - 8px)",
+                  xs: "0 0 calc(45% - 0px)",
                   sm: "0 0 calc(40% - 115px)",
                   md: "0 0 calc(25% - 15px)",
                 },
@@ -112,7 +112,7 @@ export default function ServiceAreas({
                   sx={{
                     fontFamily: "'open sans', sans-serif",
                     fontWeight: 600,
-                    fontSize: { xs: 10, sm: 10, md: 12 },
+                    fontSize: { xs: 8, sm: 10, md: 12 },
                     color: TEXT_DARK,
                     lineHeight: 1.4,
                     p:{md:1},
@@ -130,7 +130,7 @@ export default function ServiceAreas({
             <Box
               sx={{
                 flex: {
-                  xs: "0 0 calc(33.333% - 8px)",
+                  xs: "0 0 calc(45% - 0px)",
                   sm: "0 0 calc(40% - 115px)",
                   md: "0 0 calc(25% - 15px)",
                 },
@@ -157,7 +157,7 @@ export default function ServiceAreas({
                   sx={{
                     fontFamily: "'open sans', sans-serif",
                     fontWeight: 700,
-                    fontSize: { xs: 12, sm: 12, md: 14 },
+                    fontSize: { xs: 8, sm: 12, md: 14 },
                     color: ACCENT_ORANGE,
                   }}
                 >

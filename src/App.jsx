@@ -3,16 +3,17 @@ import Preloader from './components/Common/Preloader/Preloader'
 import Navbar from './components/Header/Navbar';
 import Hero from './components/HeroSection/Hero';
 import HowItWorks from './components/HowItWorks/HowItWorks';
-import TrustedClients from './components/TrustedClients';
+import TrustedClients from './components/TrustedClients/TrustedClients';
 // import WhatWeHave from './components/WhatWeHave';
 // import IsoBanner from './components/IsoBanner';
 // import Gallery from './components/Gallery';
 import AppDownload from './components/AppDownload/AppDownload';
-import Testimonials from './components/Testimonials';
+import Testimonials from './components/Testimonial/Testimonials';
 import Footer from './components/Footer/Footer';
 import ServiceAreas from './components/Serviceareas/ServicesAreas' 
 import WhatHogistOffers from './components/WhatOffers/WhatHogistOffers'
 import WhyHogist from './components/Whyhogist/Whyhogist';
+import ReadyWhenYouAre from './components/ReadyWhenYouare/Readywhenyouare';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
        <Testimonials />
        <AppDownload />
        <ServiceAreas/>
+       <ReadyWhenYouAre/>
        <Footer />
     </>
   );
