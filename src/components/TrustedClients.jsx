@@ -110,7 +110,7 @@ const marqueeLogos = [...clientLogos, ...clientLogos];
 export default function TrustedClients() {
   return (
     <Box  sx={{
-    py: { xs: 2, md: 1 },
+    py: { xs: 2, md: 2 },
     overflow: 'hidden',
     // background:
     //   'radial-gradient(ellipse at center, #ca3939 0%, #a21f1f 45%, #72001b 100%)',

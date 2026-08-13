@@ -9,7 +9,7 @@ import RoomServiceOutlinedIcon from '@mui/icons-material/RoomServiceOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
 
-import kitchenImg from '../../assets/Whyhogist/img1.png';
+import kitchenImg from '../../assets/Whyhogist/hogist.png';
 
 const reasons = [
   {
@@ -95,7 +95,7 @@ export default function WhyHogist() {
         position: 'relative',
         overflow: 'hidden',
         bgcolor: '#FBF4EF',
-        py: { xs: 6, sm: 7, md: 9, lg: 5 },
+        py: { xs: 5, sm: 6, md: 9, lg: 5 },
       }}
     >
       {/* dot grid, top-right */}
@@ -140,23 +140,27 @@ export default function WhyHogist() {
         sx={{
           position: 'relative',
           zIndex: 2,
-          px: { xs: 2.5, sm: 3, md: 0 },
+          px: { xs: 2.5, sm: 3, md: 3 },
           '@media (min-width:1400px)': { maxWidth: '1400px' },
         }}
       >
-        {/* Top: image + content */}
         <Box
           sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', md: '0.8fr 1.2fr' },
-            gap: { xs: 5, md: 5, lg: 6 },
+            display: 'flex',
+            flexWrap: 'wrap',
+            rowGap: { xs: 4, sm: 5, md: 2 },
+            columnGap: { md: 5, lg: 6 },
             alignItems: 'center',
-            mb: { xs: 5, md: 2 },
           }}
         >
-          {/* Left: image panel */}
+          {/* Image panel */}
           <Box
             sx={{
+              order: { xs: 2, sm: 2, md: 1 },
+              flexBasis: { xs: '100%', sm: '100%', md: 0 },
+              flexGrow: { xs: 0, sm: 0, md: 0.8 },
+              flexShrink: { md: 1 },
+              minWidth: 0,
               position: 'relative',
               opacity: revealed ? 1 : 0,
               transform: revealed ? 'translateX(0)' : 'translateX(-24px)',
@@ -166,10 +170,10 @@ export default function WhyHogist() {
             <Box
               sx={{
                 position: 'relative',
-                borderRadius: { xs: '24px 60px 24px 24px', md: '20px 80px 80px 20px' },
+                borderRadius: { xs: '18px 44px 44px 18px', sm: '24px 60px 60px 24px', md: '20px 80px 80px 20px' },
                 overflow: 'hidden',
                 boxShadow: '0 20px 44px rgba(20,10,10,0.16)',
-                height: { xs: 380, sm: 440, md: 460, lg: 500 },
+                height: { xs: 300, sm: 360, md: 420, lg: 460, xl: 500 },
               }}
             >
               <Box
@@ -214,9 +218,9 @@ export default function WhyHogist() {
                 sx={{
                   position: 'absolute',
                   top: '64%',
-                  left: { xs: '6%', sm: '7%' },
-                  width: 46,
-                  height: 46,
+                  left: { xs: '5%', sm: '6%', md: '7%' },
+                  width: { xs: 36, sm: 42, md: 46 },
+                  height: { xs: 36, sm: 42, md: 46 },
                   borderRadius: '50%',
                   bgcolor: '#161119',
                   border: '1.5px solid #C4303B',
@@ -225,16 +229,16 @@ export default function WhyHogist() {
                   justifyContent: 'center',
                 }}
               >
-                <RestaurantRoundedIcon sx={{ color: '#E5424B', fontSize: 21 }} />
+                <RestaurantRoundedIcon sx={{ color: '#E5424B', fontSize: { xs: 16, sm: 19, md: 21 } }} />
               </Box>
 
               {/* Caption text */}
               <Box
                 sx={{
                   position: 'absolute',
-                  left: { xs: '6%', sm: '7%' },
-                  bottom: '7%',
-                  width: '80%',
+                  left: { xs: '5%', sm: '6%', md: '7%' },
+                  bottom: { xs: '6%', sm: '7%' },
+                  width: { xs: '85%', sm: '80%' },
                 }}
               >
                 <Typography
@@ -259,9 +263,106 @@ export default function WhyHogist() {
             </Box>
           </Box>
 
+          {/* Stats bar */}
+          <Box
+            sx={{
+              order: { xs: 3, sm: 3, md: 3 },
+              flexBasis: '100%',
+              flexGrow: 0,
+              bgcolor: '#FBF4EF',
+              borderRadius: { xs: '16px', md: '20px' },
+              border: '1px solid rgba(20,10,10,0.05)',
+              boxShadow: '0 18px 42px rgba(20,10,10,0.10)',
+              px: { xs: 2.5, sm: 3, md: 4 },
+              py: { xs: 3, sm: 3.5, md: 2 },
+              opacity: revealed ? 1 : 0,
+              transform: revealed ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 0.7s ease 500ms, transform 0.7s ease 500ms',
+            }}
+          >
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+                rowGap: { xs: 0, sm: 0.5 },
+              }}
+            >
+              {stats.map((s, idx) => {
+                const Icon = s.icon;
+                const isLastRowXs = idx === stats.length - 1;
+                const isLastRowSm = idx >= stats.length - 2;
+                const isLeftColSm = idx % 2 === 0;
+                const isLastMd = idx === stats.length - 1;
+                return (
+                  <Stack
+                    key={s.label}
+                    direction="row"
+                    spacing={{ xs: 1.25, sm: 1.5, md: 1.75 }}
+                    alignItems="center"
+                    sx={{
+                      py: { xs: 1.75, sm: 2, md: 0 },
+                      px: { xs: 0, sm: 2, md: 3 },
+                      borderBottom: {
+                        xs: isLastRowXs ? 'none' : '1px solid rgba(20,10,10,0.1)',
+                        sm: isLastRowSm ? 'none' : '1px solid rgba(20,10,10,0.1)',
+                        md: 'none',
+                      },
+                      borderRight: {
+                        xs: 'none',
+                        sm: isLeftColSm ? '1px solid rgba(20,10,10,0.1)' : 'none',
+                        md: isLastMd ? 'none' : '1px solid rgba(20,10,10,0.1)',
+                      },
+                    }}
+                  >
+                    <Icon sx={{ color: 'primary.main', fontSize: { xs: 28, sm: 34, md: 40, lg: 47 }, flexShrink: 0 }} />
+                    <Box>
+                      <Typography
+                        sx={{
+                          fontWeight: 800,
+                          fontFamily: '"Montserrat", sans-serif',
+                          color: 'primary.main',
+                          fontSize: 'clamp(1.3rem, 1.1rem + 0.6vw, 1.6rem)',
+                          lineHeight: 1.1,
+                        }}
+                      >
+                        {s.value}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontWeight: 700,
+                          fontFamily: '"open sans", sans-serif',
+                          fontSize: { xs: '0.8rem', sm: '0.84rem', md: '0.87rem' },
+                          color: 'text.primary',
+                          mt: 0.4,
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {s.label}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          fontFamily: '"open sans", sans-serif',
+                          fontSize: { xs: '0.7rem', sm: '0.73rem', md: '0.76rem' },
+                          color: 'text.secondary',
+                          mt: 0.2,
+                        }}
+                      >
+                        {s.sub}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                );
+              })}
+            </Box>
+          </Box>
+
           {/* Right: heading + list */}
           <Box
             sx={{
+              order: { xs: 1, sm: 1, md: 2 },
+              flexBasis: { xs: '100%', sm: '100%', md: 0 },
+              flexGrow: { xs: 0, sm: 0, md: 1.2 },
+              minWidth: 0,
               opacity: revealed ? 1 : 0,
               transform: revealed ? 'translateX(0)' : 'translateX(24px)',
               transition: 'opacity 0.7s ease 120ms, transform 0.7s ease 120ms',
@@ -275,12 +376,12 @@ export default function WhyHogist() {
                 color: 'primary.main',
                 textTransform: 'uppercase',
                 fontFamily: '"open sans", sans-serif',
-                mb: 1,
+                mb: 0.3,
               }}
             >
               Why Hogist
             </Typography>
-            <Box sx={{ width: 40, height: 3, borderRadius: 2, bgcolor: 'primary.main', mb: 2.5 }} />
+            <Box sx={{ width: 40, height: 3, borderRadius: 2, bgcolor: 'primary.main', mb: 2 }} />
 
             <Typography
               variant="h2"
@@ -289,8 +390,8 @@ export default function WhyHogist() {
                 fontFamily: '"Montserrat", sans-serif',
                 fontSize: 'clamp(1.35rem, 1.05rem + 1.3vw, 2.15rem)',
                 lineHeight: 1.3,
-                mb: { xs: 3.5, md: 4.5 },
-                whiteSpace: { md: 'nowrap' },
+                mb: { xs: 3, sm: 3.5, md: 0 },
+                whiteSpace: { xs: 'normal', md: 'normal', lg: 'nowrap' },
               }}
             >
               Food is the easy part.
@@ -310,10 +411,10 @@ export default function WhyHogist() {
                   <Stack
                     key={r.num}
                     direction="row"
-                    spacing={2.5}
+                    spacing={{ xs: 2, sm: 2.25, md: 1 }}
                     alignItems="flex-start"
                     sx={{
-                      py: 2.25,
+                      py: { xs: 1.75, sm: 2, md: 2.2 },
                       borderTop: idx === 0 ? 'none' : '1px solid rgba(20,10,10,0.08)',
                       opacity: revealed ? 1 : 0,
                       transform: revealed ? 'translateY(0)' : 'translateY(14px)',
@@ -325,9 +426,9 @@ export default function WhyHogist() {
                         fontWeight: 800,
                         fontFamily: '"Montserrat", sans-serif',
                         color: 'primary.main',
-                        fontSize: '1.05rem',
-                        minWidth: 34,
-                        pt: 1.6,
+                        fontSize: { xs: '0.9rem', sm: '0.98rem', md: '1.05rem' },
+                        minWidth: { xs: 26, sm: 30, md: 34 },
+                        pt: { xs: 1.2, md: 1.6 },
                       }}
                     >
                       {r.num}
@@ -335,8 +436,8 @@ export default function WhyHogist() {
 
                     <Box
                       sx={{
-                        width: 56,
-                        height: 56,
+                        width: { xs: 44, sm: 50, md: 56 },
+                        height: { xs: 44, sm: 50, md: 56 },
                         flexShrink: 0,
                         borderRadius: '50%',
                         bgcolor: 'rgba(214,41,62,0.1)',
@@ -345,7 +446,7 @@ export default function WhyHogist() {
                         justifyContent: 'center',
                       }}
                     >
-                      <Icon sx={{ color: 'primary.main', fontSize: 26 }} />
+                      <Icon sx={{ color: 'primary.main', fontSize: { xs: 20, sm: 23, md: 26 } }} />
                     </Box>
 
                     <Box sx={{ pt: 0.5 }}>
@@ -353,7 +454,7 @@ export default function WhyHogist() {
                         sx={{
                           fontWeight: 800,
                           fontFamily: '"Montserrat", sans-serif',
-                          fontSize: '1.02rem',
+                          fontSize: { xs: '0.92rem', sm: '0.97rem', md: '1.02rem' },
                           mb: 0.5,
                         }}
                       >
@@ -363,7 +464,7 @@ export default function WhyHogist() {
                         sx={{
                           color: 'text.secondary',
                           fontFamily: '"open sans", sans-serif',
-                          fontSize: '0.87rem',
+                          fontSize: { xs: '0.8rem', sm: '0.84rem', md: '0.87rem' },
                           lineHeight: 1.6,
                         }}
                       >
@@ -375,85 +476,6 @@ export default function WhyHogist() {
               })}
             </Stack>
           </Box>
-        </Box>
-
-        {/* Stats bar */}
-        <Box
-          sx={{
-            bgcolor: '#FBF4EF',
-            borderRadius: '20px',
-            border: '1px solid rgba(20,10,10,0.05)',
-            boxShadow: '0 18px 42px rgba(20,10,10,0.10)',
-            px: { xs: 3, md: 4 },
-            py: { xs: 3.5, md: 2 },
-            opacity: revealed ? 1 : 0,
-            transform: revealed ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.7s ease 500ms, transform 0.7s ease 500ms',
-          }}
-        >
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            divider={
-              <Box
-                sx={{
-                  width: { xs: '100%', sm: '1px' },
-                  height: { xs: '1px', sm: 'auto' },
-                  bgcolor: 'rgba(20,10,10,0.1)',
-                  my: { xs: 2.5, sm: 0 },
-                }}
-              />
-            }
-          >
-            {stats.map((s) => {
-              const Icon = s.icon;
-              return (
-                <Stack
-                  key={s.label}
-                  direction="row"
-                  spacing={1.75}
-                  alignItems="center"
-                  sx={{ flex: 1, px: { xs: 0, sm: 2, md: 3 } }}
-                >
-                  <Icon sx={{ color: 'primary.main', fontSize: { xs: 32, md: 47 }, flexShrink: 0 }} />
-                  <Box>
-                    <Typography
-                      sx={{
-                        fontWeight: 800,
-                        fontFamily: '"Montserrat", sans-serif',
-                        color: 'primary.main',
-                        fontSize: 'clamp(1.3rem, 1.1rem + 0.6vw, 1.6rem)',
-                        lineHeight: 1.1,
-                      }}
-                    >
-                      {s.value}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontWeight: 700,
-                        fontFamily: '"open sans", sans-serif',
-                        fontSize: '0.87rem',
-                        color: 'text.primary',
-                        mt: 0.4,
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {s.label}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontFamily: '"open sans", sans-serif',
-                        fontSize: '0.76rem',
-                        color: 'text.secondary',
-                        mt: 0.2,
-                      }}
-                    >
-                      {s.sub}
-                    </Typography>
-                  </Box>
-                </Stack>
-              );
-            })}
-          </Stack>
         </Box>
       </Container>
     </Box>
