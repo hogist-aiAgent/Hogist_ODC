@@ -39,7 +39,7 @@ const DEFAULT_AREAS = [
 const INITIAL_VISIBLE_COUNT = 11;
 
 export default function ServiceAreas({
-  title = "Areas with Bulk food delivery",
+  title = "Bulk food delivery across chennai",
   areas = DEFAULT_AREAS,
   hrefPrefix = "/order-food-online-in",
 }) {

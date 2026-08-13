@@ -240,14 +240,14 @@ const locationSearchRef = useRef(null);
               sx={{
                 color: 'text.secondary',
                 fontWeight: 500,
-                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem', lg: '1rem', xl: '1.05rem' },
+                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem', lg: '0.9rem', xl: '1rem' },
                 letterSpacing: '0.1px',
                 fontFamily: '"open sans", sans-serif',
                 mb: 0.3,
 
                 '@media (min-width:1400px) and (max-width:1600px)': {
                   fontSize: '1.3em',
-                  mb: 2.5,
+                  mb: 0.5,
                 },
 
                 ...fadeSlideUp,
@@ -262,7 +262,7 @@ const locationSearchRef = useRef(null);
               sx={{
                 color: 'text.secondary',
                 fontWeight: 500,
-                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem', lg: '1rem', xl: '1.05rem' },
+                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.9rem', lg: '0.9rem', xl: '1rem' },
                 letterSpacing: '0.1px',
                 fontFamily: '"open sans", sans-serif',
                 mb: 2,
@@ -280,7 +280,7 @@ const locationSearchRef = useRef(null);
               Order a day before the event.
               Place any order starting from{' '}
               <Box component="span" sx={{ color: 'primary.main', fontWeight: 800 }}>
-                50 pax
+                50pax
               </Box>
               .
             </Typography>

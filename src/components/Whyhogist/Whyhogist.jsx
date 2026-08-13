@@ -414,7 +414,7 @@ export default function WhyHogist() {
                     spacing={{ xs: 2, sm: 2.25, md: 1 }}
                     alignItems="flex-start"
                     sx={{
-                      py: { xs: 1.75, sm: 2, md: 2.2 },
+                      py: { xs: 1.75, sm: 2, md: 2 },
                       borderTop: idx === 0 ? 'none' : '1px solid rgba(20,10,10,0.08)',
                       opacity: revealed ? 1 : 0,
                       transform: revealed ? 'translateY(0)' : 'translateY(14px)',
