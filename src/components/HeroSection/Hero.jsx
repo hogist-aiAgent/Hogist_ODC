@@ -235,6 +235,28 @@ const locationSearchRef = useRef(null);
               </Box>
             </Typography>
 
+                <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                fontWeight: 500,
+                fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem', lg: '1rem', xl: '1.05rem' },
+                letterSpacing: '0.1px',
+                fontFamily: '"open sans", sans-serif',
+                mb: 0.3,
+
+                '@media (min-width:1400px) and (max-width:1600px)': {
+                  fontSize: '1.3em',
+                  mb: 2.5,
+                },
+
+                ...fadeSlideUp,
+                opacity: 0,
+                animation: 'heroFadeSlideUp 0.65s ease 0.34s forwards',
+              }}
+            >
+             Delivering & serving anywhere in Chennai.
+            </Typography>
             <Typography
               variant="body2"
               sx={{
@@ -243,7 +265,7 @@ const locationSearchRef = useRef(null);
                 fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem', lg: '1rem', xl: '1.05rem' },
                 letterSpacing: '0.1px',
                 fontFamily: '"open sans", sans-serif',
-                mb: 2.5,
+                mb: 2,
 
                 '@media (min-width:1400px) and (max-width:1600px)': {
                   fontSize: '1.3em',
@@ -256,10 +278,9 @@ const locationSearchRef = useRef(null);
               }}
             >
               Order a day before the event.
-              <br />
               Place any order starting from{' '}
               <Box component="span" sx={{ color: 'primary.main', fontWeight: 800 }}>
-                25 pax
+                50 pax
               </Box>
               .
             </Typography>

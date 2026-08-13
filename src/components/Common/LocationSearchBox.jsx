@@ -331,7 +331,7 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
       <TextField
         fullWidth
         variant="standard"
-        placeholder="Choose delivery location"
+        placeholder="Choose your delivery location"
         value={locationQuery}
         onChange={handleQueryChange}
         onFocus={handleFieldFocus}
