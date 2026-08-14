@@ -54,7 +54,7 @@ export default function AppDownload() {
               >
                 Experience seamless online ordering only on the Hogist app
               </Typography>
-              <Stack direction="row" spacing={{xs:0.2, sm:1.5, md:1.5}} flexWrap="wrap" justifyContent={{ xs: "center", md: "flex-start" }} gap={{xs:1, sm:0, md:0}}>
+              <Stack direction="row" spacing={{xs:0.2, sm:1.5, md:1.5}} flexWrap="wrap" justifyContent={{ xs: "center", sm:'center',md: "center" }} gap={{xs:1, sm:0, md:0}}>
                 <Link
                   href="https://play.google.com/store/apps/details?id=com.hogist"
                   target="_blank"
@@ -63,14 +63,14 @@ export default function AppDownload() {
                 >
                   <Box component="img" src={playStore} alt="Get it on Google Play" sx={{ display: "block", height: 48, width: "auto" }} />
                 </Link>
-                <Link
+                {/* <Link
                   href="#"
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{ display: "inline-flex", lineHeight: 0 }}
                 >
                   <Box component="img" src={appStore} alt="Download on the App Store" sx={{ display: "block", height: 48, width: "auto" }} />
-                </Link>
+                </Link> */}
               </Stack>
             </Stack>
 

@@ -22,26 +22,23 @@ const DIVIDER = "rgba(255,255,255,0.08)";
 
 const ourInfoLinks = [
   { label: "Home", href: "https://hogist.com/application/" },
-  { label: "About Us", href: "https://hogist.com/application/about-us" },
-  { label: "Our Services", href: "https://hogist.com/application/service" },
-  { label: "Contact Us", href: "https://hogist.com/application/contact-us" },
-  {
-    label: "Download App",
-    href: "https://hogist.com/application/mainhome/https://play.google.com/store/apps/details?id=com.hogist",
-  },
+  { label: "About Us", href: "https://hogist.com/our-story" },
+  { label: "Our Services", href: "https://hogist.com/service-offered" },
+  { label: "Terms & Conditions", href: "https://hogist.com/terms-conditions" },
+  { label: "Privacy Policy", href: "https://hogist.com/privacy-policy",},
 ];
 
 const ourServicesLinks = [
-  { label: "Catering Service", href: "https://hogist.com/application/site/login-page" },
-  { label: "Industrial Catering", href: "https://hogist.com/application/site/login-page" },
-  { label: "Corporate Catering", href: "https://hogist.com/application/site/login-page" },
-  { label: "Cafeteria", href: "https://hogist.com/application/site/login-page" },
+  { label: "Catering Service", href: "https://www.hogist.com/catering-services-in-chennai/" },
+  { label: "Industrial Catering", href: "https://www.hogist.com/industrial-catering-services-near-me/" },
+  { label: "Corporate Catering", href: "https://www.hogist.com/corporate-catering-services-in-chennai/" },
+  { label: "Cafeteria", href: "https://www.hogist.com/catering-services-in-chennai/" },
 ];
 
 const contactLinks = [
   {
     label: "2nd Floor, Kakani Towers, No:34 Khader Nawaz Khan Road, Nungambakkam, Chennai 600 006.",
-    href: "https://hogist.com/application/",
+    href: "https://www.google.com/maps/place/Hogist+Technologies+pvt+Ltd/@13.0618092,80.2445991,17z/data=!4m6!3m5!1s0x3a5267e8dff469a7:0x26980d493f615a!8m2!3d13.0601273!4d80.2479296!16s%2Fg%2F11j00842y5?entry=ttu&g_ep=EgoyMDI5MTIwOS4wIKXMDSoASAFQAw%3D%3D",
   },
   { label: "support@hogist.com", href: "mailto:support@hogist.com" },
   { label: "+91 - 9962667733", href: "tel:+919962667733" },
@@ -54,10 +51,10 @@ const contactLinks = [
 // ];
 
 const socialLinks = [
-  { icon: FacebookIcon, href: "#", label: "Facebook" },
-  { icon: InstagramIcon, href: "#", label: "Instagram" },
-  { icon: LinkedInIcon, href: "#", label: "LinkedIn" },
-  { icon: YouTubeIcon, href: "#", label: "YouTube" },
+  { icon: FacebookIcon, href: "https://www.facebook.com/hogisttechnologies/", label: "Facebook" },
+  { icon: InstagramIcon, href: "https://www.instagram.com/hogistindia/?hl=en", label: "Instagram" },
+  { icon: LinkedInIcon, href: "https://www.linkedin.com/company/hogist?originalSubdomain=in", label: "LinkedIn" },
+  { icon: YouTubeIcon, href: "https://www.youtube.com/@hogist9059", label: "YouTube" },
 ];
 
 // Reusable column heading
@@ -247,19 +244,7 @@ export default function Footer() {
 
             {/* App / Play store badges — stacked vertically like zomato */}
             <Stack spacing={1.25} sx={{ alignItems: "flex-start" }}>
-              <Link
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{ display: "inline-flex", lineHeight: 0 }}
-              >
-                <Box
-                  component="img"
-                  src={AppStoreButton}
-                  alt="Download on the App Store"
-                  sx={{ display: "block", height: 36, width: "auto" }}
-                />
-              </Link>
+            
               <Link
                 href="https://play.google.com/store/apps/details?id=com.hogist"
                 target="_blank"

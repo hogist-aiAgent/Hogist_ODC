@@ -18,6 +18,7 @@ const offers = [
     title: ['Corporate', 'Catering'],
     desc: 'Daily meals, meetings, conferences and office events.',
     img: corporateImg,
+    url: 'https://www.hogist.com/corporate-catering-services-in-chennai/',
   },
   {
     num: '02',
@@ -25,6 +26,7 @@ const offers = [
     title: ['Industrial', 'Catering'],
     desc: 'Large-scale, recurring meal programs for factories and industrial facilities.',
     img: industrialImg,
+    url: 'https://www.hogist.com/industrial-catering-services-near-me/',
   },
   {
     num: '03',
@@ -32,6 +34,7 @@ const offers = [
     title: ['Cafeteria', 'Management'],
     desc: 'End-to-end cafeteria operations, food service and employee meal solutions.',
     img: cafeteriaImg,
+    url: 'https://www.hogist.com/catering-services-in-chennai/',
   },
   {
     num: '04',
@@ -39,6 +42,7 @@ const offers = [
     title: ['Events &', 'Bulk Orders'],
     desc: 'Reliable food solutions for parties, functions and large gatherings.',
     img: eventsImg,
+    url: 'https://www.hogist.com/catering-services-in-chennai/',
   },
 ];
 
@@ -314,7 +318,7 @@ export default function WhatHogistOffers() {
                 {/* Explore, below the photo */}
                 <Box
                   component="button"
-                  onClick={() => {}}
+                  onClick={() => window.open(offer.url, '_blank', 'noopener,noreferrer')}
                   sx={{
                     all: 'unset',
                     cursor: 'pointer',
@@ -388,7 +392,7 @@ export default function WhatHogistOffers() {
         >
           {/* soft cream wave, behind */}
           <path
-            d="M0,110 C 220,60 420,150 680,120 C 940,90 1080,40 1260,70 C 1350,86 1400,96 1440,80 L1440,240 L0,240 Z"
+            d="M0,110 C 220,60 420,150 680,120 C 940,90 1080,40 1260,70 C 1350,86 1400,96 1440,80 L1440,240 Z"
             fill="#FBEEE6"
           />
           {/* red wave, front */}

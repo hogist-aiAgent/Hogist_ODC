@@ -89,6 +89,14 @@ export default function Testimonials() {
   const goPrev = () => setActiveIndex((i) => (i - 1 + total) % total);
   const goNext = () => setActiveIndex((i) => (i + 1) % total);
 
+   const handleExplore = (event) => {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
+            return;
+        }
+        event.preventDefault();
+        window.open(`https://hogist.com/`, '_blank');
+    };
+
   return (
     <Box
     id="testimonial"
@@ -554,6 +562,7 @@ export default function Testimonials() {
 
             <Button
               variant="contained"
+              onClick={handleExplore}
               endIcon={<ArrowForwardRoundedIcon />}
               sx={{
                 bgcolor: 'primary.main',

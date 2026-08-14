@@ -23,6 +23,14 @@ const highlights = [
   { icon: RoomServiceOutlinedIcon, label: 'Cafeteria Management' },
 ];
 
+const handleWhatsAppClick = (event) => {
+    if (event.ctrlKey || event.metaKey || event.button === 1) {
+      return;
+    }
+    event.preventDefault();
+    window.open(`https://wa.me/${'15557647627'}`, '_blank');
+  };
+
 const contactCols = [
   {
     icon: ChatBubbleOutlineRoundedIcon,
@@ -123,6 +131,7 @@ export default function ReadyWhenYouAre() {
             <Button
               variant="contained"
               disableElevation
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               startIcon={<RequestQuoteOutlinedIcon sx={{ fontSize: 20 }} />}
               endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: 18 }} />}
               sx={{
@@ -140,7 +149,7 @@ export default function ReadyWhenYouAre() {
                 '&:hover': { bgcolor: '#921019' },
               }}
             >
-              GET A QUOTE
+              GET STARTED
             </Button>
 
             {/* Highlight row */}
@@ -311,6 +320,7 @@ export default function ReadyWhenYouAre() {
                 {trailingArrow && (
                   <IconButton
                     aria-label="Chat with us"
+                    onClick={handleWhatsAppClick}
                     sx={{
                       alignSelf: 'center',
                       flexShrink: 0,

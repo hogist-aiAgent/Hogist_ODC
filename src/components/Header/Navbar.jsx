@@ -131,7 +131,10 @@ export default function Navbar() {
                   },
                 }}
               >       
-              
+              <Box  component="a"
+            href="https://hogist.com/"
+            target="_blank"
+            rel="noopener noreferrer">
              <Box
               component="img"
               src={logo}
@@ -145,6 +148,7 @@ export default function Navbar() {
                 },
               }}
             />
+            </Box>
           </Stack>
 
           {/* Desktop nav */}

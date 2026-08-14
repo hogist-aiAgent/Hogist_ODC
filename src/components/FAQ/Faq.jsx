@@ -204,6 +204,16 @@ export default function FAQ() {
   const leftItems = faqs.slice(0, 5);
   const rightItems = faqs.slice(5, 10);
 
+
+  const handleWhatsAppClick = (event) => {
+    if (event.ctrlKey || event.metaKey || event.button === 1) {
+      return;
+    }
+    event.preventDefault();
+    window.open(`https://wa.me/${'15557647627'}`, '_blank');
+   };
+
+
   return (
     <Box component="section" sx={{ bgcolor: '#fff', py: { xs: 3, sm: 4, md: 4 } }}>
       <Container maxWidth={false} sx={{ maxWidth: { xs: '100%', xl: 1320 }, px: { xs: 2.5, sm: 4, md: 6 } }}>
@@ -345,6 +355,7 @@ export default function FAQ() {
                   Get expert help from our support team.
                 </Typography>
                 <Stack
+                 onClick={handleWhatsAppClick}
                   direction="row"
                   spacing={0.5}
                   alignItems="center"
