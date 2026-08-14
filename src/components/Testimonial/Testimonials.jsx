@@ -284,7 +284,7 @@ export default function Testimonials() {
                   borderRadius: '18px',
                   p: { xs: 2.5, sm: 3 },
                   mb: 3,
-                  height: { xs: 160, sm: 170, md: 250 },
+                  height: { xs: 430, sm: 230, md: 250 },
                   overflowY: 'hidden',
                 }}
               >
@@ -565,7 +565,7 @@ export default function Testimonials() {
                 py: 0.5,
                 whiteSpace: 'nowrap',
                 flexShrink: 0,
-                '&:hover': { bgcolor: '#f5f5f5' },
+                '&:hover': { bgcolor: '#c91215ef' },
                mt:{md:6}
               }}
             >

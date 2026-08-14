@@ -14,6 +14,7 @@ import ServiceAreas from './components/Serviceareas/ServicesAreas'
 import WhatHogistOffers from './components/WhatOffers/WhatHogistOffers'
 import WhyHogist from './components/Whyhogist/Whyhogist';
 import ReadyWhenYouAre from './components/ReadyWhenYouare/Readywhenyouare';
+import FAQ from './components/FAQ/Faq';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
        <Testimonials />
        <AppDownload />
        <ServiceAreas/>
+       <FAQ/>
        <ReadyWhenYouAre/>
        <Footer />
     </>

@@ -1,4 +1,4 @@
-import { Box, Container, Typography, Button, Stack, Divider } from '@mui/material';
+import { Box, Container, Typography, Button, Stack, Divider, IconButton } from '@mui/material';
 import RequestQuoteOutlinedIcon from '@mui/icons-material/RequestQuoteOutlined';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import RestaurantOutlinedIcon from '@mui/icons-material/RestaurantOutlined';
@@ -90,7 +90,7 @@ export default function ReadyWhenYouAre() {
               component="h2"
               sx={{
                 fontWeight: 800,
-                lineHeight: 1,
+                lineHeight: { xs: 1.08, sm: 1.05, md: 1.05, lg: 1, xl: 1 },
                 color: '#141418',
                 fontSize: { xs: 34, sm: 44, md: 52, lg: 50, xl: 58 },
                 '@media (min-width:1400px) and (max-width:1600px)': { fontSize: 54 },
@@ -146,34 +146,41 @@ export default function ReadyWhenYouAre() {
             <Stack
               direction="row"
               alignItems="center"
+              justifyContent={{ xs: 'space-between', sm: 'flex-start' }}
               divider={
                 <Divider
                   orientation="vertical"
                   flexItem
-                  sx={{ borderColor: 'rgba(0,0,0,0.12)', alignSelf: 'center', height: 34 }}
+                  sx={{
+                    display: { xs: 'none', sm: 'block' },
+                    borderColor: 'rgba(0,0,0,0.12)',
+                    alignSelf: 'center',
+                    height: 34,
+                  }}
                 />
               }
-              spacing={{ xs: 2, sm: 3.5 }}
-              sx={{ mt: { xs: 5, md: 3 }, flexWrap: { xs: 'wrap', sm: 'nowrap' }, rowGap: 3 }}
+              spacing={{ xs: 1, sm: 3.5 }}
+              sx={{ mt: { xs: 5, md: 3 }, flexWrap: { xs: 'nowrap', sm: 'nowrap' }, rowGap: 3 }}
             >
               {highlights.map(({ icon: Icon, label }) => (
-                <Stack key={label} spacing={1.2} alignItems="center" sx={{ minWidth: 0 }}>
+                <Stack key={label} spacing={{ xs: 0.75, sm: 1.2 }} alignItems="center" sx={{ minWidth: 0 }}>
                   <Box
                     sx={{
-                      width: 52,
-                      height: 52,
+                      width: { xs: 42, sm: 52 },
+                      height: { xs: 42, sm: 52 },
                       borderRadius: '50%',
                       bgcolor: 'rgba(179,17,31,0.08)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      flexShrink: 0,
                     }}
                   >
-                    <Icon sx={{ color: BRAND_RED, fontSize: 24 }} />
+                    <Icon sx={{ color: BRAND_RED, fontSize: { xs: 19, sm: 24 } }} />
                   </Box>
                   <Typography
                     sx={{
-                      fontSize: { xs: 12.5, md: 13.5 },
+                      fontSize: { xs: 10.5, sm: 12.5, md: 13.5 },
                       fontWeight: 600,
                       color: '#1B1B23',
                       textAlign: 'center',
@@ -193,7 +200,8 @@ export default function ReadyWhenYouAre() {
           sx={{
             position: 'relative',
             flex: { lg: '1 1 39%' },
-            minHeight: { xs: 300, sm: 390, lg: 'auto' },
+            minHeight: { xs: 190, sm: 230, md: 280, lg: 'auto' },
+            height: { xs: 190, sm: 230, md: 280, lg: 'auto' },
           }}
         >
           <Box
@@ -207,9 +215,9 @@ export default function ReadyWhenYouAre() {
               height: { xs: '100%', lg: '100%' },
               objectFit: 'cover',
               display: 'block',
-              borderRadius: { xs: '24px', lg: '50% 0 0 50%' },
+              borderRadius: { xs: '20px', lg: '50% 0 0 50%' },
               mx: { xs: 'auto', lg: 0 },
-              maxWidth: { xs: 'calc(100% - 49px)', lg: 'none' },
+              maxWidth: { xs: 'calc(100% - 64px)', sm: 'calc(100% - 80px)', md: 'calc(100% - 96px)', lg: 'none' },
             }}
           />
 
@@ -247,7 +255,7 @@ export default function ReadyWhenYouAre() {
             mt: { xs: 4, sm: 5, md: 0 },
             borderRadius: { xs: '18px', md: '20px' },
             overflow: 'hidden',
-            boxShadow: '0px 0px 50px rgba(20, 10, 10, 0.18)',  height:{md:135}, width:{md:'100%'}}}>
+            boxShadow: '0px 0px 50px rgba(20, 10, 10, 0.18)',  height:{xs:'auto', sm:'auto', md:'auto', lg:135, xl:135}, width: { xs: '100%', sm: '100%', md: '100%' }, maxWidth: '100%', boxSizing: 'border-box'}}>
         <Container
           maxWidth={false}
           sx={{ maxWidth: { xs: '100%', xl: 1440 }, px: { xs: 2.5, sm: 3.5, md: 6, lg: 6 } }}
@@ -300,9 +308,18 @@ export default function ReadyWhenYouAre() {
                   ))}
                 </Box>
                 {trailingArrow && (
-                  <ArrowForwardRoundedIcon
-                    sx={{ color: BRAND_RED, fontSize: 20, mt: 0.75, flexShrink: 0 }}
-                  />
+                  <IconButton
+                    aria-label="Chat with us"
+                    sx={{
+                      alignSelf: 'center',
+                      flexShrink: 0,
+                      color: BRAND_RED,
+                      p: 0.4,
+                      mt:-6
+                    }}
+                  >
+                    <ArrowForwardRoundedIcon sx={{ fontSize: 20 }} />
+                  </IconButton>
                 )}
               </Stack>
             ))}
