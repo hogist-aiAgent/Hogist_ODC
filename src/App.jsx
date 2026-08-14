@@ -4,9 +4,6 @@ import Navbar from './components/Header/Navbar';
 import Hero from './components/HeroSection/Hero';
 import HowItWorks from './components/HowItWorks/HowItWorks';
 import TrustedClients from './components/TrustedClients/TrustedClients';
-// import WhatWeHave from './components/WhatWeHave';
-// import IsoBanner from './components/IsoBanner';
-// import Gallery from './components/Gallery';
 import AppDownload from './components/AppDownload/AppDownload';
 import Testimonials from './components/Testimonial/Testimonials';
 import Footer from './components/Footer/Footer';
@@ -26,10 +23,6 @@ function App() {
       <WhatHogistOffers/>
       <HowItWorks />
       <TrustedClients />
-      {/* <WhatWeHave />
-      <IsoBanner />
-      <Gallery />
-       */}
        <WhyHogist/>
        <Testimonials />
        <AppDownload />
