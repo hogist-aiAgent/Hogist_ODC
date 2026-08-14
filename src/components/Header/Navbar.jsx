@@ -21,11 +21,11 @@ import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
 import logo from '../../assets/CompanyLogo/logo.png'
 
 const navLinks = [
-  { label: 'Home', active:true },
-  { label: 'About Us' },
-  { label: 'Our Services' },
-  { label: 'Gallery' },
-  { label: 'Contact Us' },
+  { label: 'Home', active:true, href: 'https://hogist.com/' },
+  { label: 'Why Us', sectionId: 'why-us' },
+  { label: 'Services', sectionId: 'services' },
+  { label: 'Testimonial', sectionId: 'testimonial' },
+  { label: 'Contact Us', sectionId: 'contact-us' },
 ];
 
 export default function Navbar() {
@@ -55,6 +55,31 @@ export default function Navbar() {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleWhatsAppClick = (event) => {
+    if (event.ctrlKey || event.metaKey || event.button === 1) {
+      return;
+    }
+    event.preventDefault();
+    window.open(`https://wa.me/${'15557647627'}`, '_blank');
+  };
+
+  const handleNavClick = (link) => {
+    setSelectedLink(link.label);
+    setMobileOpen(false);
+
+    if (link.href) {
+      window.open(link.href, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    if (link.sectionId) {
+      const section = document.getElementById(link.sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
   };
 
   return (
@@ -138,7 +163,7 @@ export default function Navbar() {
             {navLinks.map((link) => (
               <Button
                 key={link.label}
-                onClick={() => setSelectedLink(link.label)}
+                onClick={() => handleNavClick(link)}
                 sx={{
                   px: { md: 1.3, lg: 1.5,},
                   py: { md: 0.6, lg: 0.7 },
@@ -188,8 +213,9 @@ export default function Navbar() {
               }}
             >
            <Button
+           component="a"
               variant="contained"
-              onClick={handleMenuOpen}
+               onClick={handleWhatsAppClick}
               startIcon={<LocalPhoneRoundedIcon sx={{ fontSize: { md: 15, lg: 17 } }} />}
               sx={{
                 px: { md: 1.8, lg: 2.6 },
@@ -302,7 +328,7 @@ export default function Navbar() {
               <ListItemButton
                 key={link.label}
                 selected={selectedLink === link.label}
-                onClick={() => setSelectedLink(link.label)}
+                onClick={() => handleNavClick(link)}
                 sx={{
                   '&.Mui-selected': {
                     bgcolor: 'rgba(232,2,0,0.08)',
@@ -317,6 +343,7 @@ export default function Navbar() {
             <Box sx={{ px: 2, pt: 2 }}>
               <Button
                 fullWidth
+                component="a"
                 variant="contained"
                 startIcon={<LocalPhoneRoundedIcon sx={{ fontSize: 16 }} />}
                 sx={{
@@ -330,7 +357,7 @@ export default function Navbar() {
                   border: '1.5px solid #efe6dd',
                   '&:hover': { bgcolor: 'primary.dark', boxShadow: 'none' },
                 }}
-                onClick={handleMenuOpen}
+                 onClick={handleWhatsAppClick}
               >
                 Get in Touch
               </Button>

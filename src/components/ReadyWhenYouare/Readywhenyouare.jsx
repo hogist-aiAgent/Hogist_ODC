@@ -45,6 +45,7 @@ const contactCols = [
 export default function ReadyWhenYouAre() {
   return (
     <Box
+    id="contact-us"
       component="section"
       sx={{
         bgcolor: CREAM,

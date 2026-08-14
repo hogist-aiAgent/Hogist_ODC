@@ -89,6 +89,7 @@ export default function WhyHogist() {
 
   return (
     <Box
+      id="why-us"
       component="section"
       ref={sectionRef}
       sx={{

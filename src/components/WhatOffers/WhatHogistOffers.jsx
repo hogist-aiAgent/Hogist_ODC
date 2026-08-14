@@ -66,6 +66,7 @@ export default function WhatHogistOffers() {
 
   return (
     <Box
+    id="services"
       component="section"
       ref={sectionRef}
       sx={{
