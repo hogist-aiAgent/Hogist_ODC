@@ -25,8 +25,14 @@ const ourInfoLinks = [
   { label: "Home", href: "https://hogist.com/application/" },
   { label: "About Us", href: "https://hogist.com/our-story" },
   { label: "Our Services", href: "https://hogist.com/service-offered" },
-  { label: "Terms & Conditions", href: "https://hogist.com/terms-conditions" },
   { label: "Privacy Policy", href: "https://hogist.com/privacy-policy",},
+];
+
+const helpfullLinks = [,
+  { label: "Terms & Conditions", href: "https://hogist.com/terms-conditions" },
+  { label: "Refunds & Cancellation", href: "https://hogist.com/cancel-refund" },
+  { label: "Mobile App Agreement", href: "https://www.hogist.com/hogist-mobile-app-usage-policy.pdf" },
+
 ];
 
 const ourServicesLinks = [
@@ -45,11 +51,10 @@ const contactLinks = [
   { label: "+91 - 9962667733", href: "tel:+919962667733" },
 ];
 
-// const legalLinks = [
-//   { label: "Terms of Service", href: "#" },
-//   { label: "Cookie Policy", href: "#" },
-//   { label: "Privacy Policy", href: "#" },
-// ];
+const partnerWithUsLinks = [
+  { label: "Become a Vendor", href: "https://hogist.com/become-vendor" },
+  { label: "Become a Consultant", href: "https://hogist.com/become-consultant" },
+];
 
 const socialLinks = [
   { icon: FacebookIcon, href: "https://www.facebook.com/hogisttechnologies/", label: "Facebook" },
@@ -128,7 +133,7 @@ export default function Footer() {
         maxWidth={false}
         sx={{
           maxWidth: { xs: "100%", xl: 1440 },
-          px: { xs: 2.5, sm: 3.5, md: 20,lg:20, xl: 6 },
+          px: { xs: 2.5, sm: 3.5, md: 10,lg:13, xl: 6 },
           alignItems:'center',
           
         }}
@@ -155,22 +160,20 @@ export default function Footer() {
         {/* ---- columns row ---- */}
         <Box
           sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: { xs: 4, sm: 4, md: 3.72, xl: 3 },
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "repeat(2, 1fr)",
+              sm: "repeat(3, 1fr)",
+              md: "repeat(6, 1fr)",
+              lg: "repeat(6, 1fr)",
+            },
+            columnGap: { xs: 3, sm: 4, md: 3.7, xl: 3 },
+            rowGap: { xs: 4, sm: 4, md: 3.7, xl: 3 },
             pb: { xs: 5, md: 6, lg:2 },
           }}
         >
-          {/* Our Info - Mobile: 2 cols, Tablet(768px): 2 cols, Desktop(1024px+): original */}
-          <Box sx={{ 
-            flex: { 
-              xs: "1 1 28%", 
-              sm: "1 1 3%", 
-              md: "1 1 18%", 
-              lg: "1 1 13%" 
-            }, 
-            minWidth: 0 
-          }}>
+          {/* Our Info */}
+          <Box sx={{ minWidth: 0 }}>
             <ColHeading>Our Info</ColHeading>
             <Stack spacing={1.6}>
               {ourInfoLinks.map((item) => (
@@ -181,16 +184,32 @@ export default function Footer() {
             </Stack>
           </Box>
 
-          {/* Our Services - Mobile: 2 cols, Tablet(768px): 2 cols, Desktop(1024px+): original */}
-          <Box sx={{ 
-            flex: { 
-              xs: "1 1 48%", 
-              sm: "1 1 5%", 
-              md: "1 1 20%", 
-              lg: "1 1 14%" 
-            }, 
-            minWidth: 0 
-          }}>
+          {/* Helpful Link */}
+          <Box sx={{ minWidth: 0 }}>
+            <ColHeading>Helpful Link</ColHeading>
+            <Stack spacing={1.6}>
+              {helpfullLinks.map((item) => (
+                <FooterLink key={item.label} href={item.href}>
+                  {item.label}
+                </FooterLink>
+              ))}
+            </Stack>
+          </Box>
+
+          {/* Partner With Us */}
+          <Box sx={{ minWidth: 0 }}>
+            <ColHeading>Partner With Us</ColHeading>
+            <Stack spacing={1.6}>
+              {partnerWithUsLinks.map((item) => (
+                <FooterLink key={item.label} href={item.href}>
+                  {item.label}
+                </FooterLink>
+              ))}
+            </Stack>
+          </Box>
+
+          {/* Our Services */}
+          <Box sx={{ minWidth: 0 }}>
             <ColHeading>Our Services</ColHeading>
             <Stack spacing={1.6}>
               {ourServicesLinks.map((item) => (
@@ -201,16 +220,8 @@ export default function Footer() {
             </Stack>
           </Box>
 
-          {/* Contact Us - Mobile: 1 col(full width), Tablet(768px): 2 cols, Desktop(1024px+): original */}
-          <Box sx={{ 
-            flex: { 
-              xs: "1 1 40%", 
-              sm: "1 1 15%", 
-              md: "1 1 25%", 
-              lg: "1 1 16%" 
-            }, 
-            minWidth: 0 
-          }}>
+          {/* Contact Us */}
+          <Box sx={{ minWidth: 0 }}>
             <ColHeading>Contact Us</ColHeading>
             <Stack spacing={2}>
               <FooterLink href={contactLinks[0].href} sx={{ display: "flex", gap: 1.25 }}>
@@ -228,16 +239,8 @@ export default function Footer() {
             </Stack>
           </Box>
 
-          {/* Social Links - Mobile: 1 col(full width), Tablet(768px): 2 cols, Desktop(1024px+): original */}
-          <Box sx={{ 
-            flex: { 
-              xs: "1 1 50%", 
-              sm: "1 1 10%", 
-              md: "1 1 20%", 
-              lg: "1 1 15%" 
-            }, 
-            minWidth: 0 
-          }}>
+          {/* Social Links */}
+          <Box sx={{ minWidth: 0 }}>
             <ColHeading>Social Links</ColHeading>
             <Stack direction="row" flexWrap="wrap" gap={1.25} sx={{ mb: 2.5 }}>
               {socialLinks.map(({ icon: Icon, href, label }) => (
@@ -248,8 +251,8 @@ export default function Footer() {
                   aria-label={label}
                   size="small"
                   sx={{
-                    width: 32,
-                    height: 32,
+                    width: {xs:22,mg:28},
+                    height: {xs:22,mg:28},
                     bgcolor: "#fff",
                     color: BG_DARK,
                     transition: "background-color .15s ease, color .15s ease, transform .15s ease",

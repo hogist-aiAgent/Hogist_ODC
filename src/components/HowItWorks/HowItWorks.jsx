@@ -94,6 +94,7 @@ function CountUpNumber({ to, active, suffix = '+', duration = 1200 }) {
 
 export default function HowItWorks() {
   const sectionRef = useRef(null);
+  const timelineScrollRef = useRef(null);
   const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
@@ -112,6 +113,37 @@ export default function HowItWorks() {
 
     observer.observe(node);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = timelineScrollRef.current;
+    if (!el) return;
+
+    const mobileTabletQuery = window.matchMedia('(max-width: 1199.98px)');
+    let rafId;
+    const speed = 0.6; // px per frame
+
+    const step = () => {
+      // The timeline list is rendered twice back-to-back (see render below),
+      // so scrollWidth is exactly 2x one full set's width. Once we've scrolled
+      // past one full set, we shift back by that same width instead of
+      // snapping to 0 - since the content repeats identically, this produces
+      // a seamless, continuous loop with no visible jump.
+      const singleSetWidth = el.scrollWidth / 2;
+
+      if (mobileTabletQuery.matches && singleSetWidth > 0) {
+        el.scrollLeft += speed;
+
+        if (el.scrollLeft >= singleSetWidth) {
+          el.scrollLeft -= singleSetWidth;
+        }
+      }
+
+      rafId = requestAnimationFrame(step);
+    };
+
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   return (
@@ -374,12 +406,13 @@ export default function HowItWorks() {
 
         {/* Status timeline strip */}
         <Box
+          ref={timelineScrollRef}
           sx={{
             bgcolor: '#FDF1EF',
             borderRadius: { xs: 2, md: 2 },
             px: { xs: 2.5, md: 4 },
             py: { xs: 3, md: 2.5 },
-            overflowX: { xs: 'auto', md: 'visible' },
+            overflowX: { xs: 'auto', lg: 'visible' },
             mb: { xs: 2, md: 2 },
             '&::-webkit-scrollbar': { display: 'none' },
             scrollbarWidth: 'none',
@@ -388,19 +421,32 @@ export default function HowItWorks() {
           <Stack
             direction="row"
             alignItems="flex-start"
-            justifyContent={{ xs: 'flex-start', md: 'space-between' }}
-            sx={{ minWidth: { xs: 720, md: 'auto' } }}
+            justifyContent={{ xs: 'flex-start', lg: 'space-between' }}
+            sx={{ minWidth: { xs: 720, lg: 'auto' } }}
           >
-            {timelineSteps.map((t, idx) => {
+            {/* Rendered twice (original set + duplicate set) so the auto-scroll
+                effect above can loop seamlessly on mobile/tablet without a
+                visible jump. On desktop (lg+) the duplicate copy is hidden
+                and layout/behavior is identical to before. */}
+            {[...timelineSteps, ...timelineSteps].map((t, i) => {
+              const n = timelineSteps.length;
+              const idx = i % n;
               const delay = T.timelineStart + idx * T.timelineStagger;
-              const isLast = idx === timelineSteps.length - 1;
+              const isRealLast = i === n - 1;
+              const isLoopLast = i === n * 2 - 1;
+              const isDuplicate = i >= n;
+
               return (
                 <Box
-                  key={t.label}
+                  key={`${t.label}-${i}`}
                   sx={{
-                    display: 'flex',
+                    display: isDuplicate ? { xs: 'flex', lg: 'none' } : 'flex',
                     alignItems: 'flex-start',
-                    flex: !isLast ? 1 : '0 0 auto',
+                    flex: isLoopLast
+                      ? '0 0 auto'
+                      : isRealLast
+                      ? { xs: 1, lg: '0 0 auto' }
+                      : 1,
                   }}
                 >
                   <Stack alignItems="center" spacing={1} sx={{ width: { xs: 92, md: 100, lg: 110 }, flexShrink: 0 }}>
@@ -423,7 +469,7 @@ export default function HowItWorks() {
                           '100%': { boxShadow: '0 4px 14px rgba(20,20,43,0.08)' },
                         },
                         animation:
-                          revealed && isLast ? `celebratePulse 0.9s ease ${delay + 500}ms` : 'none',
+                          revealed && idx === n - 1 ? `celebratePulse 0.9s ease ${delay + 500}ms` : 'none',
                       }}
                     >
                       <t.icon sx={{ color: 'primary.main', fontSize: { xs: 22, md: 25, lg: 28 } }} />
@@ -443,11 +489,11 @@ export default function HowItWorks() {
                     </Typography>
                   </Stack>
 
-                  {!isLast && (
+                  {!isLoopLast && (
                     <Box
                       sx={{
                         flex: 1,
-                        display: 'flex',
+                        display: isRealLast ? { xs: 'flex', lg: 'none' } : 'flex',
                         alignItems: 'center',
                         mt: { xs: 2.8, md: 3.3, lg: 3.7 },
                         mx: 0.5,

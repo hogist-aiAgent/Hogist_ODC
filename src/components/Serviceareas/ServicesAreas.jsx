@@ -69,11 +69,12 @@ export default function ServiceAreas({
 
         <Box
           sx={{
-            display: "flex",
+            display: { xs: "grid", sm: "flex", md: "flex" },
+            gridTemplateColumns: { xs: "1fr 1fr" },
             flexWrap: "wrap",
-            gap: { xs: 2, sm: 2, md: 1.3 },
-            pl:{xs:1,sm:6,md:6},
-            pr:{xs:1,sm:6,md:6}
+            gap: { xs: 1, sm: 2, md: 1.3 },
+            pl:{xs:0,sm:6,md:6},
+            pr:{xs:0,sm:6,md:6}
           }}
         >
           {visibleAreas.map((area) => (
@@ -92,7 +93,7 @@ export default function ServiceAreas({
                 // href={toggleSlug(area)}
                 sx={{
                   width: "100%",
-                 maxWidth:{xs:120,sm:200,md:240},
+                 maxWidth:{xs:"none",sm:200,md:240},
                   minHeight: { xs: 60, sm: 40, md: 60 },
                   borderRadius: { xs: 1,sm:1, md: 1.5 },
                   border: `1px solid ${CARD_BORDER}`,
@@ -141,7 +142,7 @@ export default function ServiceAreas({
                 onClick={() => setExpanded((prev) => !prev)}
                 sx={{
                   width: "100%",
-                 maxWidth:{xs:120,sm:200,md:240},
+                 maxWidth:{xs:"none",sm:200,md:240},
                   minHeight: { xs: 60, sm: 45, md: 59 },
                   borderRadius: { xs: 1,sm:1, md: 1.5 },
                   border: `1px solid ${CARD_BORDER}`,

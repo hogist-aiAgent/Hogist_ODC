@@ -156,6 +156,7 @@ function FaqRow({ index, icon: Icon, question, answer, active, onToggle }) {
                 fontSize: { xs: 14, sm: 15.5 },
                 color: HEADING_DARK,
                 lineHeight: 1.4,
+                fontFamily: '"open sans", sans-serif',
               }}
             >
               {question}
@@ -171,6 +172,7 @@ function FaqRow({ index, icon: Icon, question, answer, active, onToggle }) {
                   fontSize: { xs: 13, sm: 13.75 },
                   lineHeight: 1.7,
                   maxWidth: 480,
+                  fontFamily: '"open sans", sans-serif',
                 }}
               >
                 {answer}
@@ -228,6 +230,7 @@ export default function FAQ() {
                 fontWeight: 700,
                 fontSize: { xs: 12, sm: 13 },
                 letterSpacing: '0.2em',
+                fontFamily: '"open sans", sans-serif',
               }}
             >
               FAQ
@@ -243,6 +246,7 @@ export default function FAQ() {
               color: HEADING_DARK,
               fontSize: { xs: 26, sm: 34, md: 40 },
               lineHeight: 1.2,
+               fontFamily: '"Montserrat", sans-serif',
             }}
           >
             Frequently Asked Questions About{' '}
@@ -255,8 +259,9 @@ export default function FAQ() {
             sx={{
               mt: 1.2,
               color: TEXT_MUTED,
-              fontSize: { xs: 13.5, sm: 15 },
+              fontSize: { xs: 13.5, sm: 14 },
               maxWidth: 560,
+              fontFamily: '"open sans", sans-serif',
             }}
           >
             Bulk food delivery, office meals, events and cafeteria management across Chennai.
@@ -329,17 +334,17 @@ export default function FAQ() {
               />
             }
             spacing={{ xs: 2.7, sm: 0 }}
-            sx={{ px: { xs: 2.5, sm: 3.5, md: 4.5 }, py: { xs: 2, sm: 3.5 } }}
+            sx={{ px: { xs: 2.5, sm: 3.5, md: 4.5 }, py: { xs: 2, sm: 3.5 }, }}
           >
             <Stack direction="row" spacing={1.75} alignItems="center" sx={{ flex: 1 }}>
               <LightbulbOutlinedIcon
-                sx={{ color: BRAND_RED, fontSize: { xs: 32, sm: 36 }, flexShrink: 0 }}
+                sx={{ color: BRAND_RED, fontSize: { xs: 32, sm: 36 }, flexShrink: 0 ,}}
               />
               <Box>
-                <Typography sx={{ fontWeight: 700, fontSize: 15, color: HEADING_DARK }}>
+                <Typography sx={{ fontWeight: 700, fontSize: 15, color: HEADING_DARK, fontFamily: '"open sans", sans-serif', }}>
                   Can&rsquo;t find what you&rsquo;re looking for?
                 </Typography>
-                <Typography sx={{ fontSize: 13, color: TEXT_MUTED, lineHeight: 1.6, mt: 0.25 }}>
+                <Typography sx={{ fontSize: 13, color: TEXT_MUTED, lineHeight: 1.6, mt: 0.25, fontFamily: '"open sans", sans-serif', }}>
                   Our team is here to help you with any questions about our services, menus or
                   orders.
                 </Typography>
@@ -348,10 +353,10 @@ export default function FAQ() {
 
             <Stack direction="row" spacing={1.75} alignItems="center" sx={{ flex: 1, sm: { pl: 3.8 } }}>
               <HeadsetMicOutlinedIcon
-                sx={{ color: BRAND_RED, fontSize: { xs: 32, sm: 36 }, flexShrink: 0 }}
+                sx={{ color: BRAND_RED, fontSize: { xs: 32, sm: 36 }, flexShrink: 0, }}
               />
               <Box>
-                <Typography sx={{ fontSize: 13, color: TEXT_MUTED, lineHeight: 1.6 }}>
+                <Typography sx={{ fontSize: 13, color: TEXT_MUTED, lineHeight: 1.6,fontFamily: '"open sans", sans-serif', }}>
                   Get expert help from our support team.
                 </Typography>
                 <Stack
@@ -361,7 +366,7 @@ export default function FAQ() {
                   alignItems="center"
                   sx={{ mt: 0.5, cursor: 'pointer', width: 'fit-content' }}
                 >
-                  <Typography sx={{ fontWeight: 700, fontSize: 14, color: BRAND_RED }}>
+                  <Typography sx={{ fontWeight: 700, fontSize: 14, color: BRAND_RED,fontFamily: '"open sans", sans-serif' }}>
                     Talk to us
                   </Typography>
                   <ArrowForwardRoundedIcon sx={{ color: BRAND_RED, fontSize: 16 }} />
@@ -370,7 +375,7 @@ export default function FAQ() {
             </Stack>
           </Stack>
 
-          {/* laptop illustration — overflows the bar on desktop */}
+          {/* laptop illustration — overflows the bar on desktop */} 
           <Box
             component="img"
             src={laptopImg}

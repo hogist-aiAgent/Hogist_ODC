@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Container, Stack, Typography, IconButton, Button, Avatar } from '@mui/material';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import FormatQuoteRoundedIcon from '@mui/icons-material/FormatQuoteRounded';
@@ -14,7 +14,7 @@ import RoomServiceOutlinedIcon from '@mui/icons-material/RoomServiceOutlined';
 // Drop these into src/assets/Testimonials/ and update the imports.
 import leafCornerImg from '../../assets/Testimonials/veg1.png';
 import tomatoCornerImg from '../../assets/Testimonials/veg2.png';
-import foodTrayImg from '../../assets/Testimonials/foodTray.png';
+import foodTrayImg from '../../assets/Testimonials/testimonial.png';
 
 function getInitials(name) {
   return name
@@ -39,11 +39,11 @@ const testimonials = [
     ],
   },
   {
-    name: 'JANOSE BERDEEN I',
+    name: 'swati menon',
     location: 'Chennai',
     rating: 5,
     quote:
-      'Hi I am JANOSE BERDEEN from chennai, Professional approach, decent pricing, excellent quality of food with commitment on the timings. Hassle-free Ordering experience. Hogist, the best small party catering services in chennai ever experienced.',
+      'Recently we had a small bday party at home for just 20 people and we\'re struggling to get the catering done for the same. Then we came across Hogist and then got in touch with them. They were blessing in disguise. They provided amazing food and the service was also great. The delivered the food on time and guests loved the food. The food was delicious and yummy. Thank you so much.',
     tags: [
       { icon: LocalShippingOutlinedIcon, label: 'On-Time Delivery' },
       { icon: RestaurantOutlinedIcon, label: 'Great Food Quality' },
@@ -55,7 +55,7 @@ const testimonials = [
     location: 'Chennai',
     rating: 5,
     quote:
-      'The food is excellent and service is also super taste and today bread halwa is very very tasty. All variety rice, raasam, kara Kulzambu and vegetables are good taste and serve in hot conditions. Butter milk is good really. Over all I love the food taste, presentation, service and conditions all excellent to the core',
+      'The food is excellent and service is also super taste and today bread halwa is very very tasty. All variety rice, raasam, kara Kulzambu and vegetables are good taste and serve in hot conditions. Butter milk is good really. Over all I love the food taste, presentation, service and conditions all excellent to the core.The quality and freshness of dish made the experience truly satisfying.',
     tags: [
       { icon: LocalShippingOutlinedIcon, label: 'On-Time Delivery' },
       { icon: RestaurantOutlinedIcon, label: 'Great Food Quality' },
@@ -88,6 +88,15 @@ export default function Testimonials() {
 
   const goPrev = () => setActiveIndex((i) => (i - 1 + total) % total);
   const goNext = () => setActiveIndex((i) => (i + 1) % total);
+
+  // Auto-scroll: automatically advance the testimonial (right to left) on a
+  // timer, in addition to the manual prev/next arrow clicks above.
+  useEffect(() => {
+    const autoScroll = setInterval(() => {
+      goNext();
+    }, 4000);
+    return () => clearInterval(autoScroll);
+  }, []);
 
    const handleExplore = (event) => {
         if (event.ctrlKey || event.metaKey || event.button === 1) {
@@ -297,7 +306,7 @@ export default function Testimonials() {
                   borderRadius: '18px',
                   p: { xs: 2.5, sm: 3 },
                   mb: 3,
-                  height: { xs: 430, sm: 230, md: 250 },
+                  height: { xs: 'auto', sm: 230, md: 250 },
                   overflowY: 'hidden',
                 }}
               >
