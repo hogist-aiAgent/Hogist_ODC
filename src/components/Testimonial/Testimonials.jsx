@@ -14,7 +14,7 @@ import RoomServiceOutlinedIcon from '@mui/icons-material/RoomServiceOutlined';
 // Drop these into src/assets/Testimonials/ and update the imports.
 import leafCornerImg from '../../assets/Testimonials/veg1.png';
 import tomatoCornerImg from '../../assets/Testimonials/veg2.png';
-import foodTrayImg from '../../assets/Testimonials/testimonial.png';
+import foodTrayImg from '../../assets/Testimonials/foodTray.png';
 
 function getInitials(name) {
   return name
@@ -39,7 +39,7 @@ const testimonials = [
     ],
   },
   {
-    name: 'swati menon',
+    name: 'Swati Menon',
     location: 'Chennai',
     rating: 5,
     quote:

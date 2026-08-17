@@ -111,13 +111,11 @@ export default function TrustedClients() {
             alignItems: 'center',
             width: 'max-content',
             gap: { xs: 4, sm: 5, md: 7 },
-            // Slow, continuous scroll — slower still on larger screens since
-            // more logos are visible at once.
             animation: {
-              xs: 'trustedClientsScroll 40s linear infinite',
-              sm: 'trustedClientsScroll 55s linear infinite',
-              md: 'trustedClientsScroll 70s linear infinite',
-              lg: 'trustedClientsScroll 85s linear infinite',
+              xs: 'trustedClientsScroll 20s linear infinite',
+              sm: 'trustedClientsScroll 15s linear infinite',
+              md: 'trustedClientsScroll 30s linear infinite',
+              lg: 'trustedClientsScroll 25s linear infinite',
             },
             willChange: 'transform',
           }}

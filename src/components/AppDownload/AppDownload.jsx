@@ -11,7 +11,7 @@ const SUBTEXT_MUTED = "#6B6B7A";
 
 export default function AppDownload() {
   return (
-    <Box sx={{ px: { xs: 2, md: 4 }, py: { xs: 4, md: 5 } }}>
+    <Box id="app-download" sx={{ px: { xs: 2, md: 4 }, py: { xs: 4, md: 5 } }}>
       <Box
         sx={{
           position: "relative",

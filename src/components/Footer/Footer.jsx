@@ -22,7 +22,7 @@ const TEXT_LINK = "#B7B7BE";
 const DIVIDER = "rgba(255,255,255,0.08)";
 
 const ourInfoLinks = [
-  { label: "Home", href: "https://hogist.com/application/" },
+  { label: "Home", href: "https://hogist.com/" },
   { label: "About Us", href: "https://hogist.com/our-story" },
   { label: "Our Services", href: "https://hogist.com/service-offered" },
   { label: "Privacy Policy", href: "https://hogist.com/privacy-policy",},
@@ -84,6 +84,8 @@ function FooterLink({ href, children, sx }) {
   return (
     <Link
       href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       underline="none"
       sx={{
         display: "block",
@@ -248,6 +250,8 @@ export default function Footer() {
                   key={label}
                   component="a"
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={label}
                   size="small"
                   sx={{

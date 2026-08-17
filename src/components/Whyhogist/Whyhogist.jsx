@@ -220,7 +220,7 @@ export default function WhyHogist() {
               <Box
                 sx={{
                   position: 'absolute',
-                  top: '64%',
+                  top: '60%',
                   left: { xs: '5%', sm: '6%', md: '7%' },
                   width: { xs: 36, sm: 42, md: 46 },
                   height: { xs: 36, sm: 42, md: 46 },

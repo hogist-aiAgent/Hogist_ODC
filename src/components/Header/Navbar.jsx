@@ -17,8 +17,8 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
-import LocalPhoneRoundedIcon from '@mui/icons-material/LocalPhoneRounded';
 import logo from '../../assets/CompanyLogo/logo.png'
+import SystemUpdateOutlinedIcon from '@mui/icons-material/SystemUpdateOutlined';
 
 const navLinks = [
   { label: 'Home', active:true, href: 'https://hogist.com/' },
@@ -63,6 +63,13 @@ export default function Navbar() {
     }
     event.preventDefault();
     window.open(`https://wa.me/${'15557647627'}`, '_blank');
+  };
+
+  const handleGetAppClick = () => {
+    const section = document.getElementById('app-download');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const handleNavClick = (link) => {
@@ -221,8 +228,8 @@ export default function Navbar() {
            <Button
            component="a"
               variant="contained"
-               onClick={handleWhatsAppClick}
-              startIcon={<LocalPhoneRoundedIcon sx={{ fontSize: { md: 15, lg: 17 } }} />}
+               onClick={handleGetAppClick}
+              startIcon={<SystemUpdateOutlinedIcon sx={{ fontSize: { md: 15, lg: 17 } }} />}
               sx={{
                 px: { md: 1.8, lg: 2.6 },
                 py: { md: 0.7, lg: 0.85 },
@@ -248,7 +255,7 @@ export default function Navbar() {
                 },
               }}
             >
-              Get in Touch
+              GET APP
             </Button>
 
             <Menu
@@ -342,7 +349,12 @@ export default function Navbar() {
                   },
                 }}
               >
-                <ListItemText primary={link.label} />
+                <ListItemText
+                  primary={link.label}
+                  primaryTypographyProps={{
+                    fontFamily: '"open sans", sans-serif',
+                  }}
+                />
               </ListItemButton>
             ))}
 
@@ -351,12 +363,13 @@ export default function Navbar() {
                 fullWidth
                 component="a"
                 variant="contained"
-                startIcon={<LocalPhoneRoundedIcon sx={{ fontSize: 16 }} />}
+                startIcon={<SystemUpdateOutlinedIcon sx={{ fontSize: 16 }} />}
                 sx={{
                   mb: 1.5,
                   borderRadius: 999,
                   textTransform: 'none',
                   fontWeight: 700,
+                  fontFamily: '"open sans", sans-serif',
                   bgcolor: 'primary.main',
                   color: '#efe6dd',
                   boxShadow: 'none',
@@ -365,7 +378,7 @@ export default function Navbar() {
                 }}
                  onClick={handleWhatsAppClick}
               >
-                Get in Touch
+                GET APP
               </Button>
             </Box>
           </List>

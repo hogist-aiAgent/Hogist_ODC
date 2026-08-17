@@ -394,7 +394,7 @@ export default function WhatHogistOffers() {
         >
           {/* soft cream wave, behind */}
           <path
-            d="M0,110 C 220,60 420,150 680,120 C 940,90 1080,40 1260,70 C 1350,86 1400,96 1440,80 L1440,240 Z"
+            d="M0,110 C 220,60 420,150 680,120 C 940,90 1080,40 1260,70 C 1350,86 1400,96 1440,80 L1440,240 L0,240 Z"
             fill="#FBEEE6"
           />
           {/* red wave, front */}

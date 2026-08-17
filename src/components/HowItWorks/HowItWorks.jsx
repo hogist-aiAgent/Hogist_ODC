@@ -121,14 +121,10 @@ export default function HowItWorks() {
 
     const mobileTabletQuery = window.matchMedia('(max-width: 1199.98px)');
     let rafId;
-    const speed = 0.6; // px per frame
+    const speed = 0.35; // px per frame
 
     const step = () => {
-      // The timeline list is rendered twice back-to-back (see render below),
-      // so scrollWidth is exactly 2x one full set's width. Once we've scrolled
-      // past one full set, we shift back by that same width instead of
-      // snapping to 0 - since the content repeats identically, this produces
-      // a seamless, continuous loop with no visible jump.
+   
       const singleSetWidth = el.scrollWidth / 2;
 
       if (mobileTabletQuery.matches && singleSetWidth > 0) {
@@ -489,11 +485,11 @@ export default function HowItWorks() {
                     </Typography>
                   </Stack>
 
-                  {!isLoopLast && (
+                  {!isLoopLast && !isRealLast && (
                     <Box
                       sx={{
                         flex: 1,
-                        display: isRealLast ? { xs: 'flex', lg: 'none' } : 'flex',
+                        display: 'flex',
                         alignItems: 'center',
                         mt: { xs: 2.8, md: 3.3, lg: 3.7 },
                         mx: 0.5,

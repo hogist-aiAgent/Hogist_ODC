@@ -84,6 +84,7 @@ export default function ReadyWhenYouAre() {
                 fontSize: { xs: 12, md: 13 },
                 letterSpacing: '0.14em',
                 mb: 1,
+                fontFamily: '"open sans", sans-serif',
               }}
             >
               READY WHEN YOU ARE
@@ -97,6 +98,7 @@ export default function ReadyWhenYouAre() {
                 lineHeight: { xs: 1.08, sm: 1.05, md: 1.05, lg: 1, xl: 1 },
                 color: '#141418',
                 fontSize: { xs: 34, sm: 44, md: 52, lg: 50, xl: 58 },
+                 fontFamily: '"Montserrat", sans-serif',
                 '@media (min-width:1400px) and (max-width:1600px)': { fontSize: 54 },
               }}
             >
@@ -117,6 +119,7 @@ export default function ReadyWhenYouAre() {
                 fontSize: { xs: 15, md: 16.5 },
                 lineHeight: 1.7,
                 maxWidth: 480,
+                fontFamily: '"open sans", sans-serif',
               }}
             >
               From everyday meals to large-scale events, Hogist takes care of everything —
@@ -136,6 +139,7 @@ export default function ReadyWhenYouAre() {
                 px: 2,
                 py: 1.5,
                 fontSize: 15,
+                fontFamily: '"open sans", sans-serif',
                 fontWeight: 700,
                 letterSpacing: '0.02em',
                 borderRadius: '10px',
@@ -186,6 +190,7 @@ export default function ReadyWhenYouAre() {
                   <Typography
                     sx={{
                       fontSize: { xs: 10.5, sm: 12.5, md: 13.5 },
+                      fontFamily: '"open sans", sans-serif',
                       fontWeight: 600,
                       color: '#1B1B23',
                       textAlign: 'center',
@@ -302,13 +307,13 @@ export default function ReadyWhenYouAre() {
                   <Icon sx={{ color: BRAND_RED, fontSize: 22 }} />
                 </Box>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography sx={{ fontWeight: 700, fontSize: 15.5, color: '#141418' }}>
+                  <Typography sx={{ fontWeight: 700, fontSize: 15.5, color: '#141418', fontFamily: '"open sans", sans-serif', }}>
                     {title}
                   </Typography>
                   {lines.map((line) => (
                     <Typography
                       key={line}
-                      sx={{ fontSize: 13.5, color: TEXT_MUTED, lineHeight: 1.6 }}
+                      sx={{ fontSize: 13.5, color: TEXT_MUTED, lineHeight: 1.6 , fontFamily: '"open sans", sans-serif',}}
                     >
                       {line}
                     </Typography>
@@ -340,10 +345,10 @@ export default function ReadyWhenYouAre() {
               sx={{ flex: 1, px: { md: 3 }, justifyContent: { xs: 'space-between', md: 'flex-start' } }}
             >
               <Box>
-                <Typography sx={{ fontWeight: 700, fontSize: 14.5, color: '#141418' }}>
-                  Chat with us on WhatsApp
+                <Typography sx={{ fontWeight: 700, fontSize: 14.5, color: '#141418',fontFamily: '"open sans", sans-serif', }}>
+                  Talk to us on whatsapp
                 </Typography>
-                <Typography sx={{ fontSize: 13.5, color: TEXT_MUTED, lineHeight: 1.6 }}>
+                <Typography sx={{ fontSize: 13.5, color: TEXT_MUTED, lineHeight: 1.6,fontFamily: '"open sans", sans-serif', }}>
                   Scan the QR code
                   <br />
                   to start a chat
@@ -385,7 +390,7 @@ export default function ReadyWhenYouAre() {
       <Box sx={{  py: { xs: 2.5, md: 3 } }}>
         <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
           <RoomServiceRoundedIcon sx={{ color: BRAND_RED, fontSize: 18 }} />
-          <Typography sx={{ fontSize: { xs: 13.5, md: 15 }, fontWeight: 600, color: '#141418' }}>
+          <Typography sx={{ fontSize: { xs: 13.5, md: 15 }, fontWeight: 600, color: '#141418', fontFamily: '"open sans", sans-serif', }}>
             Good food.{' '}
             <Box
               component="span"

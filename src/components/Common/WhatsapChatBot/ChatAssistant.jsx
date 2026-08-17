@@ -80,7 +80,7 @@ export default function ChatAssistant({ isOpen, setIsOpen }) {
             borderRadius: "20px",
             boxShadow: "0 8px 28px rgba(0,0,0,0.18)",
             fontWeight: 600,
-            zIndex: 10000,
+            zIndex: 1000,
             color: "#1a1a1a",
             whiteSpace: "nowrap",
             animation: `${slideUp} .4s ease`,
