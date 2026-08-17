@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Container, Typography, Link, Stack, IconButton } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Container, Typography, Link, Stack, IconButton, Fab } from "@mui/material";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import XIcon from "@mui/icons-material/X";
@@ -9,6 +9,7 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import AppleIcon from "@mui/icons-material/Apple";
+import KeyboardArrowUp from "@mui/icons-material/KeyboardArrowUp";
 import logo from '../../assets/CompanyLogo/logo.png';
 import PlayStoreButton from '../../assets/Footer/GooglePlayButton.webp'
 import AppStoreButton from '../../assets/Footer/AppStoreButton.webp'
@@ -101,6 +102,26 @@ function FooterLink({ href, children, sx }) {
 }
 
 export default function Footer() {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const hero = document.getElementById("hero-section");
+    const heroHeight = hero?.offsetHeight || 300;
+
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > heroHeight);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleScrollTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <Box component="footer" sx={{ bgcolor: BG_DARK, pt: { xs: 5, md: 8, lg:3 }, pb: { xs: 4, md: 5,lg:4 } }}>
       <Container
@@ -271,6 +292,25 @@ export default function Footer() {
           </Typography>
         </Box>
       </Container>
+
+      {/* ---- scroll to top ---- */}
+      {showScrollTop && (
+        <Fab
+          onClick={handleScrollTop}
+          aria-label="scroll to top"
+          sx={{
+            position: "fixed",
+            bottom: 110,
+            right: 13,
+            zIndex: 1000,
+            bgcolor: BRAND_RED,
+            color: "#fff",
+            "&:hover": { bgcolor: "#ae0707ff" },
+          }}
+        >
+          <KeyboardArrowUp />
+        </Fab>
+      )}
     </Box>
   );
 }

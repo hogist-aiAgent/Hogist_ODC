@@ -12,12 +12,16 @@ import WhatHogistOffers from './components/WhatOffers/WhatHogistOffers'
 import WhyHogist from './components/Whyhogist/Whyhogist';
 import ReadyWhenYouAre from './components/ReadyWhenYouare/Readywhenyouare';
 import FAQ from './components/FAQ/Faq';
+import ChatWidget from './components/Common/WhatsapChatBot/ChatWidget';
+import WhatsAppButton from './components/Common/WhatsapChatBot/WhatsAppButton';
 
 function App() {
   return (
     <>
       <CssBaseline />
       <Preloader />
+      <WhatsAppButton phoneNumber={'15557647627'}/>
+      <ChatWidget/>
       <Navbar />
       <Hero />
       <WhatHogistOffers/>

@@ -9,6 +9,7 @@ import ChatBubbleOutlineRoundedIcon from '@mui/icons-material/ChatBubbleOutlineR
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import watsappQrCode from '../../assets/Readywhenyouare/watsapQrCode.png'
+import useChatStore from '../Common/store/useChatStore';
 
 import ctaImg from '../../assets/Readywhenyouare/Readywhenyouare.png';
 
@@ -22,14 +23,6 @@ const highlights = [
   { icon: CelebrationOutlinedIcon, label: 'Events & Parties' },
   { icon: RoomServiceOutlinedIcon, label: 'Cafeteria Management' },
 ];
-
-const handleWhatsAppClick = (event) => {
-    if (event.ctrlKey || event.metaKey || event.button === 1) {
-      return;
-    }
-    event.preventDefault();
-    window.open(`https://wa.me/${'15557647627'}`, '_blank');
-  };
 
 const contactCols = [
   {
@@ -51,6 +44,8 @@ const contactCols = [
 ];
 
 export default function ReadyWhenYouAre() {
+  const openChat = useChatStore((state) => state.openChat);
+
   return (
     <Box
     id="contact-us"
@@ -320,7 +315,7 @@ export default function ReadyWhenYouAre() {
                 {trailingArrow && (
                   <IconButton
                     aria-label="Chat with us"
-                    onClick={handleWhatsAppClick}
+                    onClick={openChat}
                     sx={{
                       alignSelf: 'center',
                       flexShrink: 0,
