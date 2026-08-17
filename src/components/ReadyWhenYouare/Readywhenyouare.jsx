@@ -213,6 +213,8 @@ export default function ReadyWhenYouAre() {
             component="img"
             src={ctaImg}
             alt="Catering spread ready for an event"
+            loading="lazy"
+            decoding="async"
             sx={{
               position: { lg: 'absolute' },
               inset: 0,
@@ -363,6 +365,8 @@ export default function ReadyWhenYouAre() {
                   component="img"
                   src={watsappQrCode}
                   alt="Scan to chat with Hogist on WhatsApp"
+                  loading="lazy"
+                  decoding="async"
                   sx={{
                     width: '100%',
                     height: '100%',

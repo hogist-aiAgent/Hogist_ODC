@@ -375,6 +375,8 @@ export default function FAQ() {
             component="img"
             src={laptopImg}
             alt="Hogist on a laptop screen"
+            loading="lazy"
+            decoding="async"
             sx={{
               display: { xs: 'none', md: 'block' },
               position: 'absolute',
@@ -392,6 +394,8 @@ export default function FAQ() {
             component="img"
             src={laptopImg}
             alt="Hogist on a laptop screen"
+            loading="lazy"
+            decoding="async"
             sx={{
               display: { xs: 'block', md: 'none' },
               width: '55%',

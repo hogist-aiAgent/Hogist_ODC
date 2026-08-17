@@ -139,6 +139,8 @@ export default function Footer() {
             component="img"
             src={logo}
             alt="Hogist Logo"
+            loading="lazy"
+            decoding="async"
             sx={{
               display: "block",
               height: { xs: 42, sm: 48, md: 48, lg: 60, xl: 66 },
@@ -276,6 +278,8 @@ export default function Footer() {
                   component="img"
                   src={PlayStoreButton}
                   alt="Get it on Google Play"
+                  loading="lazy"
+                  decoding="async"
                   sx={{ display: "block", height: 36, width: "auto" }}
                 />
               </Link>

@@ -139,6 +139,7 @@ export default function TrustedClients() {
                 src={logo}
                 alt="Trusted client logo"
                 loading="lazy"
+                decoding="async"
                 draggable={false}
                 sx={{
                   maxWidth: '100%',

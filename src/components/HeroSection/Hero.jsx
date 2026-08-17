@@ -72,6 +72,8 @@ const locationSearchRef = useRef(null);
       component="img"
       src={bgImg}
       alt=""
+      loading="lazy"
+      decoding="async"
       sx={{
         position: 'absolute',
         inset: 0,
@@ -448,6 +450,8 @@ const locationSearchRef = useRef(null);
                   component="img"
                   src={orderImg}
                   alt="Order food"
+                  loading="lazy"
+                  decoding="async"
                   sx={{
                     width: {
                       xs: '100%',
@@ -497,6 +501,8 @@ const locationSearchRef = useRef(null);
               component="img"
               src={orderImg}
               alt="Order food"
+              loading="lazy"
+              decoding="async"
               sx={{
                 width: '100%',
                 maxWidth: { md: 460, lg: 500, xl: 650 },

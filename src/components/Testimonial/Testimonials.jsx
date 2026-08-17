@@ -114,6 +114,8 @@ export default function Testimonials() {
         src={leafCornerImg}
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         sx={{
           position: 'absolute',
           top: 0,
@@ -132,6 +134,8 @@ export default function Testimonials() {
         src={tomatoCornerImg}
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         sx={{
           position: 'absolute',
           top: 0,
@@ -381,6 +385,8 @@ export default function Testimonials() {
                 component="img"
                 src={foodTrayImg}
                 alt="Hogist meal tray delivery"
+                loading="lazy"
+                decoding="async"
                 sx={{
                   width: '100%',
                   height: '100%',

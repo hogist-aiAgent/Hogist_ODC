@@ -302,6 +302,8 @@ export default function WhatHogistOffers() {
                     className="offer-card-img"
                     src={offer.img}
                     alt={`${offer.title[0]} ${offer.title[1]}`}
+                    loading="lazy"
+                    decoding="async"
                     sx={{
                       width: '100%',
                       height: '100%',

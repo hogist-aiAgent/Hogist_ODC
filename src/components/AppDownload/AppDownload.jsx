@@ -61,7 +61,7 @@ export default function AppDownload() {
                   rel="noopener noreferrer"
                   sx={{ display: "inline-flex", lineHeight: 0 }}
                 >
-                  <Box component="img" src={playStore} alt="Get it on Google Play" sx={{ display: "block", height: 48, width: "auto" }} />
+                  <Box component="img" src={playStore} alt="Get it on Google Play" loading="lazy" decoding="async" sx={{ display: "block", height: 48, width: "auto" }} />
                 </Link>
                 {/* <Link
                   href="#"
@@ -95,6 +95,8 @@ export default function AppDownload() {
                 component="img"
                 src={phoneImg}
                 alt="Hogist app on phone"
+                loading="lazy"
+                decoding="async"
                 sx={{
                   position: "absolute",
                   top: 0,

@@ -139,6 +139,8 @@ export default function Navbar() {
               component="img"
               src={logo}
               alt="Hogist Logo"
+              loading="lazy"
+              decoding="async"
               sx={{
                 height: { xs: 42, sm: 48, md: 48, lg: 60, xl: 66  },
                 width: 'auto',

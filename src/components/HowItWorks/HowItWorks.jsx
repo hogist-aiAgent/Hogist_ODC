@@ -278,6 +278,8 @@ export default function HowItWorks() {
                     component="img"
                     src={step.img}
                     alt={step.title}
+                    loading="lazy"
+                    decoding="async"
                     sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
                   />
                 </Box>

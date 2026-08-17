@@ -181,6 +181,8 @@ export default function WhyHogist() {
                 component="img"
                 src={kitchenImg}
                 alt="Hogist kitchen team packing meals"
+                loading="lazy"
+                decoding="async"
                 sx={{
                   width: '100%',
                   height: '100%',

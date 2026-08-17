@@ -167,7 +167,7 @@ const ChatWidget = () => {
             >
               <Box display="flex" gap={1.5} alignItems="center">
                 <Box position="relative">
-                  <Avatar src={avatarIcon} sx={{ width: 38, height: 38 }} />
+                  <Avatar src={avatarIcon} imgProps={{ loading: "lazy", decoding: "async" }} sx={{ width: 38, height: 38 }} />
 
                   {/* Online Indicator */}
                   {/* <Box
@@ -242,6 +242,7 @@ const ChatWidget = () => {
                       {isAssistant && (
                         <Avatar
                           src={avatarIcon}
+                          imgProps={{ loading: "lazy", decoding: "async" }}
                           sx={{ width: 32, height: 32 }}
                         />
                       )}
