@@ -358,8 +358,10 @@ const locationSearchRef = useRef(null);
             {/* Trust features strip */}
             <Box
               sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
+                display: { xs: 'grid', sm: 'flex', md: 'flex' },
+                gridTemplateColumns: { xs: 'repeat(2, 1fr)' },
+                justifyItems: { xs: 'center' },
+                flexWrap: { xs: 'nowrap', sm: 'nowrap', md: 'nowrap' },
                 justifyContent: { xs: 'center', md: 'flex-start' },
                 gap: { xs: 3, sm: 2.5, md: 1.6, lg: 2.5, xl: 3 },
                 width: '100%',
@@ -371,6 +373,7 @@ const locationSearchRef = useRef(null);
                 ...fadeSlideUp,
                 opacity: 0,
                 animation: 'heroFadeSlideUp 0.65s ease 0.58s forwards',
+                ml:{xs:1}
               }}
             >
               {trustFeatures.map(({ icon: Icon, title, subtitle }) => (
@@ -379,6 +382,8 @@ const locationSearchRef = useRef(null);
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
+                    justifyContent: { xs: 'flex-start', md: 'flex-start' },
+                    width: { xs: '100%', md: 'auto' },
                     gap: 1,
                   }}
                 >

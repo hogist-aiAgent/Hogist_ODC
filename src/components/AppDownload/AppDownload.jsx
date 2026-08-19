@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Container, Typography, Stack, Link } from "@mui/material";
-import phoneImg from "../../assets/AppDownload/phoneImage.png";
+import phoneImg from "../../assets/AppDownload/phnImg.png";
 import QRCode from "../../assets/AppDownload/qr.png";
 import playStore from "../../assets/Footer/GooglePlayButton.webp";
 import appStore from "../../assets/Footer/AppStoreButton.webp";

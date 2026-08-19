@@ -231,28 +231,58 @@ export default function Navbar() {
                onClick={handleGetAppClick}
               startIcon={<SystemUpdateOutlinedIcon sx={{ fontSize: { md: 15, lg: 17 } }} />}
               sx={{
-                px: { md: 1.8, lg: 2.6 },
-                py: { md: 0.7, lg: 0.85 },
+                position: 'relative',
+                overflow: 'hidden',
+                px: { md: 2.1, lg: 3 },
+                py: { md: 0.75, lg: 0.9 },
                 borderRadius: 999,
                 textTransform: 'none',
-                fontWeight: 700,
+                fontWeight: 800,
                 fontFamily: '"open sans", sans-serif',
-                fontSize: { md: '0.78rem', lg: '0.87rem' },
-                bgcolor: 'primary.main',
-                color: '#efe6dd',
-                boxShadow: 'none',
-                border: '1.5px solid #efe6dd',
-                
+                fontSize: { md: '0.8rem', lg: '0.9rem' },
+                letterSpacing: '0.3px',
+                background: 'linear-gradient(135deg, #ac1f1f 0%, #d6293e 45%, #9a0002 100%)',
+                color: '#fff',
+                boxShadow: '0 4px 14px rgba(154,0,2,0.45), 0 0 0 1.5px rgba(255,255,255,0.35) inset',
+                border: 'none',
+                animation: 'getAppGlow 2.4s ease-in-out infinite',
+                '@keyframes getAppGlow': {
+                  '0%, 100%': {
+                    boxShadow: '0 4px 14px rgba(154,0,2,0.45), 0 0 0 1.5px rgba(255,255,255,0.35) inset',
+                  },
+                  '50%': {
+                    boxShadow: '0 6px 22px rgba(214,41,62,0.7), 0 0 0 1.5px rgba(255,255,255,0.5) inset',
+                  },
+                },
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: '-75%',
+                  width: '50%',
+                  height: '100%',
+                  background: 'linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent)',
+                  transform: 'skewX(-20deg)',
+                  animation: 'getAppShine 3.2s ease-in-out infinite',
+                },
+                '@keyframes getAppShine': {
+                  '0%': { left: '-75%' },
+                  '35%': { left: '130%' },
+                  '100%': { left: '130%' },
+                },
+
                 '@media (min-width:1400px) and (max-width:1600px)': {
-                  px: 2.2,
-                  py: 0.85,
-                  fontSize: '0.87rem',
+                  px: 2.6,
+                  py: 0.9,
+                  fontSize: '1rem',
                 },
 
                 '&:hover': {
-                  bgcolor: 'primary.dark',
-                  boxShadow: 'none',
+                  background: 'linear-gradient(135deg, #ac1f1f 0%, #e12e45 45%, #ae0003 100%)',
+                  transform: 'translateY(-2px) scale(1.04)',
+                  boxShadow: '0 8px 26px rgba(154,0,2,0.55), 0 0 0 1.5px rgba(255,255,255,0.5) inset',
                 },
+                transition: 'transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease',
               }}
             >
               GET APP
@@ -365,16 +395,47 @@ export default function Navbar() {
                 variant="contained"
                 startIcon={<SystemUpdateOutlinedIcon sx={{ fontSize: 16 }} />}
                 sx={{
+                  position: 'relative',
+                  overflow: 'hidden',
                   mb: 1.5,
                   borderRadius: 999,
                   textTransform: 'none',
-                  fontWeight: 700,
+                  fontWeight: 800,
+                  letterSpacing: '0.3px',
                   fontFamily: '"open sans", sans-serif',
-                  bgcolor: 'primary.main',
-                  color: '#efe6dd',
-                  boxShadow: 'none',
-                  border: '1.5px solid #efe6dd',
-                  '&:hover': { bgcolor: 'primary.dark', boxShadow: 'none' },
+                  background: 'linear-gradient(135deg, #ac1f1f 0%, #d6293e 45%, #9a0002 100%)',
+                  color: '#fff',
+                  boxShadow: '0 4px 14px rgba(154,0,2,0.45), 0 0 0 1.5px rgba(255,255,255,0.35) inset',
+                  border: 'none',
+                  animation: 'getAppGlowMobile 2.4s ease-in-out infinite',
+                  '@keyframes getAppGlowMobile': {
+                    '0%, 100%': {
+                      boxShadow: '0 4px 14px rgba(154,0,2,0.45), 0 0 0 1.5px rgba(255,255,255,0.35) inset',
+                    },
+                    '50%': {
+                      boxShadow: '0 6px 22px rgba(214,41,62,0.7), 0 0 0 1.5px rgba(255,255,255,0.5) inset',
+                    },
+                  },
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: '-75%',
+                    width: '50%',
+                    height: '100%',
+                    background: 'linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent)',
+                    transform: 'skewX(-20deg)',
+                    animation: 'getAppShineMobile 3.2s ease-in-out infinite',
+                  },
+                  '@keyframes getAppShineMobile': {
+                    '0%': { left: '-75%' },
+                    '35%': { left: '130%' },
+                    '100%': { left: '130%' },
+                  },
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #ac1f1f 0%, #e12e45 45%, #ae0003 100%)',
+                    boxShadow: '0 8px 26px rgba(154,0,2,0.55), 0 0 0 1.5px rgba(255,255,255,0.5) inset',
+                  },
                 }}
                  onClick={handleWhatsAppClick}
               >
