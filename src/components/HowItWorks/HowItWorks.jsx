@@ -121,7 +121,7 @@ export default function HowItWorks() {
 
     const mobileTabletQuery = window.matchMedia('(max-width: 1199.98px)');
     let rafId;
-    const speed = 0.35; // px per frame
+    const speed = 0.4; // px per frame
 
     const step = () => {
    
