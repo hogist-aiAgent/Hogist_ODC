@@ -10,9 +10,9 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import AppleIcon from "@mui/icons-material/Apple";
 import KeyboardArrowUp from "@mui/icons-material/KeyboardArrowUp";
-import logo from '../../assets/CompanyLogo/logo.png';
-import PlayStoreButton from '../../assets/Footer/GooglePlayButton.webp'
-import AppStoreButton from '../../assets/Footer/AppStoreButton.webp'
+import logo from '../../../assets/CompanyLogo/logo.png';
+import PlayStoreButton from '../../../assets/Footer/GooglePlayButton.webp'
+import AppStoreButton from '../../../assets/Footer/AppStoreButton.webp'
 
 // Brand tokens — keep in sync with the shared MUI theme
 const BRAND_RED = "#D6293E";

@@ -17,7 +17,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
-import logo from '../../assets/CompanyLogo/logo.png'
+import logo from '../../../assets/CompanyLogo/logo.png'
 import SystemUpdateOutlinedIcon from '@mui/icons-material/SystemUpdateOutlined';
 
 const navLinks = [
