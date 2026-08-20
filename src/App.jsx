@@ -1,9 +1,9 @@
-import OdcPage from "./Pages/ODCPage/odcPage";
+import MainRoutes from "./routes/MainRoutes";
 
 function App() {
   return (
     <>
-      <OdcPage/>
+      <MainRoutes/>
     </>
   );
 }
