@@ -34,8 +34,7 @@ const DEFAULT_AREAS = [
   "Ashok Nagar"
 ];
 
-// Number of cards to show before the grid needs a "Show More" trigger,
-// chosen so the last visible row still has a slot for the toggle card.
+
 const INITIAL_VISIBLE_COUNT = 11;
 
 export default function ServiceAreas({

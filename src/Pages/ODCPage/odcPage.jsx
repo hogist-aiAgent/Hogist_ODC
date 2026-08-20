@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useNavigate } from 'react-router-dom';
 import Preloader from '../../components/Common/Preloader/Preloader'
 import Navbar from '../../components/Layout/Header/Navbar';
 import Hero from '../../components/ODC/HeroSection/Hero';
+import Snackbar from '../../components/Common/Snackbar/Snackbar';
 import { isChennaiLocation } from '../../utils/chennaiLocation';
 import HowItWorks from '../../components/ODC/HowItWorks/HowItWorks';
 import TrustedClients from '../../components/ODC/TrustedClients/TrustedClients';
@@ -19,18 +21,25 @@ import WhatsAppButton from '../../components/Common/WhatsapChatBot/WhatsAppButto
 
 function OdcPage() {
   const navigate = useNavigate();
+  const [notice, setNotice] = useState({ open: false, message: '', severity: 'info' });
+
+  const closeNotice = () => setNotice((prev) => ({ ...prev, open: false }));
 
   // Called by Hero (via LocationSearchBox's confirm()) once a location is
   // picked. Only navigates to the Menu page if the picked location is
   // inside the Chennai/Chengalpattu/Kanchipuram service metro; otherwise
-  // it stays on this page.
+  // it stays on this page and shows a snackbar instead.
   const handleLocationConfirm = (selectedLocation) => {
     const locationText = selectedLocation?.full || selectedLocation?.label || '';
 
     if (isChennaiLocation(locationText)) {
       navigate('/Menu', { state: { selectedLocation } });
     } else {
-      alert('Sorry, we currently deliver only within Chennai, Chengalpattu and Kanchipuram. Please choose a location within our service area.');
+      setNotice({
+        open: true,
+        message: 'Sorry, we currently deliver only within Chennai, Chengalpattu and Kanchipuram. Please choose a location within our service area.',
+        severity: 'error',
+      });
     }
   };
 
@@ -42,6 +51,12 @@ function OdcPage() {
       <ChatWidget/>
       <Navbar />
       <Hero onLocationConfirm={handleLocationConfirm} />
+      <Snackbar
+        open={notice.open}
+        message={notice.message}
+        severity={notice.severity}
+        onClose={closeNotice}
+      />
       <WhatHogistOffers/>
       <HowItWorks />
       <TrustedClients />

@@ -15,7 +15,7 @@ const locationSearchRef = useRef(null);
       sx={{
         position: 'relative',
         overflow: 'hidden',
-        minHeight: { xs: 'auto', md: '90vh', lg: '100vh', xl: '90vh' },
+        minHeight: { xs: '70vh', sm: '80vh', md: '90vh', lg: '100vh', xl: '90vh' },
         display: { xs: 'block', sm: 'block', md: 'block', lg: 'flex', xl: 'block' },
         flexDirection: { lg: 'column' },
         justifyContent: { lg: 'center' },

@@ -12,17 +12,14 @@ import {
   Stack,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import AddIcon from "@mui/icons-material/Add";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import allRestaurants, { filterNearbyRestaurants } from "../../../data/restaurants";
 
-// ---- Same UI as before (dark maroon banner, ribbon badges, bold rounded
-// cards, circular action button on the image). Restaurant data now lives in
-// src/data/restaurants.js and is filtered here by the location the user
-// picked on the Home page (passed through react-router navigation state).
 
 const GOLD = "#F5A623";
+const WHITE = "#FFF";
 
 function CatererCard({ c }) {
   return (
@@ -63,7 +60,7 @@ function CatererCard({ c }) {
             top: 0,
             left: 0,
             bgcolor: "primary.main",
-            color: GOLD,
+            color: WHITE,
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: 0.5,
@@ -102,24 +99,29 @@ function CatererCard({ c }) {
           </Typography>
         </Stack>
 
-        {/* Quick-view circular button */}
-        <IconButton
-          aria-label={`Quick view ${c.name}`}
+        {/* View menu button */}
+        <Button
+          aria-label={`View menu for ${c.name}`}
+          startIcon={<VisibilityIcon sx={{ fontSize: 16 }} />}
           sx={{
             position: "absolute",
-            bottom: -20,
-            right: 16,
-            width: 44,
-            height: 44,
+            bottom: 11,
+            right: 10,
+            height: 30,
+            px: 2,
             bgcolor: "primary.main",
-            color: GOLD,
-            border: "2px solid #fff",
+            color: WHITE,
+        
             boxShadow: 3,
+            borderRadius: 999,
+            textTransform: "none",
+            fontSize: 12,
+            fontWeight: 700,
             "&:hover": { bgcolor: "primary.dark" },
           }}
         >
-          <AddIcon />
-        </IconButton>
+          View
+        </Button>
       </Box>
 
       {/* Text content */}
@@ -174,9 +176,6 @@ export default function ChooseRestaurant() {
   const selectedLocation = routerLocation.state?.selectedLocation;
   const selectedLocationText = selectedLocation?.full || selectedLocation?.label || "";
 
-  // Restaurants near the picked location. Falls back to the full list when
-  // no location was passed (e.g. someone lands on /Menu directly) or when
-  // nothing nearby matched, so the page is never left empty.
   const { list: caterers, isFallback } = useMemo(() => {
     if (!selectedLocationText) {
       return { list: allRestaurants, isFallback: false };
@@ -188,7 +187,7 @@ export default function ChooseRestaurant() {
   }, [selectedLocationText]);
 
   return (
-    <Box sx={{ bgcolor: "background.default", py: { xs: 6, md: 8 } }}>
+    <Box sx={{ bgcolor: "background.default", py: { xs: 6, md: 4 } }}>
       <Container maxWidth="lg">
         {/* Header banner */}
         <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
@@ -229,23 +228,6 @@ export default function ChooseRestaurant() {
           ))}
         </Grid>
 
-        {/* Bottom CTA */}
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 7 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            endIcon={<ArrowForwardIcon />}
-            sx={{
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: 1,
-              px: 4,
-              py: 1.2,
-            }}
-          >
-            View All Caterers
-          </Button>
-        </Box>
       </Container>
     </Box>
   );
