@@ -142,6 +142,7 @@ function CatererCard({ c }) {
             borderBottomRightRadius: 999,
             borderTopLeftRadius: 500,
             boxShadow: 2,
+              fontFamily: '"open sans", sans-serif',
           }}
         >
           {c.ribbon}
@@ -179,7 +180,7 @@ function CatererCard({ c }) {
           }}
         >
           <StarIcon sx={{ fontSize: 14 }} />
-          <Typography component="span" sx={{ fontSize: 12, fontWeight: 700, lineHeight: 1 }}>
+          <Typography component="span" sx={{ fontSize: 12, fontWeight: 700, lineHeight: 1,  fontFamily: '"open sans", sans-serif', }}>
             {c.rating}
           </Typography>
         </Stack>
@@ -201,6 +202,7 @@ function CatererCard({ c }) {
             borderRadius: 999,
             textTransform: "none",
             fontSize: 12,
+              fontFamily: '"open sans", sans-serif',
             fontWeight: 700,
             "&:hover": { bgcolor: "primary.dark" },
           }}
@@ -218,17 +220,18 @@ function CatererCard({ c }) {
             textTransform: "uppercase",
             fontSize: 15,
             lineHeight: 1.3,
+            fontFamily: '"open sans", sans-serif',
           }}
         >
           {c.name}
         </Typography>
 
-        <Typography sx={{ color: "text.secondary", fontSize: 12, mt: 0.3 }}>
+        <Typography sx={{ color: "text.secondary", fontSize: 12, mt: 0.3,  fontFamily: '"open sans", sans-serif', }}>
           {c.area}
         </Typography>
 
         <Typography
-          sx={{ color: "text.secondary", opacity: 0.7, fontSize: 11, mt: 1, fontFamily: "monospace" }}
+          sx={{ color: "text.secondary", opacity: 0.7, fontSize: 11, mt: 1,  fontFamily: '"open sans", sans-serif',}}
         >
           FSSAI No: {c.fssai}
         </Typography>
@@ -247,6 +250,7 @@ function CatererCard({ c }) {
                 textTransform: "uppercase",
                 border: "1px solid #f6d9dc",
                 height: 22,
+                fontFamily: '"open sans", sans-serif',
               }}
             />
           ))}
@@ -335,6 +339,7 @@ export default function ChooseRestaurant() {
               letterSpacing: 3,
               fontSize: { xs: 22, sm: 28, md: 32 },
               textAlign: "center",
+              fontFamily: '"Montserrat", sans-serif',
             }}
           >
            Caterers
@@ -343,7 +348,7 @@ export default function ChooseRestaurant() {
             <ChevronLinesDecor direction="left" />
           </Box>
         </Stack>
-        <Typography sx={{ textAlign: "center", color: "text.secondary", fontSize: 14, mt: 1, mb: selectedLocation ? 4 : 6 }}>
+        <Typography sx={{ textAlign: "center", color: "text.secondary", fontSize: 14,   fontFamily: '"open sans", sans-serif', mt: 1, mb: selectedLocation ? 4 : 6 }}>
           Caterers near you, picked for taste and trust
         </Typography>
 
