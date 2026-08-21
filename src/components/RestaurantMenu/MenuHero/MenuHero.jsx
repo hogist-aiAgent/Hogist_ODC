@@ -23,30 +23,30 @@ const locationSearchRef = useRef(null);
     >
 
      <Box
-  component="img"
-  src={bgImg}
-  alt=""
-  loading="lazy"
-  decoding="async"
-  sx={{
-    position: 'absolute',
-    inset: 0,
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    objectPosition: {
-      xs: 'right center',
-      sm: 'right center',
-      md: '75% center',
-      lg: 'center center',
-      xl: 'center center',
-    },
-    zIndex: 0,
-    pointerEvents: 'none',
-    userSelect: 'none',
-    display: 'block',
-  }}
-/>
+        component="img"
+        src={bgImg}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          objectPosition: {
+            xs: 'right center',
+            sm: 'right center',
+            md: '75% center',
+            lg: 'center center',
+            xl: 'center center',
+          },
+          zIndex: 0,
+          pointerEvents: 'none',
+          userSelect: 'none',
+          display: 'block',
+        }}
+      />
 
     </Box>
   );

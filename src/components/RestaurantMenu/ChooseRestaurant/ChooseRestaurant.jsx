@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Box,
@@ -16,12 +16,83 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import allRestaurants, { filterNearbyRestaurants } from "../../../data/restaurants";
+import FilterSortBar from "../../Common/FilterSortBar/FilterSortBar";
 
 
 const GOLD = "#F5A623";
 const WHITE = "#FFF";
+const VEG_GREEN = "#2E7D32";
+const NONVEG_RED = "#B3111F";
+
+function getVegNonVegFlags(c) {
+  const hasExplicitVeg = typeof c.isVeg === "boolean";
+  const hasExplicitNonVeg = typeof c.isNonVeg === "boolean";
+
+  if (hasExplicitVeg || hasExplicitNonVeg) {
+    return {
+      veg: hasExplicitVeg ? c.isVeg : false,
+      nonVeg: hasExplicitNonVeg ? c.isNonVeg : false,
+    };
+  }
+
+  const tagText = (c.tags || []).join(" ").toLowerCase();
+  const tagHasVeg = /(^|\s)veg(\s|$)/.test(tagText);
+  const tagHasNonVeg = /non[\s-]?veg/.test(tagText);
+
+  if (tagHasVeg || tagHasNonVeg) {
+    return { veg: tagHasVeg, nonVeg: tagHasNonVeg };
+  }
+
+  // No explicit signal available — assume the caterer offers both.
+  return { veg: true, nonVeg: true };
+}
+
+function VegNonVegSymbol({ type }) {
+  const color = type === "veg" ? VEG_GREEN : NONVEG_RED;
+  return (
+    <Box
+      role="img"
+      aria-label={type === "veg" ? "Veg" : "Non-Veg"}
+      sx={{
+        width: 18,
+        height: 18,
+        border: `1.5px solid ${color}`,
+        borderRadius: "3px",
+        bgcolor: "#fff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: 1,
+      }}
+    >
+      <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: color }} />
+    </Box>
+  );
+}
+
+function ChevronLinesDecor({ direction = "right" }) {
+  // 3 lines fanning out, with a small gap at the point where they nearly meet
+  const flip = direction === "left";
+  return (
+   <Box
+      component="svg"
+      viewBox="0 0 30 36"
+      sx={{
+        width: 24,
+        height: 26,
+        transform: flip ? "scaleX(-1)" : "none",
+      }}
+    >
+      <line x1="2" y1="2" x2="21" y2="12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <line x1="2" y1="18" x2="21" y2="18" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <line x1="2" y1="34" x2="21" y2="24" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </Box>
+  );
+}
 
 function CatererCard({ c }) {
+  const { veg, nonVeg } = getVegNonVegFlags(c);
+
   return (
     <Card
       elevation={3}
@@ -75,6 +146,20 @@ function CatererCard({ c }) {
         >
           {c.ribbon}
         </Box>
+
+        {/* Veg / Non-Veg symbols, top-right */}
+        <Stack
+          direction="row"
+          spacing={0.5}
+          sx={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+          }}
+        >
+          {veg && <VegNonVegSymbol type="veg" />}
+          {nonVeg && <VegNonVegSymbol type="nonveg" />}
+        </Stack>
 
         {/* Rating badge, bottom-left */}
         <Stack
@@ -186,12 +271,61 @@ export default function ChooseRestaurant() {
       : { list: allRestaurants, isFallback: true };
   }, [selectedLocationText]);
 
+  const [searchValue, setSearchValue] = useState("");
+  const [sortValue, setSortValue] = useState("relevance");
+  const [filters, setFilters] = useState({ veg: false, nonVeg: false, rated4: false });
+
+  const handleToggleFilter = (key) => {
+    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+    const filteredCaterers = useMemo(() => {
+    let result = [...caterers];
+
+    const query = searchValue.trim().toLowerCase();
+    if (query) {
+      result = result.filter(
+        (c) =>
+          c.name?.toLowerCase().includes(query) ||
+          c.area?.toLowerCase().includes(query) ||
+          c.tags?.some((t) => t.toLowerCase().includes(query))
+      );
+    }
+
+    const isVeg = (c) =>
+      c.isVeg === true || c.tags?.some((t) => /^veg$/i.test(t.trim()));
+    const isNonVeg = (c) =>
+      c.isNonVeg === true || c.tags?.some((t) => /non[\s-]?veg/i.test(t));
+
+    if (filters.veg || filters.nonVeg) {
+      result = result.filter((c) => {
+        const matchesVeg = filters.veg && isVeg(c);
+        const matchesNonVeg = filters.nonVeg && isNonVeg(c);
+        return matchesVeg || matchesNonVeg;
+      });
+    }
+
+    if (filters.rated4) {
+      result = result.filter((c) => Number(c.rating) >= 4);
+    }
+
+    if (sortValue === "rating_desc") {
+      result = [...result].sort((a, b) => Number(b.rating) - Number(a.rating));
+    } else if (sortValue === "price_asc") {
+      const getPrice = (c) => c.price ?? c.startingPrice ?? c.pricePerPerson ?? Infinity;
+      result = [...result].sort((a, b) => getPrice(a) - getPrice(b));
+    }
+
+    return result;
+  }, [caterers, searchValue, filters, sortValue]);
   return (
     <Box sx={{ bgcolor: "background.default", py: { xs: 6, md: 4 } }}>
       <Container maxWidth="lg">
         {/* Header banner */}
         <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-          <Typography sx={{ color: "primary.main", fontSize: 22 }}>&raquo;</Typography>
+          <Box sx={{ color: "primary.main",position:'relative',top:4.5,left:13 }}>
+            <ChevronLinesDecor direction="right" />
+          </Box>
           <Typography
             variant="h4"
             sx={{
@@ -203,25 +337,28 @@ export default function ChooseRestaurant() {
               textAlign: "center",
             }}
           >
-            Results Nearby
+           Caterers
           </Typography>
-          <Typography sx={{ color: "primary.main", fontSize: 22 }}>&laquo;</Typography>
+          <Box sx={{ color: "primary.main",position:'relative',top:4.5,right:20  }}>
+            <ChevronLinesDecor direction="left" />
+          </Box>
         </Stack>
-        <Typography sx={{ textAlign: "center", color: "text.secondary", fontSize: 14, mt: 1, mb: selectedLocation ? 1 : 6 }}>
+        <Typography sx={{ textAlign: "center", color: "text.secondary", fontSize: 14, mt: 1, mb: selectedLocation ? 4 : 6 }}>
           Caterers near you, picked for taste and trust
         </Typography>
 
-        {selectedLocation && (
-          <Typography sx={{ textAlign: "center", color: "text.secondary", fontSize: 13, mb: 6 }}>
-            {isFallback
-              ? `No exact matches near "${selectedLocation.label}" — showing all available caterers.`
-              : `Showing caterers near "${selectedLocation.label}"`}
-          </Typography>
-        )}
+        <FilterSortBar
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          sortValue={sortValue}
+          onSortChange={setSortValue}
+          filters={filters}
+          onToggleFilter={handleToggleFilter}
+        />
 
         {/* Responsive card grid: 1 col mobile, 2 col small, 4 col desktop */}
         <Grid container spacing={{ xs: 4, md: 5 }}>
-          {caterers.map((c) => (
+          {filteredCaterers.map((c) => (
             <Grid item xs={12} sm={6} lg={3} key={c.id}>
               <CatererCard c={c} />
             </Grid>

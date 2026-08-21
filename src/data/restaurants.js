@@ -1,11 +1,3 @@
-// Restaurant/caterer details, kept separate from the UI so ChooseRestaurant.jsx
-// only has to render + filter this list, not own the data.
-//
-// `area` is the human-readable locality shown on the card.
-// `matchKeywords` are lowercase terms checked against the user's selected
-// location text (from LocationSearchBox) to decide if this listing is
-// "nearby" — add aliases/neighbouring localities here to widen a match.
-
 import img1 from '../assets/menu/chosseRestaurent/img1.jpg';
 import img2 from '../assets/menu/chosseRestaurent/img2.jpg';
 
@@ -20,6 +12,8 @@ const restaurants = [
     rating: '4.3',
     ribbon: 'TOP RATED',
     img: img1,
+    isVeg: true,
+    isNonVeg: true,
   },
   {
     id: 2,
@@ -31,6 +25,8 @@ const restaurants = [
     rating: '4.1',
     ribbon: 'POPULAR',
     img: img2,
+    isVeg: true,
+    isNonVeg: true,
   },
   {
     id: 3,
@@ -42,6 +38,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img1,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 4,
@@ -53,6 +51,8 @@ const restaurants = [
     rating: '4.0',
     ribbon: 'NEW',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 5,
@@ -64,6 +64,8 @@ const restaurants = [
     rating: '4.6',
     ribbon: 'TOP RATED',
     img: img1,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 6,
@@ -72,9 +74,11 @@ const restaurants = [
     matchKeywords: ['adyar'],
     fssai: '22417745000934',
     tags: ['South Indian'],
-    rating: '4.2',
+    rating: '3.2',
     ribbon: 'POPULAR',
     img: img2,
+    isVeg: false,
+    isNonVeg: true,
   },
   {
     id: 7,
@@ -86,6 +90,8 @@ const restaurants = [
     rating: '4.0',
     ribbon: 'NEW',
     img: img1,
+    isVeg: false,
+    isNonVeg: true,
   },
   {
     id: 8,
@@ -97,6 +103,8 @@ const restaurants = [
     rating: '4.4',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: true,
   },
   {
     id: 9,
@@ -108,6 +116,8 @@ const restaurants = [
     rating: '3.9',
     ribbon: 'NEW',
     img: img1,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 10,
@@ -119,6 +129,8 @@ const restaurants = [
     rating: '4.1',
     ribbon: 'POPULAR',
     img: img2,
+    isVeg: true,
+    isNonVeg: true,
   },
   {
     id: 11,
@@ -130,6 +142,8 @@ const restaurants = [
     rating: '4.3',
     ribbon: 'TOP RATED',
     img: img1,
+    isVeg: true,
+    isNonVeg: true,
   },
   {
     id: 12,
@@ -141,6 +155,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 13,
@@ -152,6 +168,8 @@ const restaurants = [
     rating: '4.2',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -163,6 +181,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -174,6 +194,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -185,6 +207,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -196,6 +220,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -207,6 +233,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -218,6 +246,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -229,6 +259,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -240,6 +272,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -251,6 +285,8 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
     id: 12,
@@ -262,28 +298,34 @@ const restaurants = [
     rating: '4.5',
     ribbon: 'TOP RATED',
     img: img2,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
-    id: 12,
-    name: 'Mylapore Mess Catering',
-    area: 'Mylapore',
-    matchKeywords: ['mylapore'],
-    fssai: '22414445001774',
+    id: 6,
+    name: 'adyar anandha bhavan',
+    area: 'Adyar',
+    matchKeywords: ['adyar', 'Adyar'],
+    fssai: '22417745000934',
     tags: ['South Indian'],
-    rating: '4.5',
-    ribbon: 'TOP RATED',
-    img: img2,
+    rating: '4.2',
+    ribbon: 'POPULAR',
+    img: img1,
+    isVeg: true,
+    isNonVeg: false,
   },
   {
-    id: 12,
-    name: 'Mylapore Mess Catering',
-    area: 'Mylapore',
-    matchKeywords: ['mylapore'],
-    fssai: '22414445001774',
+    id: 6,
+    name: 'SMS Food',
+    area: 'Adyar',
+    matchKeywords: ['adyar'],
+    fssai: '22417745000934',
     tags: ['South Indian'],
-    rating: '4.5',
-    ribbon: 'TOP RATED',
+    rating: '4.0',
+    ribbon: 'POPULAR',
     img: img2,
+    isVeg: true,
+    isNonVeg: true,
   },
 ];
 
