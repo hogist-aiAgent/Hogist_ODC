@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -40,6 +41,12 @@ export default function Navbar() {
 
   // Scroll state for transparent -> white navbar
   const [scrolled, setScrolled] = useState(false);
+
+  // Route-aware background: Menu page always shows background color,
+  // other pages (e.g. ODC) stay transparent until scrolled.
+  const routerLocation = useLocation();
+  const isMenuPage = routerLocation.pathname.toLowerCase().includes('menu');
+  const showBackground = scrolled || isMenuPage;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,8 +101,8 @@ export default function Navbar() {
       position="fixed"
       elevation={0}
       sx={{
-        bgcolor: scrolled ? '#efe6dd' : 'transparent',
-        boxShadow: scrolled ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
+        bgcolor: showBackground ? '#efe6dd' : 'transparent',
+        boxShadow: showBackground ? '0 2px 8px rgba(0,0,0,0.08)' : 'none',
         transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
         // borderBottom: '1px solid #F0F0F3',
         color: 'text.primary',
@@ -187,16 +194,16 @@ export default function Navbar() {
                   textTransform: 'none',
                   fontFamily: '"Montserrat", sans-serif',
                   color: selectedLink === link.label
-                    ? (scrolled ? '#efe6dd' : '#9a0002')
-                    : (scrolled ? '#9a0002' : '#efe6dd'),
+                    ? (showBackground ? '#efe6dd' : '#9a0002')
+                    : (showBackground ? '#9a0002' : '#efe6dd'),
                   bgcolor: selectedLink === link.label
-                    ? (scrolled ? '#9a0002' : '#efe6dd')
+                    ? (showBackground ? '#9a0002' : '#efe6dd')
                     : 'transparent',
                   '&:hover': {
                     
                     bgcolor: selectedLink === link.label
-                      ? (scrolled ? '#9a0002' : '#efe6dd')
-                      : (scrolled
+                      ? (showBackground ? '#9a0002' : '#efe6dd')
+                      : (showBackground
                           ? 'rgba(154,0,2,0.06)'
                           : 'rgba(255,255,255,0.12)'),
                   },

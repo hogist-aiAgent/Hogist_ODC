@@ -71,7 +71,6 @@ function VegNonVegSymbol({ type }) {
 }
 
 function ChevronLinesDecor({ direction = "right" }) {
-  // 3 lines fanning out, with a small gap at the point where they nearly meet
   const flip = direction === "left";
   return (
    <Box
@@ -98,7 +97,7 @@ function CatererCard({ c }) {
       elevation={3}
       sx={{
         position: "relative",
-        overflow: "visible", // lets the quick-view button float past the image edge
+        overflow: "visible",
         pb: 3,
         height: "100%",
         display: "flex",
@@ -212,7 +211,15 @@ function CatererCard({ c }) {
       </Box>
 
       {/* Text content */}
-      <Box sx={{ px: 2.5, pt: 3 }}>
+      <Box
+        sx={{
+          px: 2.5,
+          pt: 3,
+          display: "flex",
+          flexDirection: "column",
+          flexGrow: 1,
+        }}
+      >
         <Typography
           sx={{
             color: "text.primary",
@@ -236,7 +243,7 @@ function CatererCard({ c }) {
           FSSAI No: {c.fssai}
         </Typography>
 
-        <Stack direction="row" flexWrap="wrap" gap={0.75} sx={{ mt: 1.5 }}>
+        <Stack direction="row" flexWrap="wrap" gap={0.75} sx={{ mt: "auto", pt: 1.5 }}>
           {c.tags.map((tag) => (
             <Chip
               key={tag}
@@ -260,6 +267,16 @@ function CatererCard({ c }) {
   );
 }
 
+const DEFAULT_SELECTED_FILTERS = {
+  cuisine: [],
+  pricePerPerson: [],
+  mealType: [],
+  foodType: [],
+  services: [],
+  dietary: [],
+  ratings: [],
+};
+
 export default function ChooseRestaurant() {
   const routerLocation = useLocation();
   const selectedLocation = routerLocation.state?.selectedLocation;
@@ -277,13 +294,23 @@ export default function ChooseRestaurant() {
 
   const [searchValue, setSearchValue] = useState("");
   const [sortValue, setSortValue] = useState("relevance");
-  const [filters, setFilters] = useState({ veg: false, nonVeg: false, rated4: false });
+  const [selectedFilters, setSelectedFilters] = useState(DEFAULT_SELECTED_FILTERS);
 
-  const handleToggleFilter = (key) => {
-    setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
+  const handleFilterToggle = (groupKey, value) => {
+    setSelectedFilters((prev) => {
+      const current = prev[groupKey] || [];
+      const next = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value];
+      return { ...prev, [groupKey]: next };
+    });
   };
 
-    const filteredCaterers = useMemo(() => {
+  const handleClearAllFilters = () => {
+    setSelectedFilters(DEFAULT_SELECTED_FILTERS);
+  };
+
+  const filteredCaterers = useMemo(() => {
     let result = [...caterers];
 
     const query = searchValue.trim().toLowerCase();
@@ -296,21 +323,35 @@ export default function ChooseRestaurant() {
       );
     }
 
-    const isVeg = (c) =>
-      c.isVeg === true || c.tags?.some((t) => /^veg$/i.test(t.trim()));
-    const isNonVeg = (c) =>
-      c.isNonVeg === true || c.tags?.some((t) => /non[\s-]?veg/i.test(t));
+    const activeGroups = Object.entries(selectedFilters).filter(
+      ([, values]) => values && values.length > 0
+    );
 
-    if (filters.veg || filters.nonVeg) {
+    if (activeGroups.length > 0) {
       result = result.filter((c) => {
-        const matchesVeg = filters.veg && isVeg(c);
-        const matchesNonVeg = filters.nonVeg && isNonVeg(c);
-        return matchesVeg || matchesNonVeg;
-      });
-    }
+        const haystack = [
+          ...(c.tags || []),
+          c.cuisine,
+          c.mealType,
+          c.foodType,
+          c.pricePerPerson,
+          c.services,
+          c.dietary,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
 
-    if (filters.rated4) {
-      result = result.filter((c) => Number(c.rating) >= 4);
+        return activeGroups.every(([groupKey, values]) => {
+          if (groupKey === "ratings") {
+            return values.some((v) => {
+              const threshold = parseFloat(v);
+              return !Number.isNaN(threshold) && Number(c.rating) >= threshold;
+            });
+          }
+          return values.some((v) => haystack.includes(String(v).toLowerCase()));
+        });
+      });
     }
 
     if (sortValue === "rating_desc") {
@@ -318,10 +359,14 @@ export default function ChooseRestaurant() {
     } else if (sortValue === "price_asc") {
       const getPrice = (c) => c.price ?? c.startingPrice ?? c.pricePerPerson ?? Infinity;
       result = [...result].sort((a, b) => getPrice(a) - getPrice(b));
+    } else if (sortValue === "price_desc") {
+      const getPrice = (c) => c.price ?? c.startingPrice ?? c.pricePerPerson ?? -Infinity;
+      result = [...result].sort((a, b) => getPrice(b) - getPrice(a));
     }
 
     return result;
-  }, [caterers, searchValue, filters, sortValue]);
+  }, [caterers, searchValue, selectedFilters, sortValue]);
+
   return (
     <Box sx={{ bgcolor: "background.default", py: { xs: 6, md: 4 } }}>
       <Container maxWidth="lg">
@@ -352,24 +397,30 @@ export default function ChooseRestaurant() {
           Caterers near you, picked for taste and trust
         </Typography>
 
-        <FilterSortBar
-          searchValue={searchValue}
-          onSearchChange={setSearchValue}
-          sortValue={sortValue}
-          onSortChange={setSortValue}
-          filters={filters}
-          onToggleFilter={handleToggleFilter}
-        />
+        {/* Left filters sidebar + right results grid */}
+        <Grid container spacing={{ xs: 3, md: 4 }}>
+          <Grid item xs={12} md={3.5} lg={3}>
+            <FilterSortBar
+              searchValue={searchValue}
+              onSearchChange={setSearchValue}
+              sortValue={sortValue}
+              onSortChange={setSortValue}
+              selectedFilters={selectedFilters}
+              onFilterToggle={handleFilterToggle}
+              onClearAll={handleClearAllFilters}
+            />
+          </Grid>
 
-        {/* Responsive card grid: 1 col mobile, 2 col small, 4 col desktop */}
-        <Grid container spacing={{ xs: 4, md: 5 }}>
-          {filteredCaterers.map((c) => (
-            <Grid item xs={12} sm={6} lg={3} key={c.id}>
-              <CatererCard c={c} />
+          <Grid item xs={12} md={8.5} lg={9}>
+            <Grid container spacing={{ xs: 4, md: 5 }}>
+              {filteredCaterers.map((c) => (
+                <Grid item xs={12} sm={6} lg={4} key={c.id}>
+                  <CatererCard c={c} />
+                </Grid>
+              ))}
             </Grid>
-          ))}
+          </Grid>
         </Grid>
-
       </Container>
     </Box>
   );
