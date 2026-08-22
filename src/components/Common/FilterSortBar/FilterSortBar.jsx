@@ -76,7 +76,7 @@ const SERVICES_OPTIONS = [
   { value: "Disposable Setup", label: "Disposable Setup" },
 ];
 
-const DIATARY_OPTIONS = [
+const DIETARY_OPTIONS = [
   { value: "Vegetarian", label: "Vegetarian" },
   { value: "Non-Vegetarian", label: "Non-Vegetarian" },
   { value: "Jain", label: "Jain" },
@@ -98,16 +98,13 @@ const SORTING_OPTIONS = [
   { value: "Price: High to Low", label: "Price: High to Low" },
 ];
 
-// Each entry drives one independent chip + dropdown menu.
-// key = unique identifier used to track that filter's own anchor/selected value.
-// icon = small visual cue so each filter is scannable at a glance instead of just text.
 const FILTER_GROUPS = [
   { key: "cuisine", label: "Cuisines", options: CUISINES_OPTIONS, icon: RestaurantIcon },
   { key: "pricePerPerson", label: "Price/Person", options: PRICEPERSON_OPTIONS, icon: CurrencyRupeeIcon },
   { key: "mealType", label: "Meal Type", options: MEALTYPE_OPTIONS, icon: AccessTimeIcon },
   { key: "foodType", label: "Food Type", options: FOOD_OPTIONS, icon: LocalDiningIcon },
   { key: "services", label: "Services", options: SERVICES_OPTIONS, icon: RoomServiceIcon },
-  { key: "dietary", label: "Diatary", options: DIATARY_OPTIONS, icon: EcoIcon },
+  { key: "dietary", label: "Dietary", options: DIETARY_OPTIONS, icon: EcoIcon },
   { key: "ratings", label: "Ratings", options: RATINGS_OPTIONS, icon: StarRoundedIcon },
 ];
 
@@ -165,15 +162,15 @@ export default function FilterSortBar({
   };
 
   const chipActiveSx = {
-    background: "linear-gradient(135deg, #C5182A 0%, #E0453A 100%)",
+    background: "linear-gradient(135deg, #b41827 0%, #d73a2f 100%)",
     color: "#fff",
     borderColor: "transparent",
-    boxShadow: "0 4px 14px rgba(179,17,31,0.32)",
+    // boxShadow: "0 4px 14px rgba(179,17,31,0.32)",
     "&:hover": {
       background: "linear-gradient(135deg, #AD1526 0%, #C5382F 100%)",
       borderColor: "transparent",
       transform: "translateY(-1px)",
-      boxShadow: "0 6px 16px rgba(179,17,31,0.38)",
+    //   boxShadow: "0 6px 16px rgba(179,17,31,0.38)",
     },
   };
 
@@ -192,7 +189,7 @@ export default function FilterSortBar({
             <GroupIcon
               sx={{
                 fontSize: 16,
-                color: isActive ? "#fff" : "primary.main",
+                color: isActive ? "#fff !important" : "primary.main",
                 ml: "6px !important",
               }}
             />
@@ -324,9 +321,10 @@ export default function FilterSortBar({
         alignItems: { xs: "stretch", md: "center" },
         gap: { xs: 1.25, sm: 1.5 },
         mb: 4,
-        p: { xs: 1.25, sm: 1.5, md: "10px 14px" },
+        width: "100%",
+        p: { xs: 1.25, sm: 1.5, md: "10px 10px" },
         borderRadius: { xs: "16px", sm: "18px" },
-        bgcolor: "#efe6dd",
+        bgcolor: "#9a0002",
         border: "1px solid rgba(43,33,28,0.06)",
         boxShadow: "0 2px 4px rgba(43,33,28,0.06), 0 12px 28px rgba(43,33,28,0.08)",
       }}
@@ -383,7 +381,7 @@ export default function FilterSortBar({
           display: { xs: "none", md: "block" },
           width: "1px",
           alignSelf: "stretch",
-          bgcolor: "rgba(43,33,28,0.10)",
+          bgcolor: "rgba(249, 246, 245, 0.49)",
         }}
       />
 
