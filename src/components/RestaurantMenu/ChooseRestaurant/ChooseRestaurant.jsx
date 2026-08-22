@@ -268,6 +268,7 @@ function CatererCard({ c }) {
 }
 
 const DEFAULT_SELECTED_FILTERS = {
+  sorting: [],
   cuisine: [],
   pricePerPerson: [],
   mealType: [],
@@ -275,6 +276,19 @@ const DEFAULT_SELECTED_FILTERS = {
   services: [],
   dietary: [],
   ratings: [],
+};
+
+const SORT_COMPARATORS = {
+  relevance: () => 0,
+  nearest: () => 0,
+  popular: () => 0,
+  rating_desc: (a, b) => Number(b.rating) - Number(a.rating),
+  price_asc: (a, b) =>
+    (a.price ?? a.startingPrice ?? a.pricePerPerson ?? Infinity) -
+    (b.price ?? b.startingPrice ?? b.pricePerPerson ?? Infinity),
+  price_desc: (a, b) =>
+    (b.price ?? b.startingPrice ?? b.pricePerPerson ?? -Infinity) -
+    (a.price ?? a.startingPrice ?? a.pricePerPerson ?? -Infinity),
 };
 
 export default function ChooseRestaurant() {
@@ -293,7 +307,6 @@ export default function ChooseRestaurant() {
   }, [selectedLocationText]);
 
   const [searchValue, setSearchValue] = useState("");
-  const [sortValue, setSortValue] = useState("relevance");
   const [selectedFilters, setSelectedFilters] = useState(DEFAULT_SELECTED_FILTERS);
 
   const handleFilterToggle = (groupKey, value) => {
@@ -324,7 +337,7 @@ export default function ChooseRestaurant() {
     }
 
     const activeGroups = Object.entries(selectedFilters).filter(
-      ([, values]) => values && values.length > 0
+      ([groupKey, values]) => groupKey !== "sorting" && values && values.length > 0
     );
 
     if (activeGroups.length > 0) {
@@ -354,22 +367,32 @@ export default function ChooseRestaurant() {
       });
     }
 
-    if (sortValue === "rating_desc") {
-      result = [...result].sort((a, b) => Number(b.rating) - Number(a.rating));
-    } else if (sortValue === "price_asc") {
-      const getPrice = (c) => c.price ?? c.startingPrice ?? c.pricePerPerson ?? Infinity;
-      result = [...result].sort((a, b) => getPrice(a) - getPrice(b));
-    } else if (sortValue === "price_desc") {
-      const getPrice = (c) => c.price ?? c.startingPrice ?? c.pricePerPerson ?? -Infinity;
-      result = [...result].sort((a, b) => getPrice(b) - getPrice(a));
+    const activeSorts = selectedFilters.sorting || [];
+    if (activeSorts.length > 0) {
+      result = [...result].sort((a, b) => {
+        for (const sortKey of activeSorts) {
+          const comparator = SORT_COMPARATORS[sortKey];
+          const outcome = comparator ? comparator(a, b) : 0;
+          if (outcome !== 0) return outcome;
+        }
+        return 0;
+      });
     }
 
     return result;
-  }, [caterers, searchValue, selectedFilters, sortValue]);
+  }, [caterers, searchValue, selectedFilters]);
 
   return (
     <Box sx={{ bgcolor: "background.default", py: { xs: 6, md: 4 } }}>
-      <Container maxWidth="lg">
+      <Container
+        maxWidth="lg"
+        sx={{
+          "@media (min-width:1400px) and (max-width:1600px)": {
+            maxWidth: "1400px",
+            px: 2,
+          },
+        }}
+      >
         {/* Header banner */}
         <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
           <Box sx={{ color: "primary.main",position:'relative',top:4.5,left:13 }}>
@@ -403,8 +426,6 @@ export default function ChooseRestaurant() {
             <FilterSortBar
               searchValue={searchValue}
               onSearchChange={setSearchValue}
-              sortValue={sortValue}
-              onSortChange={setSortValue}
               selectedFilters={selectedFilters}
               onFilterToggle={handleFilterToggle}
               onClearAll={handleClearAllFilters}
