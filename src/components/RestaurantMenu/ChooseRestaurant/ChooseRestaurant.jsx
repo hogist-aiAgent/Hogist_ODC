@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -10,10 +10,13 @@ import {
   Button,
   IconButton,
   Stack,
+  Breadcrumbs,
+  Link,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 import allRestaurants, { filterNearbyRestaurants } from "../../../data/restaurants";
 import FilterSortBar from "../../Common/FilterSortBar/FilterSortBar";
@@ -293,6 +296,7 @@ const SORT_COMPARATORS = {
 
 export default function ChooseRestaurant() {
   const routerLocation = useLocation();
+  const navigate = useNavigate();
   const selectedLocation = routerLocation.state?.selectedLocation;
   const selectedLocationText = selectedLocation?.full || selectedLocation?.label || "";
 
@@ -321,6 +325,10 @@ export default function ChooseRestaurant() {
 
   const handleClearAllFilters = () => {
     setSelectedFilters(DEFAULT_SELECTED_FILTERS);
+  };
+
+  const handleHomeClick = () => {
+    navigate(-1);
   };
 
   const filteredCaterers = useMemo(() => {
@@ -393,6 +401,38 @@ export default function ChooseRestaurant() {
           },
         }}
       >
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          separator={<NavigateNextIcon fontSize="small" />}
+          sx={{ mb: 3, ml: 1 }}
+        >
+          <Link
+            component="button"
+            variant="body2"
+            onClick={handleHomeClick}
+            sx={{
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "primary.main",
+              fontWeight: 600,
+              fontFamily: '"open sans", sans-serif',
+              
+            }}
+          >
+            Home
+          </Link>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              fontWeight: 500,
+              fontFamily: '"open sans", sans-serif',
+            }}
+          >
+            Caterers
+          </Typography>
+        </Breadcrumbs>
+
         {/* Header banner */}
         <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
           <Box sx={{ color: "primary.main",position:'relative',top:4.5,left:13 }}>
