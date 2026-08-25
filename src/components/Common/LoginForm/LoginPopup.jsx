@@ -43,13 +43,21 @@ const LoginPopup = ({ open, onClose }) => {
       fullWidth
       PaperProps={{
         sx: {
-          borderRadius: '18px',
+          // Mobile (xs): edge-to-edge full-screen card — no radius, no margin,
+          // fills the entire viewport, matching the reference mobile UI.
+          // sm and up: unchanged (same floating card as before).
+          borderRadius: { xs: 0, sm: '18px' },
           overflow: 'hidden',
-          maxWidth: 860,
-          width: { xs: '94%', sm: '100%' },
-          m: { xs: 1, sm: 3 },
-          height: { sm: 600 },
-          maxHeight: { xs: '95vh', sm: '90vh' },
+          maxWidth: { xs: '100%', sm: 860 },
+          width: { xs: '100%', sm: '100%' },
+          m: { xs: 0, sm: 3 },
+          // Fixed height from sm up (where the two panels sit side by side and
+          // slide against each other) so switching between the shorter Sign In
+          // content and the taller Sign Up content never resizes the card —
+          // only the inner panels scroll if they need more room than this.
+          // maxHeight stays as a safety cap for short viewports.
+          height: { xs: '100%', sm: 600 },
+          maxHeight: { xs: '100%', sm: '90vh' },
         },
       }}
     >
@@ -60,8 +68,8 @@ const LoginPopup = ({ open, onClose }) => {
           flexDirection: { xs: 'column', sm: 'row' },
           overflowX: 'hidden',
           overflowY: 'auto',
-          height: { sm: '100%' },
-          maxHeight: { xs: '95vh', sm: '90vh' },
+          height: { xs: '100%', sm: '100%' },
+          maxHeight: { xs: '100%', sm: '90vh' },
         }}
       >
         <IconButton
@@ -89,8 +97,8 @@ const LoginPopup = ({ open, onClose }) => {
             bgcolor: '#fff',
             px: { xs: 2.5, sm: 4.5, md: 5, lg: 5.5 },
             py: { xs: 3, sm: 2, md: 2.25, lg: 3 },
-            height: { sm: '100%' },
-            overflowY: { sm: 'auto' },
+            height: { xs: '100%', sm: '100%' },
+            overflowY: { xs: 'auto', sm: 'auto' },
             zIndex: 1,
             transform: { sm: isSignUp ? 'translateX(-78.5714%)' : 'translateX(0%)' },
             transition: 'transform 0.65s cubic-bezier(0.65, 0, 0.35, 1)',
