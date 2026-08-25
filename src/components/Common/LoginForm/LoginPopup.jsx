@@ -16,8 +16,9 @@ import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded';
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
 import dinnarIcon from '../../../assets/login/DinnerIcon.png'
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
-import TrackChangesRoundedIcon from '@mui/icons-material/TrackChangesRounded';
+import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
+import CachedRoundedIcon from '@mui/icons-material/CachedRounded';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import GoogleIcon from '@mui/icons-material/Google';
 import foodImage from '../../../assets/login/food.webp'
 
@@ -44,9 +45,9 @@ const features = [
 ];
 
 const trustItems = [
-  { icon: <BoltRoundedIcon sx={{ fontSize: 13 }} />, label: 'Order faster.' },
-  { icon: <TrackChangesRoundedIcon sx={{ fontSize: 13 }} />, label: 'Track easily.' },
-  { icon: <FavoriteRoundedIcon sx={{ fontSize: 13 }} />, label: 'Enjoy more.' },
+  { icon: <CachedRoundedIcon sx={{ fontSize: 13 }} />, label: 'Order faster.' },
+  { icon: <Inventory2OutlinedIcon sx={{ fontSize: 13 }} />, label: 'Track easily.' },
+  { icon: <FavoriteBorderRoundedIcon sx={{ fontSize: 13 }} />, label: 'Enjoy more.' },
 ];
 
 const LoginPopup = ({ open, onClose }) => {
@@ -87,22 +88,9 @@ const LoginPopup = ({ open, onClose }) => {
             display: { xs: 'none', sm: 'flex' },
             flexDirection: 'column',
             overflow: 'hidden',
+            height:'100'
           }}
         >
-          {/* faint doodle texture, top-right */}
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              width: '55%',
-              height: '48%',
-              opacity: 0.12,
-              backgroundImage:
-                'radial-gradient(circle, transparent 0 2px, transparent 2px)',
-              pointerEvents: 'none',
-            }}
-          />
 
           <Box sx={{ position: 'relative', zIndex: 1, px: 3.5, pt: 4 }}>
             <Box sx={{ width: 34, height: 3, bgcolor: RED, borderRadius: 2, mb: 2 }} />
@@ -127,7 +115,7 @@ const LoginPopup = ({ open, onClose }) => {
               sx={{
                 fontFamily: '"open sans", sans-serif',
                 fontSize: '0.83rem',
-                color: 'rgba(255,255,255,0.65)',
+                color: 'rgba(255, 255, 255, 0.81)',
                 mb: 3,
                 maxWidth: 230,
               }}
@@ -168,7 +156,7 @@ const LoginPopup = ({ open, onClose }) => {
                       sx={{
                         fontFamily: '"open sans", sans-serif',
                         fontSize: '0.76rem',
-                        color: 'rgba(255,255,255,0.55)',
+                        color: 'rgba(255, 255, 255, 0.78)',
                       }}
                     >
                       {f.desc}
@@ -216,8 +204,8 @@ const LoginPopup = ({ open, onClose }) => {
             <CloseIcon fontSize="small" />
           </IconButton>
 
-          <Box sx={{ textAlign: 'center', mb: 3 }}>
-            <Box sx={{ position: 'relative', display: 'inline-block', mb: 1.5 }}>
+          <Box sx={{ textAlign: 'center', mb: 1.5 }}>
+            <Box sx={{ position: 'relative', display: 'inline-block', mb: 0 }}>
               <Box component="img" src={dinnarIcon} alt="" sx={{ width: 40, height: 40 }} />
               <FavoriteRoundedIcon
                 sx={{ position: 'absolute', top: -6, left: -10, fontSize: 12, color: RED }}
@@ -233,7 +221,7 @@ const LoginPopup = ({ open, onClose }) => {
                 fontWeight: 800,
                 fontSize: '1.35rem',
                 color: '#1a1a1a',
-                mb: 0.75,
+                mb: 0,
               }}
             >
               Welcome back!
@@ -275,7 +263,7 @@ const LoginPopup = ({ open, onClose }) => {
             value={mobile}
             onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
             inputProps={{ maxLength: 10 }}
-            sx={{ mb: 2 }}
+            sx={{ mb: 1 }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -285,7 +273,7 @@ const LoginPopup = ({ open, onClose }) => {
                       fontWeight: 600,
                       fontSize: '0.9rem',
                       color: '#1a1a1a',
-                      pr: 1.25,
+                      pr: 1.2,
                       borderRight: '1px solid #e2e2e2',
                     }}
                   >
@@ -309,7 +297,7 @@ const LoginPopup = ({ open, onClose }) => {
             onClick={handleContinue}
             sx={{
               py: 1.3,
-              mb: 2,
+              mb: 1,
               borderRadius: '10px',
               textTransform: 'none',
               fontWeight: 700,
@@ -323,7 +311,7 @@ const LoginPopup = ({ open, onClose }) => {
             Continue
           </Button>
 
-          <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 2 }}>
+          <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 1 }}>
             <Divider sx={{ flex: 1 }} />
             <Typography
               sx={{ fontFamily: '"open sans", sans-serif', fontSize: '0.8rem', color: '#9a9a9a' }}
