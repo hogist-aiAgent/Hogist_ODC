@@ -447,7 +447,7 @@ export default function ChooseRestaurant() {
   }, [caterers, searchValue, selectedFilters]);
 
   return (
-    <Box sx={{ bgcolor: "background.default", py: { xs: 6, md: 4 } }}>
+    <Box sx={{ bgcolor: "#FFF", py: { xs: 6, md: 4 } }}>
       <Container
         maxWidth="lg"
         sx={{

@@ -132,7 +132,7 @@ export default function FilterSortBar({
   return (
     <Box
       sx={{
-        bgcolor: "#fff",
+        bgcolor: "#FFFFFF",
         borderRadius: 1.5,
         border: "1px solid rgba(43,33,28,0.08)",
         boxShadow: "0 2px 4px rgba(43,33,28,0.04)",
@@ -151,12 +151,12 @@ export default function FilterSortBar({
           alignItems: "center",
           justifyContent: "space-between",
           px: 2.5,
-          py: 2,
+          py: 1.5,
           flexShrink: 0,
         }}
       >
         <Typography
-          sx={{ fontWeight: 800, fontSize: 18, fontFamily: '"Montserrat", sans-serif' }}
+          sx={{ fontWeight: 800, fontSize: 16, fontFamily: '"Montserrat", sans-serif' }}
         >
           Filters
         </Typography>
@@ -170,7 +170,7 @@ export default function FilterSortBar({
               cursor: "pointer",
               color: "primary.main",
               fontWeight: 700,
-              fontSize: 13,
+              fontSize: 12,
               fontFamily: '"open sans", sans-serif',
               p: 0,
             }}
@@ -181,7 +181,7 @@ export default function FilterSortBar({
       </Box>
 
       {/* Search */}
-      <Box sx={{ px: 2.5, pb: 2, flexShrink: 0 }}>
+      <Box sx={{ px: 2.5, pb: 1.5, flexShrink: 0 }}>
         <TextField
           placeholder="Search caterers"
           value={searchValue}
@@ -193,7 +193,7 @@ export default function FilterSortBar({
             "& .MuiOutlinedInput-root": {
               borderRadius: "999px",
               bgcolor: "#faf7f5",
-              fontSize: 12,
+              fontSize: 11,
               "& fieldset": { borderColor: "rgba(43,33,28,0.10)" },
               "&:hover fieldset": { borderColor: "primary.main" },
               "&.Mui-focused fieldset": { borderColor: "primary.main", borderWidth: "1.5px" },
@@ -238,13 +238,13 @@ export default function FilterSortBar({
           const counts = optionCounts[group.key] || {};
           return (
             <React.Fragment key={group.key}>
-              <Box sx={{ px: 2.5, py: 2.5 }}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
-                  <GroupIcon sx={{ fontSize: 15, color: "primary.main" }} />
+              <Box sx={{ px: 2.5, py: 1.75 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1 }}>
+                  <GroupIcon sx={{ fontSize: 14, color: "primary.main" }} />
                   <Typography
                     sx={{
                       fontWeight: 700,
-                      fontSize: 12,
+                      fontSize: 11,
                       textTransform: "uppercase",
                       letterSpacing: "0.05em",
                       fontFamily: '"open sans", sans-serif',
@@ -268,7 +268,9 @@ export default function FilterSortBar({
                               checked={checked}
                               onChange={() => onFilterToggle?.(group.key, opt.value)}
                               sx={{
+                                p: 0.5,
                                 color: "divider",
+                                "& .MuiSvgIcon-root": { fontSize: 16 },
                                 "&.Mui-checked": { color: "primary.main" },
                               }}
                             />
@@ -285,7 +287,7 @@ export default function FilterSortBar({
                             >
                               <Typography
                                 sx={{
-                                  fontSize: 13,
+                                  fontSize: 12,
                                   fontWeight: checked ? 700 : 500,
                                   color: checked ? "primary.main" : "text.primary",
                                   fontFamily: '"open sans", sans-serif',
@@ -296,7 +298,7 @@ export default function FilterSortBar({
                               {typeof count === "number" && (
                                 <Typography
                                   sx={{
-                                    fontSize: 12,
+                                    fontSize: 11,
                                     color: "text.secondary",
                                     fontFamily: '"open sans", sans-serif',
                                   }}
@@ -306,13 +308,13 @@ export default function FilterSortBar({
                               )}
                             </Box>
                           }
-                          sx={{ m: 0, py: 0.4, width: "100%", "& .MuiFormControlLabel-label": { width: "100%" } }}
+                          sx={{ m: 0, py: 0.15, width: "100%", "& .MuiFormControlLabel-label": { width: "100%" } }}
                         />
                       );
                     })}
                   </FormGroup>
                 ) : (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
                     {group.options.map((opt) => {
                       const checked = selectedForGroup.includes(opt.value);
                       return (
@@ -322,15 +324,15 @@ export default function FilterSortBar({
                           type="button"
                           onClick={() => onFilterToggle?.(group.key, opt.value)}
                           sx={{
-                            px: 2,
-                            py: 0.85,
+                            px: 1.5,
+                            py: 0.55,
                             borderRadius: 999,
                             cursor: "pointer",
                             border: "1.5px solid",
                             borderColor: checked ? "primary.main" : "rgba(43,33,28,0.15)",
                             bgcolor: checked ? "rgba(179,17,31,0.06)" : "#fff",
                             color: checked ? "primary.main" : "text.primary",
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: 700,
                             fontFamily: '"open sans", sans-serif',
                             transition: "all 0.15s ease",
