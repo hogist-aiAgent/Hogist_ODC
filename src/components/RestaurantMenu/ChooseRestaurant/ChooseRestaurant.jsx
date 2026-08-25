@@ -8,18 +8,23 @@ import {
   Typography,
   Chip,
   Button,
-  IconButton,
   Stack,
   Breadcrumbs,
   Link,
+  Select,
+  MenuItem,
+  FormControl,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 import allRestaurants, { filterNearbyRestaurants } from "../../../data/restaurants";
-import FilterSortBar from "../../Common/FilterSortBar/FilterSortBar";
+import FilterSortBar, {
+  FILTER_GROUPS,
+  SORTING_OPTIONS,
+  getActiveFilterChips,
+} from "../../Common/FilterSortBar/FilterSortBar";
 
 
 const GOLD = "#F5A623";
@@ -50,50 +55,67 @@ function getVegNonVegFlags(c) {
   return { veg: true, nonVeg: true };
 }
 
-function VegNonVegSymbol({ type }) {
-  const color = type === "veg" ? VEG_GREEN : NONVEG_RED;
+function DietSquare({ color }) {
   return (
     <Box
-      role="img"
-      aria-label={type === "veg" ? "Veg" : "Non-Veg"}
       sx={{
-        width: 18,
-        height: 18,
+        width: 9,
+        height: 9,
         border: `1.5px solid ${color}`,
-        borderRadius: "3px",
-        bgcolor: "#fff",
+        borderRadius: "2px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        boxShadow: 1,
+        flexShrink: 0,
       }}
     >
-      <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: color }} />
+      <Box sx={{ width: 4, height: 4, borderRadius: "50%", bgcolor: color }} />
     </Box>
   );
 }
 
-function ChevronLinesDecor({ direction = "right" }) {
-  const flip = direction === "left";
+function DietBadge({ veg, nonVeg }) {
+  if (!veg && !nonVeg) return null;
+  const label = veg && nonVeg ? "Veg & Non-Veg" : veg ? "Pure Veg" : "Non-Veg";
   return (
-   <Box
-      component="svg"
-      viewBox="0 0 30 36"
+    <Stack
+      direction="row"
+      alignItems="center"
+      spacing={0.6}
       sx={{
-        width: 24,
-        height: 26,
-        transform: flip ? "scaleX(-1)" : "none",
+        position: "absolute",
+        top: 10,
+        left: 10,
+        bgcolor: "#fff",
+        px: 1,
+        py: 0.5,
+        borderRadius: 999,
+        boxShadow: 1,
       }}
     >
-      <line x1="2" y1="2" x2="21" y2="12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-      <line x1="2" y1="18" x2="21" y2="18" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-      <line x1="2" y1="34" x2="21" y2="24" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-    </Box>
+      {/* Show both indicators when the caterer offers both veg and non-veg */}
+      {veg && <DietSquare color={VEG_GREEN} />}
+      {nonVeg && <DietSquare color={NONVEG_RED} />}
+      <Typography
+        sx={{
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: 0.3,
+          textTransform: "uppercase",
+          color: "text.primary",
+          fontFamily: '"open sans", sans-serif',
+        }}
+      >
+        {label}
+      </Typography>
+    </Stack>
   );
 }
 
 function CatererCard({ c }) {
   const { veg, nonVeg } = getVegNonVegFlags(c);
+  // Falls back to a dummy price when the caterer record doesn't have one yet.
+  const price = c.price ?? c.startingPrice ?? c.pricePerPerson ?? 249;
 
   return (
     <Card
@@ -101,7 +123,6 @@ function CatererCard({ c }) {
       sx={{
         position: "relative",
         overflow: "visible",
-        pb: 3,
         height: "100%",
         display: "flex",
         flexDirection: "column",
@@ -126,98 +147,38 @@ function CatererCard({ c }) {
           }}
         />
 
-        {/* Ribbon badge, top-left */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            bgcolor: "primary.main",
-            color: WHITE,
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: 0.5,
-            textTransform: "uppercase",
-            px: 2,
-            py: 1.5,
-            borderTopRightRadius: 999,
-            borderBottomRightRadius: 999,
-            borderTopLeftRadius: 500,
-            boxShadow: 2,
+        <DietBadge veg={veg} nonVeg={nonVeg} />
+
+        {c.ribbon && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 10,
+              right: 10,
+              bgcolor: /new/i.test(c.ribbon) ? "#D97706" : "rgba(26,26,26,0.9)",
+              color: WHITE,
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: 0.4,
+              textTransform: "uppercase",
+              px: 1.25,
+              py: 0.6,
+              borderRadius: 1,
+              boxShadow: 2,
               fontFamily: '"open sans", sans-serif',
-          }}
-        >
-          {c.ribbon}
-        </Box>
-
-        {/* Veg / Non-Veg symbols, top-right */}
-        <Stack
-          direction="row"
-          spacing={0.5}
-          sx={{
-            position: "absolute",
-            top: 10,
-            right: 10,
-          }}
-        >
-          {veg && <VegNonVegSymbol type="veg" />}
-          {nonVeg && <VegNonVegSymbol type="nonveg" />}
-        </Stack>
-
-        {/* Rating badge, bottom-left */}
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={0.5}
-          sx={{
-            position: "absolute",
-            bottom: 12,
-            left: 12,
-            bgcolor: GOLD,
-            color: "primary.dark",
-            px: 1,
-            py: 0.5,
-            borderRadius: 999,
-            boxShadow: 2,
-          }}
-        >
-          <StarIcon sx={{ fontSize: 14 }} />
-          <Typography component="span" sx={{ fontSize: 12, fontWeight: 700, lineHeight: 1,  fontFamily: '"open sans", sans-serif', }}>
-            {c.rating}
-          </Typography>
-        </Stack>
-
-        {/* View menu button */}
-        <Button
-          aria-label={`View menu for ${c.name}`}
-          startIcon={<VisibilityIcon sx={{ fontSize: 16 }} />}
-          sx={{
-            position: "absolute",
-            bottom: 11,
-            right: 10,
-            height: 30,
-            px: 2,
-            bgcolor: "primary.main",
-            color: WHITE,
-        
-            boxShadow: 3,
-            borderRadius: 999,
-            textTransform: "none",
-            fontSize: 12,
-              fontFamily: '"open sans", sans-serif',
-            fontWeight: 700,
-            "&:hover": { bgcolor: "primary.dark" },
-          }}
-        >
-          View
-        </Button>
+            }}
+          >
+            {c.ribbon}
+          </Box>
+        )}
       </Box>
 
       {/* Text content */}
       <Box
         sx={{
           px: 2.5,
-          pt: 3,
+          pt: 2,
+          pb: 2.5,
           display: "flex",
           flexDirection: "column",
           flexGrow: 1,
@@ -231,39 +192,97 @@ function CatererCard({ c }) {
             fontSize: 15,
             lineHeight: 1.3,
             fontFamily: '"open sans", sans-serif',
+            minHeight: "2.6em",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {c.name}
         </Typography>
 
-        <Typography sx={{ color: "text.secondary", fontSize: 12, mt: 0.3,  fontFamily: '"open sans", sans-serif', }}>
+        <Typography sx={{ color: "text.secondary", fontSize: 12, mt: 0.3, fontFamily: '"open sans", sans-serif' }}>
           {c.area}
         </Typography>
 
-        <Typography
-          sx={{ color: "text.secondary", opacity: 0.7, fontSize: 11, mt: 1,  fontFamily: '"open sans", sans-serif',}}
-        >
-          FSSAI No: {c.fssai}
-        </Typography>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1 }}>
+          <Stack direction="row" alignItems="center" spacing={0.6}>
+            <StarIcon sx={{ fontSize: 15, color: GOLD }} />
+            <Typography
+              sx={{ fontSize: 13, fontWeight: 700, color: "text.primary", fontFamily: '"open sans", sans-serif' }}
+            >
+              {c.rating}
+            </Typography>
+            {c.eventsCount ? (
+              <Typography sx={{ fontSize: 12, color: "text.secondary", fontFamily: '"open sans", sans-serif' }}>
+                · {c.eventsCount} events
+              </Typography>
+            ) : null}
+          </Stack>
 
-        <Stack direction="row" flexWrap="wrap" gap={0.75} sx={{ mt: "auto", pt: 1.5 }}>
+          <Typography
+            sx={{ color: "text.secondary", opacity: 0.7, fontSize: 11, fontFamily: '"open sans", sans-serif' }}
+          >
+            FSSAI No: {c.fssai}
+          </Typography>
+        </Stack>
+
+        <Stack direction="row" flexWrap="wrap" gap={0.75} sx={{ mt: 1.5 }}>
           {c.tags.map((tag) => (
             <Chip
               key={tag}
               label={tag}
               size="small"
               sx={{
-                bgcolor: "#fdf0f1",
-                color: "primary.main",
+                bgcolor: "#f1efee",
+                color: "text.primary",
                 fontSize: 10,
                 fontWeight: 600,
                 textTransform: "uppercase",
-                border: "1px solid #f6d9dc",
                 height: 22,
                 fontFamily: '"open sans", sans-serif',
               }}
             />
           ))}
+        </Stack>
+
+        <Stack direction="row" alignItems="flex-end" justifyContent="space-between" sx={{ mt: "auto", pt: 2 }}>
+          <Box>
+            {price != null && (
+              <Typography sx={{ fontSize: 17, fontWeight: 800, color: "text.primary", fontFamily: '"open sans", sans-serif' }}>
+                ₹{price}
+                <Typography component="span" sx={{ fontSize: 12, fontWeight: 600, color: "text.secondary" }}>
+                  /plate
+                </Typography>
+              </Typography>
+            )}
+            {c.minPlates ? (
+              <Typography sx={{ fontSize: 11, color: "text.secondary", fontFamily: '"open sans", sans-serif' }}>
+                min {c.minPlates} plates
+              </Typography>
+            ) : null}
+          </Box>
+
+          <Button
+            aria-label={`View menu for ${c.name}`}
+            startIcon={<VisibilityIcon sx={{ fontSize: 16 }} />}
+            sx={{
+              height: 34,
+              px: 2,
+              bgcolor: "primary.main",
+              color: WHITE,
+              boxShadow: 2,
+              borderRadius: 999,
+              textTransform: "none",
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: '"open sans", sans-serif',
+              "&:hover": { bgcolor: "primary.dark" },
+            }}
+          >
+            View
+          </Button>
         </Stack>
       </Box>
     </Card>
@@ -323,6 +342,10 @@ export default function ChooseRestaurant() {
     });
   };
 
+  const handleSortChange = (value) => {
+    setSelectedFilters((prev) => ({ ...prev, sorting: value ? [value] : [] }));
+  };
+
   const handleClearAllFilters = () => {
     setSelectedFilters(DEFAULT_SELECTED_FILTERS);
   };
@@ -330,6 +353,39 @@ export default function ChooseRestaurant() {
   const handleHomeClick = () => {
     navigate(-1);
   };
+
+  // Per-option counts (against the unfiltered list for this location), used by
+  // the "Cuisine" checklist section in FilterSortBar to match the reference design.
+  const optionCounts = useMemo(() => {
+    const counts = {};
+    FILTER_GROUPS.forEach((group) => {
+      counts[group.key] = {};
+      group.options.forEach((opt) => {
+        counts[group.key][opt.value] = caterers.filter((c) => {
+          if (group.key === "ratings") {
+            const threshold = parseFloat(opt.value);
+            return !Number.isNaN(threshold) && Number(c.rating) >= threshold;
+          }
+          const haystack = [
+            ...(c.tags || []),
+            c.cuisine,
+            c.mealType,
+            c.foodType,
+            c.pricePerPerson,
+            c.services,
+            c.dietary,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          return haystack.includes(String(opt.value).toLowerCase());
+        }).length;
+      });
+    });
+    return counts;
+  }, [caterers]);
+
+  const activeChips = useMemo(() => getActiveFilterChips(selectedFilters), [selectedFilters]);
 
   const filteredCaterers = useMemo(() => {
     let result = [...caterers];
@@ -433,33 +489,6 @@ export default function ChooseRestaurant() {
           </Typography>
         </Breadcrumbs>
 
-        {/* Header banner */}
-        <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-          <Box sx={{ color: "primary.main",position:'relative',top:4.5,left:13 }}>
-            <ChevronLinesDecor direction="right" />
-          </Box>
-          <Typography
-            variant="h4"
-            sx={{
-              color: "text.primary",
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: 3,
-              fontSize: { xs: 22, sm: 28, md: 32 },
-              textAlign: "center",
-              fontFamily: '"Montserrat", sans-serif',
-            }}
-          >
-           Caterers
-          </Typography>
-          <Box sx={{ color: "primary.main",position:'relative',top:4.5,right:20  }}>
-            <ChevronLinesDecor direction="left" />
-          </Box>
-        </Stack>
-        <Typography sx={{ textAlign: "center", color: "text.secondary", fontSize: 14,   fontFamily: '"open sans", sans-serif', mt: 1, mb: selectedLocation ? 4 : 6 }}>
-          Caterers near you, picked for taste and trust
-        </Typography>
-
         {/* Left filters sidebar + right results grid */}
         <Grid container spacing={{ xs: 3, md: 4 }}>
           <Grid item xs={12} md={3.5} lg={3}>
@@ -469,10 +498,95 @@ export default function ChooseRestaurant() {
               selectedFilters={selectedFilters}
               onFilterToggle={handleFilterToggle}
               onClearAll={handleClearAllFilters}
+              optionCounts={optionCounts}
             />
           </Grid>
 
           <Grid item xs={12} md={8.5} lg={9}>
+            {/* Results header: title + subtitle on the left, sort dropdown on the right */}
+            <Stack
+              direction={{ xs: "column", sm: "row" }}
+              alignItems={{ xs: "flex-start", sm: "center" }}
+              justifyContent="space-between"
+              spacing={2}
+              sx={{ mb: activeChips.length > 0 ? 2 : 4 }}
+            >
+              <Box>
+                <Typography
+                  sx={{
+                    color: "text.primary",
+                    fontWeight: 800,
+                    textTransform: "uppercase",
+                    letterSpacing: 1.5,
+                    fontSize: { xs: 22, sm: 26, md: 30 },
+                    fontFamily: '"Montserrat", sans-serif',
+                  }}
+                >
+                  Caterers
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "text.secondary",
+                    fontSize: 14,
+                    fontFamily: '"open sans", sans-serif',
+                    mt: 0.5,
+                  }}
+                >
+                  Caterers near you, picked for taste and trust
+                </Typography>
+              </Box>
+
+              <Stack direction="row" alignItems="center" spacing={1} sx={{ flexShrink: 0 }}>
+                <Typography
+                  sx={{ fontSize: 13, fontWeight: 600, color: "text.secondary", fontFamily: '"open sans", sans-serif' }}
+                >
+                  Sort
+                </Typography>
+                <FormControl size="small">
+                  <Select
+                    value={selectedFilters.sorting?.[0] || "relevance"}
+                    onChange={(e) => handleSortChange(e.target.value)}
+                    sx={{
+                      minWidth: 190,
+                      borderRadius: 999,
+                      fontSize: 13,
+                      fontFamily: '"open sans", sans-serif',
+                      "& .MuiOutlinedInput-notchedOutline": { borderColor: "rgba(43,33,28,0.15)" },
+                      "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "primary.main" },
+                    }}
+                  >
+                    {SORTING_OPTIONS.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value} sx={{ fontSize: 13, fontFamily: '"open sans", sans-serif' }}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Stack>
+            </Stack>
+
+            {/* Active filter chips */}
+            {activeChips.length > 0 && (
+              <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mb: 4 }}>
+                {activeChips.map((chip) => (
+                  <Chip
+                    key={`${chip.groupKey}-${chip.value}`}
+                    label={chip.label}
+                    onDelete={() => handleFilterToggle(chip.groupKey, chip.value)}
+                    size="small"
+                    sx={{
+                      bgcolor: "#f1efee",
+                      color: "text.primary",
+                      fontWeight: 600,
+                      fontSize: 12,
+                      fontFamily: '"open sans", sans-serif',
+                      "& .MuiChip-deleteIcon": { fontSize: 12, color: "text.secondary" },
+                    }}
+                  />
+                ))}
+              </Stack>
+            )}
+
             <Grid container spacing={{ xs: 4, md: 5 }}>
               {filteredCaterers.map((c) => (
                 <Grid item xs={12} sm={6} lg={4} key={c.id}>

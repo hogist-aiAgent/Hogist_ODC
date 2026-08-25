@@ -1,22 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Typography,
   TextField,
   InputAdornment,
   IconButton,
-  Chip,
   Divider,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   FormGroup,
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
@@ -25,9 +20,11 @@ import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import RoomServiceIcon from "@mui/icons-material/RoomService";
 import BentoIcon from "@mui/icons-material/Bento";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
-import SortIcon from "@mui/icons-material/Sort";
 
-const SORTING_OPTIONS = [
+// Sort now renders as a dropdown in the results header (see ChooseRestaurant.jsx)
+// to match the reference design, so it's exported here for reuse instead of
+// living inside FILTER_GROUPS.
+export const SORTING_OPTIONS = [
   { value: "relevance", label: "Recommended" },
   { value: "nearest", label: "Nearest" },
   { value: "popular", label: "Popular" },
@@ -93,17 +90,34 @@ const RATINGS_OPTIONS = [
   { value: "4.0", label: "4.0+" },
 ];
 
-// Sort is now a regular multi-select checkbox group, just like every other filter.
-const FILTER_GROUPS = [
-  { key: "sorting", label: "Sort", options: SORTING_OPTIONS, icon: SortIcon },
-  { key: "cuisine", label: "Cuisines", options: CUISINES_OPTIONS, icon: RestaurantIcon },
-  { key: "pricePerPerson", label: "Price/Person", options: PRICEPERSON_OPTIONS, icon: CurrencyRupeeIcon },
-  { key: "mealType", label: "Meal Type", options: MEALTYPE_OPTIONS, icon: AccessTimeIcon },
-  { key: "foodType", label: "Food Type", options: FOOD_OPTIONS, icon: LocalDiningIcon },
-  { key: "services", label: "Services", options: SERVICES_OPTIONS, icon: RoomServiceIcon },
-  { key: "dietary", label: "Dietary", options: DIETARY_OPTIONS, icon: BentoIcon },
-  { key: "ratings", label: "Ratings", options: RATINGS_OPTIONS, icon: StarRoundedIcon },
+// `variant: "checklist"` renders as a checkbox list with counts (matches the
+// "Cuisine" section in the reference). `variant: "pill"` renders as a row of
+// toggle pills (matches the "Diet" / "Service Style" sections in the reference).
+export const FILTER_GROUPS = [
+  { key: "dietary", label: "Diet", options: DIETARY_OPTIONS, icon: BentoIcon, variant: "pill" },
+  { key: "cuisine", label: "Cuisine", options: CUISINES_OPTIONS, icon: RestaurantIcon, variant: "checklist" },
+  { key: "pricePerPerson", label: "Price/Person", options: PRICEPERSON_OPTIONS, icon: CurrencyRupeeIcon, variant: "pill" },
+  { key: "services", label: "Service Style", options: SERVICES_OPTIONS, icon: RoomServiceIcon, variant: "pill" },
+  { key: "mealType", label: "Meal Type", options: MEALTYPE_OPTIONS, icon: AccessTimeIcon, variant: "pill" },
+  { key: "foodType", label: "Food Type", options: FOOD_OPTIONS, icon: LocalDiningIcon, variant: "pill" },
+  { key: "ratings", label: "Ratings", options: RATINGS_OPTIONS, icon: StarRoundedIcon, variant: "pill" },
 ];
+
+// Shared helper so the results header (ChooseRestaurant.jsx) can render the
+// same "active filter" chips the reference design shows above the results grid.
+export function getActiveFilterChips(selectedFilters = {}) {
+  const chips = [];
+  Object.entries(selectedFilters).forEach(([key, values]) => {
+    if (key === "sorting") return;
+    const group = FILTER_GROUPS.find((g) => g.key === key);
+    if (!group) return;
+    (values || []).forEach((v) => {
+      const opt = group.options.find((o) => o.value === v);
+      chips.push({ groupKey: key, value: v, label: opt?.label || v });
+    });
+  });
+  return chips;
+}
 
 export default function FilterSortBar({
   searchValue = "",
@@ -111,24 +125,9 @@ export default function FilterSortBar({
   selectedFilters = {},
   onFilterToggle,
   onClearAll,
+  optionCounts = {},
 }) {
-  const [expanded, setExpanded] = useState({});
-
-  const toggleExpand = (key) => {
-    setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const activeChips = [];
-  Object.entries(selectedFilters).forEach(([key, values]) => {
-    const group = FILTER_GROUPS.find((g) => g.key === key);
-    if (!group) return;
-    (values || []).forEach((v) => {
-      const opt = group.options.find((o) => o.value === v);
-      activeChips.push({ groupKey: key, value: v, label: opt?.label || v });
-    });
-  });
-
-  const hasActiveFilters = activeChips.length > 0;
+  const hasActiveFilters = getActiveFilterChips(selectedFilters).length > 0;
 
   return (
     <Box
@@ -171,14 +170,12 @@ export default function FilterSortBar({
               cursor: "pointer",
               color: "primary.main",
               fontWeight: 700,
-              fontSize: 12,
-              letterSpacing: "0.03em",
-              textTransform: "uppercase",
+              fontSize: 13,
               fontFamily: '"open sans", sans-serif',
               p: 0,
             }}
           >
-            Clear All
+            Clear all
           </Typography>
         )}
       </Box>
@@ -219,117 +216,49 @@ export default function FilterSortBar({
         />
       </Box>
 
-      {/* Selected filter chips */}
-      {hasActiveFilters && (
-        <>
-          <Box sx={{ px: 2.5, pb: 2, display: "flex", flexWrap: "wrap", gap: 1, flexShrink: 0 }}>
-            {activeChips.map((chip) => (
-              <Chip
-                key={`${chip.groupKey}-${chip.value}`}
-                label={chip.label}
-                onDelete={() => onFilterToggle?.(chip.groupKey, chip.value)}
-                size="small"
-                sx={{
-                  bgcolor: "#f1efee",
-                  color: "text.primary",
-                  fontWeight: 600,
-                  fontSize: 12,
-                  fontFamily: '"open sans", sans-serif',
-                  "& .MuiChip-deleteIcon": { fontSize: 12, color: "text.secondary" },
-                }}
-              />
-            ))}
-          </Box>
-          <Divider sx={{ flexShrink: 0 }} />
-        </>
-      )}
+      <Divider sx={{ flexShrink: 0 }} />
 
-      {/* Scrollable filter groups (Sort + all others) — all multi-select checkboxes */}
+      {/* Scrollable filter sections — flat always-visible blocks, matching the reference */}
       <Box
         sx={{
           flex: 1,
           minHeight: 0,
           overflowY: "auto",
           overflowX: "hidden",
-          // Hide scrollbar but keep scroll functionality (all browsers)
-          scrollbarWidth: "none", // Firefox
-          msOverflowStyle: "none", // IE/Edge legacy
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
           "&::-webkit-scrollbar": {
-            display: "none", // Chrome, Safari, Edge (Chromium)
+            display: "none",
           },
         }}
       >
         {FILTER_GROUPS.map((group, idx) => {
           const GroupIcon = group.icon;
           const selectedForGroup = selectedFilters[group.key] || [];
+          const counts = optionCounts[group.key] || {};
           return (
             <React.Fragment key={group.key}>
-              <Accordion
-                disableGutters
-                elevation={0}
-                expanded={Boolean(expanded[group.key])}
-                onChange={() => toggleExpand(group.key)}
-                sx={{ "&:before": { display: "none" }, boxShadow: "none" }}
-              >
-                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ px: 2.5 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <GroupIcon sx={{ fontSize: 16, color: "primary.main" }} />
-                    <Typography
-                      sx={{
-                        fontWeight: 700,
-                        fontSize: 12,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.04em",
-                        fontFamily: '"open sans", sans-serif',
-                      }}
-                    >
-                      {group.label}
-                    </Typography>
-                    {selectedForGroup.length > 0 && (
-                      <Chip
-                        label={selectedForGroup.length}
-                        size="small"
-                        sx={{
-                          height: 18,
-                          minWidth: 18,
-                          fontSize: 9,
-                          fontWeight: 700,
-                          bgcolor: "primary.main",
-                          color: "#fff",
-                          "& .MuiChip-label": { px: 0.6 },
-                        }}
-                      />
-                    )}
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails sx={{ px: 2.5, pt: 0 }}>
-                  {selectedForGroup.length > 0 && (
-                    <Box
-                      component="button"
-                      onClick={() => selectedForGroup.forEach((v) => onFilterToggle?.(group.key, v))}
-                      sx={{
-                        border: "none",
-                        background: "none",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 0.5,
-                        color: "text.secondary",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        p: 0,
-                        mb: 0.75,
-                        fontFamily: '"open sans", sans-serif',
-                        "&:hover": { color: "primary.main" },
-                      }}
-                    >
-                      <CloseIcon sx={{ fontSize: 12 }} />
-                      Clear all
-                    </Box>
-                  )}
+              <Box sx={{ px: 2.5, py: 2.5 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+                  <GroupIcon sx={{ fontSize: 15, color: "primary.main" }} />
+                  <Typography
+                    sx={{
+                      fontWeight: 700,
+                      fontSize: 12,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      fontFamily: '"open sans", sans-serif',
+                    }}
+                  >
+                    {group.label}
+                  </Typography>
+                </Box>
+
+                {group.variant === "checklist" ? (
                   <FormGroup>
                     {group.options.map((opt) => {
                       const checked = selectedForGroup.includes(opt.value);
+                      const count = counts[opt.value];
                       return (
                         <FormControlLabel
                           key={opt.value}
@@ -345,24 +274,75 @@ export default function FilterSortBar({
                             />
                           }
                           label={
-                            <Typography
+                            <Box
                               sx={{
-                                fontSize: 12,
-                                fontWeight: checked ? 700 : 500,
-                                color: checked ? "primary.main" : "text.primary",
-                                fontFamily: '"open sans", sans-serif',
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                width: "100%",
+                                gap: 1,
                               }}
                             >
-                              {opt.label}
-                            </Typography>
+                              <Typography
+                                sx={{
+                                  fontSize: 13,
+                                  fontWeight: checked ? 700 : 500,
+                                  color: checked ? "primary.main" : "text.primary",
+                                  fontFamily: '"open sans", sans-serif',
+                                }}
+                              >
+                                {opt.label}
+                              </Typography>
+                              {typeof count === "number" && (
+                                <Typography
+                                  sx={{
+                                    fontSize: 12,
+                                    color: "text.secondary",
+                                    fontFamily: '"open sans", sans-serif',
+                                  }}
+                                >
+                                  {count}
+                                </Typography>
+                              )}
+                            </Box>
                           }
-                          sx={{ m: 0, py: 0 }}
+                          sx={{ m: 0, py: 0.4, width: "100%", "& .MuiFormControlLabel-label": { width: "100%" } }}
                         />
                       );
                     })}
                   </FormGroup>
-                </AccordionDetails>
-              </Accordion>
+                ) : (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                    {group.options.map((opt) => {
+                      const checked = selectedForGroup.includes(opt.value);
+                      return (
+                        <Box
+                          key={opt.value}
+                          component="button"
+                          type="button"
+                          onClick={() => onFilterToggle?.(group.key, opt.value)}
+                          sx={{
+                            px: 2,
+                            py: 0.85,
+                            borderRadius: 999,
+                            cursor: "pointer",
+                            border: "1.5px solid",
+                            borderColor: checked ? "primary.main" : "rgba(43,33,28,0.15)",
+                            bgcolor: checked ? "rgba(179,17,31,0.06)" : "#fff",
+                            color: checked ? "primary.main" : "text.primary",
+                            fontSize: 12,
+                            fontWeight: 700,
+                            fontFamily: '"open sans", sans-serif',
+                            transition: "all 0.15s ease",
+                          }}
+                        >
+                          {opt.label}
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                )}
+              </Box>
               {idx < FILTER_GROUPS.length - 1 && <Divider />}
             </React.Fragment>
           );
