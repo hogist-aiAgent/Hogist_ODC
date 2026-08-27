@@ -146,7 +146,7 @@ function DietBadge({ veg, nonVeg }) {
   );
 }
 
-function CatererCard({ c }) {
+function CatererCard({ c, onView }) {
   const { veg, nonVeg } = getVegNonVegFlags(c);
   // Falls back to a dummy price when the caterer record doesn't have one yet.
   const price = c.price ?? c.startingPrice ?? c.pricePerPerson ?? 249;
@@ -301,6 +301,7 @@ function CatererCard({ c }) {
           <Button
             aria-label={`View menu for ${c.name}`}
             startIcon={<VisibilityIcon sx={{ fontSize: 16 }} />}
+            onClick={() => onView(c)}
             sx={{
               height: 34,
               px: 2,
@@ -386,6 +387,15 @@ export default function ChooseRestaurant() {
 
   const handleHomeClick = () => {
     navigate(-1);
+  };
+
+  // Navigates to the menu detail page for the clicked caterer, carrying the
+  // restaurant's id in the URL (so the page is linkable/refreshable) and the
+  // full record + confirmed location in router state for convenience.
+  const handleViewMenu = (restaurant) => {
+    navigate(`/menu-detail/${restaurant.id}`, {
+      state: { restaurant, selectedLocation },
+    });
   };
 
   // Per-option counts (against the unfiltered list for this location), used by
@@ -636,7 +646,7 @@ export default function ChooseRestaurant() {
             <Grid container spacing={{ xs: 4, md: 5 }}>
               {filteredCaterers.map((c) => (
                 <Grid item xs={12} sm={6} lg={4} key={c.id}>
-                  <CatererCard c={c} />
+                  <CatererCard c={c} onView={handleViewMenu} />
                 </Grid>
               ))}
             </Grid>
