@@ -4,7 +4,7 @@ import foodImage from '../../../assets/login/food.webp'
 
 // Replace with your own asset, e.g. import foodImage from '../../../assets/login/food.png';
 
-import { RED, features } from './loginConstants';
+import { RED, features } from './LoginConstants';
 
 const BrandPanel = ({ isSignUp }) => {
   return (
