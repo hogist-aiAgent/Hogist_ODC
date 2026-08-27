@@ -11,7 +11,7 @@ import dinnarIcon from '../../../assets/login/DinnerIcon.png'
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import GoogleIcon from '@mui/icons-material/Google';
 
-import { RED, compactFieldSx, trustItems } from './loginConstants';
+import { RED, compactFieldSx, trustItems } from './LoginConstants';
 
 const SignUpForm = ({
   signupEmail,
