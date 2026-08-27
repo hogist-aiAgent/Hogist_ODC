@@ -14,11 +14,13 @@ import {
   Container,
   Menu,
   MenuItem,
+  Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import RestaurantMenuOutlinedIcon from '@mui/icons-material/RestaurantMenuOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import logo from '../../../assets/CompanyLogo/logo.png';
 import SystemUpdateOutlinedIcon from '@mui/icons-material/SystemUpdateOutlined';
 import LoginPopup from '../../Common/LoginForm/LoginPopup'; // Import the LoginPopup component
@@ -30,6 +32,39 @@ const navLinks = [
   { label: 'Testimonial', sectionId: 'testimonial' },
   { label: 'Contact Us', sectionId: 'contact-us' },
 ];
+
+// Small pill badge that shows "Chennai" plus the pincode (when one can be
+// found in the confirmed location) — used only on the Menu page navbar.
+function LocationBadge({ text }) {
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      spacing={0.5}
+      sx={{
+        border: '1.5px solid rgba(154,0,2,0.25)',
+        borderRadius: 999,
+        px: { xs: 1.1, md: 1.4 },
+        py: { xs: 0.4, md: 0.5 },
+        bgcolor: 'rgba(154,0,2,0.04)',
+        flexShrink: 0,
+      }}
+    >
+      <LocationOnIcon sx={{ fontSize: { xs: 15, md: 16 }, color: '#9a0002' }} />
+      <Typography
+        sx={{
+          fontSize: { xs: '0.72rem', md: '0.8rem' },
+          fontWeight: 700,
+          color: '#9a0002',
+          fontFamily: '"open sans", sans-serif',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {text}
+      </Typography>
+    </Stack>
+  );
+}
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -52,6 +87,23 @@ export default function Navbar() {
   const routerLocation = useLocation();
   const isMenuPage = routerLocation.pathname.toLowerCase().includes('menu');
   const showBackground = scrolled || isMenuPage;
+
+  // The location the user confirmed on the ODC page (passed via router state
+  // when navigating to /Menu). Used to show a "Chennai · <pincode>" badge.
+  const selectedLocation = routerLocation.state?.selectedLocation;
+
+  // Fallback pincode used when the confirmed location text doesn't carry a
+  // 6-digit pincode (the location picker's address results often don't).
+  const DEFAULT_PINCODE = '600034';
+
+  const getLocationBadgeText = (loc) => {
+    const full = loc?.full || loc?.label || '';
+    const pincodeMatch = full.match(/\b\d{6}\b/);
+    const pincode = pincodeMatch ? pincodeMatch[0] : DEFAULT_PINCODE;
+    return `Chennai · ${pincode}`;
+  };
+
+  const locationBadgeText = getLocationBadgeText(selectedLocation);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -268,6 +320,9 @@ export default function Navbar() {
             >
               {isMenuPage ? (
                 <>
+                  {/* Location badge (Chennai + pincode) — Menu page only */}
+                  <LocationBadge text={locationBadgeText} />
+
                   <IconButton
                     onClick={handleProfileClick}
                     sx={{
@@ -504,40 +559,47 @@ export default function Navbar() {
 
               <Box sx={{ px: 2, pt: 2 }}>
                 {isMenuPage ? (
-                  <Stack direction="row" spacing={1.5}>
-                    <IconButton
-                      onClick={handleProfileClick}
-                      sx={{
-                        color: '#9a0002',
-                        border: '1.5px solid rgba(154,0,2,0.3)',
-                      }}
-                    >
-                      <AccountCircleOutlinedIcon sx={{ fontSize: 22 }} />
-                    </IconButton>
+                  <Stack spacing={1.5}>
+                    {/* Location badge (Chennai + pincode) — Menu page only */}
+                    <Box sx={{ display: 'flex' }}>
+                      <LocationBadge text={locationBadgeText} />
+                    </Box>
 
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      onClick={handleLoginClick}
-                      sx={{
-                        borderRadius: 999,
-                        textTransform: 'none',
-                        fontWeight: 800,
-                        letterSpacing: '0.3px',
-                        fontFamily: '"open sans", sans-serif',
-                        background:
-                          'linear-gradient(135deg, #ac1f1f 0%, #d6293e 45%, #9a0002 100%)',
-                        color: '#fff',
-                        boxShadow: '0 4px 14px rgba(154,0,2,0.45)',
-                        border: 'none',
-                        '&:hover': {
+                    <Stack direction="row" spacing={1.5}>
+                      <IconButton
+                        onClick={handleProfileClick}
+                        sx={{
+                          color: '#9a0002',
+                          border: '1.5px solid rgba(154,0,2,0.3)',
+                        }}
+                      >
+                        <AccountCircleOutlinedIcon sx={{ fontSize: 22 }} />
+                      </IconButton>
+
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        onClick={handleLoginClick}
+                        sx={{
+                          borderRadius: 999,
+                          textTransform: 'none',
+                          fontWeight: 800,
+                          letterSpacing: '0.3px',
+                          fontFamily: '"open sans", sans-serif',
                           background:
-                            'linear-gradient(135deg, #ac1f1f 0%, #e12e45 45%, #ae0003 100%)',
-                        },
-                      }}
-                    >
-                      Login
-                    </Button>
+                            'linear-gradient(135deg, #ac1f1f 0%, #d6293e 45%, #9a0002 100%)',
+                          color: '#fff',
+                          boxShadow: '0 4px 14px rgba(154,0,2,0.45)',
+                          border: 'none',
+                          '&:hover': {
+                            background:
+                              'linear-gradient(135deg, #ac1f1f 0%, #e12e45 45%, #ae0003 100%)',
+                          },
+                        }}
+                      >
+                        Login
+                      </Button>
+                    </Stack>
                   </Stack>
                 ) : (
                   <Button

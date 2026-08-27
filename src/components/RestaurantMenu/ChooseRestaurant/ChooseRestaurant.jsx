@@ -55,6 +55,40 @@ function getVegNonVegFlags(c) {
   return { veg: true, nonVeg: true };
 }
 
+// The caterer data stores diet as isVeg/isNonVeg booleans (not as text
+// inside tags/cuisine/etc), so "Diet" filter values are matched against
+// those flags directly instead of the generic text haystack below.
+//
+// Many caterers have BOTH isVeg and isNonVeg set to true (they serve both).
+// Matching "Veg" against `veg === true` alone therefore also pulled in
+// those mixed Veg & Non-Veg caterers whenever "Vegetarian" was selected.
+// To actually filter down to vegetarian-only (or non-veg-only) results,
+// "Veg" must require veg && !nonVeg, and "Non-Vege" must require
+// nonVeg && !veg — i.e. strictly pure veg / pure non-veg, matching the
+// "PURE VEG" style badge shown in the reference design.
+function matchesDietaryFilter(caterer, value) {
+  if (value === "Veg" || value === "Non-Vege") {
+    const { veg, nonVeg } = getVegNonVegFlags(caterer);
+    return value === "Veg" ? veg && !nonVeg : nonVeg && !veg;
+  }
+
+  // Jain / Vegan / Eggless — no dedicated flag exists on the caterer data
+  // yet, so fall back to the same text-matching used by the other groups.
+  const haystack = [
+    ...(caterer.tags || []),
+    caterer.cuisine,
+    caterer.mealType,
+    caterer.foodType,
+    caterer.pricePerPerson,
+    caterer.services,
+    caterer.dietary,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  return haystack.includes(String(value).toLowerCase());
+}
+
 function DietSquare({ color }) {
   return (
     <Box
@@ -76,7 +110,7 @@ function DietSquare({ color }) {
 
 function DietBadge({ veg, nonVeg }) {
   if (!veg && !nonVeg) return null;
-  const label = veg && nonVeg ? "Veg & Non-Veg" : veg ? "Pure Veg" : "Non-Veg";
+  const label = veg && nonVeg ? "Veg & Non-Veg" : veg ? "Veg" : "Non-Veg";
   return (
     <Stack
       direction="row"
@@ -366,6 +400,9 @@ export default function ChooseRestaurant() {
             const threshold = parseFloat(opt.value);
             return !Number.isNaN(threshold) && Number(c.rating) >= threshold;
           }
+          if (group.key === "dietary") {
+            return matchesDietaryFilter(c, opt.value);
+          }
           const haystack = [
             ...(c.tags || []),
             c.cuisine,
@@ -426,6 +463,9 @@ export default function ChooseRestaurant() {
               return !Number.isNaN(threshold) && Number(c.rating) >= threshold;
             });
           }
+          if (groupKey === "dietary") {
+            return values.some((v) => matchesDietaryFilter(c, v));
+          }
           return values.some((v) => haystack.includes(String(v).toLowerCase()));
         });
       });
@@ -445,6 +485,10 @@ export default function ChooseRestaurant() {
 
     return result;
   }, [caterers, searchValue, selectedFilters]);
+
+  // Display text for the location the counts below are shown against —
+  // falls back to "your area" when no location was picked/passed in.
+  const locationCountLabel = selectedLocation?.label || selectedLocationText || "your area";
 
   return (
     <Box sx={{ bgcolor: "#FFF", py: { xs: 6, md: 4 } }}>
@@ -524,15 +568,17 @@ export default function ChooseRestaurant() {
                 >
                   Caterers
                 </Typography>
+               
                 <Typography
                   sx={{
-                    color: "text.secondary",
-                    fontSize: 14,
+                    color: "text.primary",
+                    fontSize: 13,
+                    fontWeight: 700,
                     fontFamily: '"open sans", sans-serif',
                     mt: 0.5,
                   }}
                 >
-                  Caterers near you, picked for taste and trust
+                  {filteredCaterers.length} {filteredCaterers.length === 1 ? "caterer" : "caterers"} found near {locationCountLabel}
                 </Typography>
               </Box>
 

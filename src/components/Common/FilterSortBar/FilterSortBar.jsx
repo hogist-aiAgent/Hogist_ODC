@@ -78,8 +78,8 @@ const SERVICES_OPTIONS = [
 ];
 
 const DIETARY_OPTIONS = [
-  { value: "Vegetarian", label: "Vegetarian" },
-  { value: "Non-Vegetarian", label: "Non-Vegetarian" },
+  { value: "Veg", label: "Vegetarian" },
+  { value: "Non-Vege", label: "Non-Vegetarian" },
   { value: "Jain", label: "Jain" },
   { value: "Vegan", label: "Vegan" },
   { value: "Eggless", label: "Eggless" },
