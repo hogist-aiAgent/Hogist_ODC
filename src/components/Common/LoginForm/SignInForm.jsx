@@ -8,7 +8,7 @@ import {
   Stack,
   InputAdornment,
 } from '@mui/material';
-import dinnarIcon from '../../../assets/login/DinnerIcon.png'
+import dinnarIcon from '../../../assets/login/dinnerIcon.png'
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import GoogleIcon from '@mui/icons-material/Google';
 
