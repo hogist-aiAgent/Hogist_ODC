@@ -82,18 +82,14 @@ export default function Navbar() {
   // Login Popup State
   const [loginPopupOpen, setLoginPopupOpen] = useState(false);
 
-  // Route-aware background: Menu page always shows background color,
-  // other pages (e.g. ODC) stay transparent until scrolled.
   const routerLocation = useLocation();
   const isMenuPage = routerLocation.pathname.toLowerCase().includes('menu');
-  const showBackground = scrolled || isMenuPage;
+  const isMyPlan = routerLocation.pathname.toLowerCase().includes('plan'); // ← add this
 
-  // The location the user confirmed on the ODC page (passed via router state
-  // when navigating to /Menu). Used to show a "Chennai · <pincode>" badge.
+  const showBackground = scrolled || isMenuPage || isMyPlan;
+
   const selectedLocation = routerLocation.state?.selectedLocation;
 
-  // Fallback pincode used when the confirmed location text doesn't carry a
-  // 6-digit pincode (the location picker's address results often don't).
   const DEFAULT_PINCODE = '600034';
 
   const getLocationBadgeText = (loc) => {
@@ -241,7 +237,7 @@ export default function Navbar() {
             </Stack>
 
             {/* Desktop nav - hide on menu page */}
-            {!isMenuPage && (
+            {!isMenuPage && !isMyPlan &&(
               <Stack
                 direction="row"
                 spacing={0.5}
@@ -318,7 +314,7 @@ export default function Navbar() {
                 },
               }}
             >
-              {isMenuPage ? (
+              {isMenuPage || isMyPlan ? (
                 <>
                   {/* Location badge (Chennai + pincode) — Menu page only */}
                   <LocationBadge text={locationBadgeText} />
@@ -451,6 +447,7 @@ export default function Navbar() {
                 </Button>
               )}
 
+
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -535,7 +532,7 @@ export default function Navbar() {
 
             <List>
               {/* Show nav links only on non-menu pages */}
-              {!isMenuPage &&
+              {!isMenuPage && !isMyPlan &&
                 navLinks.map((link) => (
                   <ListItemButton
                     key={link.label}
@@ -558,7 +555,7 @@ export default function Navbar() {
                 ))}
 
               <Box sx={{ px: 2, pt: 2 }}>
-                {isMenuPage ? (
+                {isMenuPage || isMyPlan ? (
                   <Stack spacing={1.5}>
                     {/* Location badge (Chennai + pincode) — Menu page only */}
                     <Box sx={{ display: 'flex' }}>

@@ -22,6 +22,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import VerifiedIcon from "@mui/icons-material/Verified";
 
 import { getMenuDetailById } from "../../../data/menuDetails";
+import { addPlanMeal } from "../../../utils/planStorage";
 
 const RED = "#9a0002";
 const VEG_GREEN = "#2E7D32";
@@ -336,7 +337,56 @@ export default function MenuDetail() {
   }, [selections, plates, menu]);
 
   const handleAddToPlan = () => {
-    navigate("/menu-detail/plan", {
+    // Build the list of actually-selected item names — nothing assumed or
+    // pre-filled, only what the user ticked on this page.
+    const itemsSelected = [];
+    let serviceNote = "";
+
+    menu.sections.forEach((section) => {
+      const selection = selections[section.id];
+      if (section.type === "single") {
+        if (selection) {
+          const item = section.items.find((i) => i.id === selection);
+          if (item) {
+            itemsSelected.push(item.name);
+            if (section.location === "sidebar" && item.subtitle) {
+              serviceNote = item.subtitle;
+            }
+          }
+        }
+      } else {
+        (selection || []).forEach((itemId) => {
+          const item = section.items.find((i) => i.id === itemId);
+          if (item) itemsSelected.push(item.name);
+        });
+      }
+    });
+
+    const badgesText = menu.badges.join(" ");
+    const isVeg = /veg/i.test(badgesText) && !/non[\s-]?veg/i.test(badgesText);
+
+    addPlanMeal({
+      id: `${menu.restaurantId}-${Date.now()}`,
+      restaurantId: menu.restaurantId,
+      dishTitle: menu.dishTitle,
+      caterer: menu.caterer,
+      area: menu.area,
+      serviceNote,
+      itemsSelected,
+      isVeg,
+      slotLabel: `${menu.eventContext.occasion} · ${menu.eventContext.slot}`,
+      kitchenAvailableOn: menu.eventContext.date,
+      plates,
+      pricePerPlate: pricing.pricePerPlate,
+      foodTotal: pricing.foodTotal,
+      transportFee: pricing.hasSelection ? menu.pricing.transportFee : 0,
+      seasonOfferCode: menu.pricing.seasonOffer.code,
+      seasonOfferAmount: pricing.hasSelection ? menu.pricing.seasonOffer.amount : 0,
+      estimatedTotal: pricing.estimatedTotal,
+      img: menu.img,
+    });
+
+    navigate("/my-plan", {
       state: {
         restaurantId: menu.restaurantId,
         dishTitle: menu.dishTitle,
