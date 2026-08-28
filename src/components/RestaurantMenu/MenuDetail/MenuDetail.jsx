@@ -274,10 +274,7 @@ export default function MenuDetail() {
   const bodySections = useMemo(() => menu.sections.filter((s) => s.location !== "sidebar"), [menu]);
   const sidebarSections = useMemo(() => menu.sections.filter((s) => s.location === "sidebar"), [menu]);
 
-  // Selection state keyed by section id.
-  // "single" sections store a single item id (or null); "multiple" sections
-  // store an array of item ids. Nothing is pre-selected — the customer picks
-  // everything manually.
+
   const [selections, setSelections] = useState({});
   const [plates, setPlates] = useState(menu.pricing.defaultPlates);
   const [activeTab, setActiveTab] = useState(0);
@@ -371,18 +368,12 @@ export default function MenuDetail() {
               >
                 Menus
               </Link>
-              <Typography sx={{ color: RED, fontWeight: 700, fontSize: 12.5, fontFamily: FONT }}>
-                {menu.category}
-              </Typography>
+              
               <Typography sx={{ color: INK_SOFT, fontWeight: 600, fontSize: 12.5, fontFamily: FONT }}>
                 {menu.dishTitle}
               </Typography>
             </Breadcrumbs>
 
-            <Typography sx={{ fontSize: 12.5, color: INK_SOFT, fontWeight: 600, fontFamily: FONT }}>
-              {menu.eventContext.occasion} · {menu.eventContext.guests} guests · {menu.eventContext.date} ·{" "}
-              {menu.eventContext.slot}
-            </Typography>
           </Stack>
         </Container>
       </Box>
@@ -655,9 +646,9 @@ export default function MenuDetail() {
                 )}
               </Stack>
 
-              <Divider sx={{ my: 2 }} />
+              <Divider sx={{ my: 1 }} />
 
-              <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
                 <Typography sx={{ fontSize: 13.5, fontWeight: 700, color: INK, fontFamily: FONT }}>
                   Estimated total
                 </Typography>
@@ -704,7 +695,7 @@ export default function MenuDetail() {
                 Request free tasting
               </Button>
 
-              <Typography sx={{ fontSize: 11, color: INK_SOFT, fontFamily: FONT, mt: 1.5, textAlign: "center" }}>
+              <Typography sx={{ fontSize: 9, color: INK_SOFT, fontFamily: FONT, mt: 1.2, textAlign: "center" }}>
                 Kitchen confirms in 15 minutes. No payment taken until they accept.
               </Typography>
             </Box>
