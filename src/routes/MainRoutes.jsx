@@ -5,11 +5,12 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import OdcPage from '../Pages/ODCPage/odcPage';
 import MenuPage from '../Pages/MenuPage/menuPage';
 import MenuDetailPage from '../Pages/MenuDetailPage/menuDetailPage';
+import ScrollToTop from '../components/Common/ScrollToTop/ScrollToTop';
 
 const MainRoutes = () => {
     return (
         <BrowserRouter>
-     
+        <ScrollToTop/>
         <Routes>
 
             <Route path='/' element={<OdcPage/>}/>

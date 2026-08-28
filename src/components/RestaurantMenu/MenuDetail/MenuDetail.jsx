@@ -370,7 +370,7 @@ export default function MenuDetail() {
               </Link>
               
               <Typography sx={{ color: INK_SOFT, fontWeight: 600, fontSize: 12.5, fontFamily: FONT }}>
-                {menu.dishTitle}
+                {menu.caterer}
               </Typography>
             </Breadcrumbs>
 
