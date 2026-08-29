@@ -14,6 +14,10 @@ import GoogleIcon from '@mui/icons-material/Google';
 import { RED, compactFieldSx, trustItems } from './LoginConstants';
 
 const SignUpForm = ({
+  fullName,
+  setFullName,
+  signupMobile,
+  setSignupMobile,
   signupEmail,
   setSignupEmail,
   signupPassword,
@@ -21,10 +25,12 @@ const SignUpForm = ({
   handleSignUp,
   handleGoogleLogin,
   switchToSignIn,
+  loading,
+  error,
 }) => {
   return (
     <>
-      <Box sx={{ textAlign: 'center', mb: 1.4 }}>
+      <Box sx={{ textAlign: 'center', mb: 1.4,mt:3  }}>
         <Box sx={{ position: 'relative', display: 'inline-block', mb: 0 }}>
           <Box component="img" src={dinnarIcon} alt="" sx={{ width: 40, height: 40 }} />
           <FavoriteRoundedIcon
@@ -75,6 +81,26 @@ const SignUpForm = ({
           mb: 0.6,
         }}
       >
+        Full Name
+      </Typography>
+
+      <TextField
+        fullWidth
+        placeholder="Enter your full name"
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)}
+        sx={compactFieldSx}
+      />
+
+      <Typography
+        sx={{
+          fontFamily: '"open sans", sans-serif',
+          fontSize: '0.78rem',
+          fontWeight: 600,
+          color: '#3a3a3a',
+          mb: 0.6,
+        }}
+      >
         Email
       </Typography>
 
@@ -83,6 +109,27 @@ const SignUpForm = ({
         placeholder="Enter your email"
         value={signupEmail}
         onChange={(e) => setSignupEmail(e.target.value)}
+        sx={compactFieldSx}
+      />
+
+      <Typography
+        sx={{
+          fontFamily: '"open sans", sans-serif',
+          fontSize: '0.78rem',
+          fontWeight: 600,
+          color: '#3a3a3a',
+          mb: 0.6,
+        }}
+      >
+        Mobile Number
+      </Typography>
+
+      <TextField
+        fullWidth
+        placeholder="Enter your mobile number"
+        value={signupMobile}
+        onChange={(e) => setSignupMobile(e.target.value.replace(/\D/g, ''))}
+        inputProps={{ maxLength: 10 }}
         sx={compactFieldSx}
       />
 
@@ -107,10 +154,24 @@ const SignUpForm = ({
         sx={compactFieldSx}
       />
 
+      {error && (
+        <Typography
+          sx={{
+            fontFamily: '"open sans", sans-serif',
+            fontSize: '0.78rem',
+            color: RED,
+            mb: 1,
+          }}
+        >
+          {error}
+        </Typography>
+      )}
+
       <Button
         fullWidth
         variant="contained"
         disableElevation
+        disabled={loading}
         onClick={handleSignUp}
         sx={{
           py: 1.1,
@@ -124,41 +185,10 @@ const SignUpForm = ({
           bgcolor: RED,
           color: '#fff',
           '&:hover': { bgcolor: '#c81c20' },
+          '&.Mui-disabled': { bgcolor: '#e28a8c', color: '#fff' },
         }}
       >
-        Sign Up
-      </Button>
-
-      <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 1 }}>
-        <Divider sx={{ flex: 1 }} />
-        <Typography
-          sx={{ fontFamily: '"open sans", sans-serif', fontSize: '0.8rem', color: '#9a9a9a' }}
-        >
-          or
-        </Typography>
-        <Divider sx={{ flex: 1 }} />
-      </Stack>
-
-      <Button
-        fullWidth
-        variant="outlined"
-        disableElevation
-        startIcon={<GoogleIcon sx={{ fontSize: 17 }} />}
-        onClick={handleGoogleLogin}
-        sx={{
-          py: 1,
-          mb: 2,
-          borderRadius: '10px',
-          textTransform: 'none',
-          fontWeight: 600,
-          fontFamily: '"open sans", sans-serif',
-          fontSize: '0.88rem',
-          borderColor: '#e2e2e2',
-          color: '#2a2a2a',
-          '&:hover': { borderColor: RED, bgcolor: 'rgba(227,34,39,0.04)' },
-        }}
-      >
-        Continue with Google
+        {loading ? 'Creating account...' : 'Sign Up'}
       </Button>
 
       <Typography

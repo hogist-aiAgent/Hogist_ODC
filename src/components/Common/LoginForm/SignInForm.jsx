@@ -14,10 +14,20 @@ import GoogleIcon from '@mui/icons-material/Google';
 
 import { RED, compactFieldSx, trustItems } from './LoginConstants';
 
-const SignInForm = ({ mobile, setMobile, handleContinue, handleGoogleLogin, switchToSignUp }) => {
+const SignInForm = ({
+  mobile,
+  setMobile,
+  password,
+  setPassword,
+  handleContinue,
+  handleGoogleLogin,
+  switchToSignUp,
+  loading,
+  error,
+}) => {
   return (
     <>
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
+      <Box sx={{ textAlign: 'center', mb: 4, mt:3 }}>
         <Box sx={{ position: 'relative', display: 'inline-block', mb: 0 }}>
           <Box component="img" src={dinnarIcon} alt="" sx={{ width: 40, height: 40 }} />
           <FavoriteRoundedIcon
@@ -97,10 +107,45 @@ const SignInForm = ({ mobile, setMobile, handleContinue, handleGoogleLogin, swit
         }}
       />
 
+      <Typography
+        sx={{
+          fontFamily: '"open sans", sans-serif',
+          fontSize: '0.78rem',
+          fontWeight: 600,
+          color: '#3a3a3a',
+          mb: 0.6,
+        }}
+      >
+        Password
+      </Typography>
+
+      <TextField
+        fullWidth
+        type="password"
+        placeholder="Enter your password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        sx={compactFieldSx}
+      />
+
+      {error && (
+        <Typography
+          sx={{
+            fontFamily: '"open sans", sans-serif',
+            fontSize: '0.78rem',
+            color: RED,
+            mb: 1,
+          }}
+        >
+          {error}
+        </Typography>
+      )}
+
       <Button
         fullWidth
         variant="contained"
         disableElevation
+        disabled={loading}
         onClick={handleContinue}
         sx={{
           py: 1.1,
@@ -113,41 +158,10 @@ const SignInForm = ({ mobile, setMobile, handleContinue, handleGoogleLogin, swit
           bgcolor: RED,
           color: '#fff',
           '&:hover': { bgcolor: '#c81c20' },
+          '&.Mui-disabled': { bgcolor: '#e28a8c', color: '#fff' },
         }}
       >
-        Continue
-      </Button>
-
-      <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 1 }}>
-        <Divider sx={{ flex: 1 }} />
-        <Typography
-          sx={{ fontFamily: '"open sans", sans-serif', fontSize: '0.8rem', color: '#9a9a9a' }}
-        >
-          or
-        </Typography>
-        <Divider sx={{ flex: 1 }} />
-      </Stack>
-
-      <Button
-        fullWidth
-        variant="outlined"
-        disableElevation
-        startIcon={<GoogleIcon sx={{ fontSize: 17 }} />}
-        onClick={handleGoogleLogin}
-        sx={{
-          py: 1,
-          mb: 2,
-          borderRadius: '10px',
-          textTransform: 'none',
-          fontWeight: 600,
-          fontFamily: '"open sans", sans-serif',
-          fontSize: '0.88rem',
-          borderColor: '#e2e2e2',
-          color: '#2a2a2a',
-          '&:hover': { borderColor: RED, bgcolor: 'rgba(227,34,39,0.04)' },
-        }}
-      >
-        Continue with Google
+        {loading ? 'Signing in...' : 'Continue'}
       </Button>
 
       <Typography

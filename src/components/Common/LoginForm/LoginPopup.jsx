@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Dialog,
   Box,
@@ -9,17 +10,33 @@ import CloseIcon from '@mui/icons-material/Close';
 import BrandPanel from './BrandPanel';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
+import { loginUser, registerUser, clearAuthErrors, clearRegisterSuccess } from '../../../store/slices/authSlice';
 
 const LoginPopup = ({ open, onClose }) => {
+  const dispatch = useDispatch();
+  const { loginLoading, loginError, registerLoading, registerError } = useSelector(
+    (state) => state.auth
+  );
+
   const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
-  const [name, setName] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [signupMobile, setSignupMobile] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
 
   const handleContinue = () => {
-    // TODO: implement OTP / continue logic
-    console.log('Continue with mobile:', mobile);
+    dispatch(loginUser({ userName: mobile, password }))
+      .unwrap()
+      .then(() => {
+        setMobile('');
+        setPassword('');
+        onClose();
+      })
+      .catch(() => {
+        // loginError from the store is already shown in SignInForm
+      });
   };
 
   const handleGoogleLogin = () => {
@@ -28,12 +45,36 @@ const LoginPopup = ({ open, onClose }) => {
   };
 
   const handleSignUp = () => {
-    // TODO: implement sign up logic
-    console.log('Sign up with:', { name, signupEmail, signupPassword });
+    dispatch(
+      registerUser({
+        fullName,
+        email: signupEmail,
+        mobile: signupMobile,
+        password: signupPassword,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        setFullName('');
+        setSignupMobile('');
+        setSignupEmail('');
+        setSignupPassword('');
+        setIsSignUp(false);
+        dispatch(clearRegisterSuccess());
+      })
+      .catch(() => {
+        // registerError from the store is already shown in SignUpForm
+      });
   };
 
-  const switchToSignUp = () => setIsSignUp(true);
-  const switchToSignIn = () => setIsSignUp(false);
+  const switchToSignUp = () => {
+    dispatch(clearAuthErrors());
+    setIsSignUp(true);
+  };
+  const switchToSignIn = () => {
+    dispatch(clearAuthErrors());
+    setIsSignUp(false);
+  };
 
   return (
     <Dialog
@@ -43,19 +84,11 @@ const LoginPopup = ({ open, onClose }) => {
       fullWidth
       PaperProps={{
         sx: {
-          // Mobile (xs): edge-to-edge full-screen card — no radius, no margin,
-          // fills the entire viewport, matching the reference mobile UI.
-          // sm and up: unchanged (same floating card as before).
           borderRadius: { xs: 0, sm: '18px' },
           overflow: 'hidden',
           maxWidth: { xs: '100%', sm: 860 },
           width: { xs: '100%', sm: '100%' },
           m: { xs: 0, sm: 3 },
-          // Fixed height from sm up (where the two panels sit side by side and
-          // slide against each other) so switching between the shorter Sign In
-          // content and the taller Sign Up content never resizes the card —
-          // only the inner panels scroll if they need more room than this.
-          // maxHeight stays as a safety cap for short viewports.
           height: { xs: '100%', sm: 600 },
           maxHeight: { xs: '100%', sm: '90vh' },
         },
@@ -108,12 +141,20 @@ const LoginPopup = ({ open, onClose }) => {
             <SignInForm
               mobile={mobile}
               setMobile={setMobile}
+              password={password}
+              setPassword={setPassword}
               handleContinue={handleContinue}
               handleGoogleLogin={handleGoogleLogin}
               switchToSignUp={switchToSignUp}
+              loading={loginLoading}
+              error={loginError}
             />
           ) : (
             <SignUpForm
+              fullName={fullName}
+              setFullName={setFullName}
+              signupMobile={signupMobile}
+              setSignupMobile={setSignupMobile}
               signupEmail={signupEmail}
               setSignupEmail={setSignupEmail}
               signupPassword={signupPassword}
@@ -121,6 +162,8 @@ const LoginPopup = ({ open, onClose }) => {
               handleSignUp={handleSignUp}
               handleGoogleLogin={handleGoogleLogin}
               switchToSignIn={switchToSignIn}
+              loading={registerLoading}
+              error={registerError}
             />
           )}
         </Box>

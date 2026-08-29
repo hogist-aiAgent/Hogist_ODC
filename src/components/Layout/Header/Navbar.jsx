@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../../store/slices/authSlice';
 import {
   AppBar,
   Toolbar,
@@ -77,7 +79,7 @@ function LocationBadge({ text }) {
 function MenuPageActions({ onNotificationClick, onCartClick, onProfileClick, locationText, userName }) {
   return (
     <Stack direction="row" alignItems="center" spacing={{ xs: 0.75, md: 1.5 }}>
-      {/* Location badge — hidden on mobile (xs) only; still shows on tablet (sm) and desktop/laptop (md+) */}
+      {/* Location badge */}
       <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
         <LocationBadge text={locationText} />
       </Box>
@@ -111,7 +113,7 @@ function MenuPageActions({ onNotificationClick, onCartClick, onProfileClick, loc
         <ShoppingCartOutlinedIcon sx={{ fontSize: { xs: 20, md: 21, lg: 24 } }} />
       </IconButton>
 
-      {/* Profile pill — icon + Guest/user name + chevron, opens the profile dropdown */}
+      {/* Profile*/}
       <Box
         component="button"
         type="button"
@@ -160,21 +162,16 @@ export default function Navbar() {
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
 
-  // Profile dropdown Menu state — opened from the profile icon, contains
-  // Profile / Settings / Login (Guest) or Profile / Settings / Logout (logged in).
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
   const isProfileMenuOpen = Boolean(profileAnchorEl);
 
-  // Logged-in user's display name — shown next to the profile icon in place
-  // of "Guest" once available (e.g. set after a successful login). Also used
-  // to decide which options the profile dropdown shows.
-  const [userName, setUserName] = useState(null);
+  const dispatch = useDispatch();
+  const authUser = useSelector((state) => state.auth.user);
+  const userName = authUser?.fullName || null;
   const isLoggedIn = Boolean(userName);
 
-  // Selected nav link toggle state
   const [selectedLink, setSelectedLink] = useState('Home');
 
-  // Scroll state for transparent -> white navbar
   const [scrolled, setScrolled] = useState(false);
 
   // Login Popup State
@@ -259,8 +256,7 @@ export default function Navbar() {
   };
 
   const handleLogoutClick = () => {
-    // TODO: call real logout / clear auth session
-    setUserName(null);
+    dispatch(logout());
   };
 
   const handleNavClick = (link) => {
@@ -355,7 +351,7 @@ export default function Navbar() {
               </Box>
             </Stack>
 
-            {/* Desktop nav - hide on menu page */}
+            {/* Desktop nav */}
             {!isMenuPage && !isMyPlan &&(
               <Stack
                 direction="row"
@@ -440,7 +436,6 @@ export default function Navbar() {
                   onNotificationClick={handleNotificationClick}
                   onCartClick={handleCartClick}
                   onProfileClick={handleProfileMenuOpen}
-                  
                 />
               ) : (
                 <Button
