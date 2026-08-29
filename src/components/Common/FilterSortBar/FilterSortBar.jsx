@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -9,6 +9,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Drawer,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
@@ -20,10 +21,9 @@ import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import RoomServiceIcon from "@mui/icons-material/RoomService";
 import BentoIcon from "@mui/icons-material/Bento";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-// Sort now renders as a dropdown in the results header (see ChooseRestaurant.jsx)
-// to match the reference design, so it's exported here for reuse instead of
-// living inside FILTER_GROUPS.
+
 export const SORTING_OPTIONS = [
   { value: "relevance", label: "Recommended" },
   { value: "nearest", label: "Nearest" },
@@ -90,9 +90,7 @@ const RATINGS_OPTIONS = [
   { value: "4.0", label: "4.0+" },
 ];
 
-// `variant: "checklist"` renders as a checkbox list with counts (matches the
-// "Cuisine" section in the reference). `variant: "pill"` renders as a row of
-// toggle pills (matches the "Diet" / "Service Style" sections in the reference).
+
 export const FILTER_GROUPS = [
   { key: "dietary", label: "Diet", options: DIETARY_OPTIONS, icon: BentoIcon, variant: "pill" },
   { key: "cuisine", label: "Cuisine", options: CUISINES_OPTIONS, icon: RestaurantIcon, variant: "checklist" },
@@ -103,8 +101,7 @@ export const FILTER_GROUPS = [
   { key: "ratings", label: "Ratings", options: RATINGS_OPTIONS, icon: StarRoundedIcon, variant: "pill" },
 ];
 
-// Shared helper so the results header (ChooseRestaurant.jsx) can render the
-// same "active filter" chips the reference design shows above the results grid.
+
 export function getActiveFilterChips(selectedFilters = {}) {
   const chips = [];
   Object.entries(selectedFilters).forEach(([key, values]) => {
@@ -129,57 +126,10 @@ export default function FilterSortBar({
 }) {
   const hasActiveFilters = getActiveFilterChips(selectedFilters).length > 0;
 
-  return (
-    <Box
-      sx={{
-        bgcolor: "#FFFFFF",
-        borderRadius: 1.5,
-        border: "1px solid rgba(43,33,28,0.08)",
-        boxShadow: "0 2px 4px rgba(43,33,28,0.04)",
-        overflow: "hidden",
-        position: { md: "sticky" },
-        top: { md: 16 },
-        display: "flex",
-        flexDirection: "column",
-        maxHeight: { md: "calc(100vh - 32px)" },
-      }}
-    >
-      {/* Header */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          px: 2.5,
-          py: 1.5,
-          flexShrink: 0,
-        }}
-      >
-        <Typography
-          sx={{ fontWeight: 800, fontSize: 16, fontFamily: '"Montserrat", sans-serif' }}
-        >
-          Filters
-        </Typography>
-        {hasActiveFilters && (
-          <Typography
-            component="button"
-            onClick={onClearAll}
-            sx={{
-              border: "none",
-              background: "none",
-              cursor: "pointer",
-              color: "primary.main",
-              fontWeight: 700,
-              fontSize: 12,
-              fontFamily: '"open sans", sans-serif',
-              p: 0,
-            }}
-          >
-            Clear all
-          </Typography>
-        )}
-      </Box>
-
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  
+  const filterBody = (
+    <>
       {/* Search */}
       <Box sx={{ px: 2.5, pb: 1.5, flexShrink: 0 }}>
         <TextField
@@ -350,6 +300,158 @@ export default function FilterSortBar({
           );
         })}
       </Box>
+    </>
+  );
+
+  return (
+    <Box
+      sx={{
+        bgcolor: "#FFFFFF",
+        borderRadius: 1.5,
+        border: "1px solid rgba(43,33,28,0.08)",
+        boxShadow: "0 2px 4px rgba(43,33,28,0.04)",
+        overflow: "hidden",
+        position: { md: "sticky" },
+        top: { md: 16 },
+        display: "flex",
+        flexDirection: "column",
+        maxHeight: { md: "calc(100vh - 32px)" },
+      }}
+    >
+      {/* Header */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: 2.5,
+          py: 1.5,
+          flexShrink: 0,
+        }}
+      >
+        <Typography
+          sx={{ fontWeight: 800, fontSize: 16, fontFamily: '"Montserrat", sans-serif' }}
+        >
+          Filters
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {hasActiveFilters && (
+            <Typography
+              component="button"
+              onClick={onClearAll}
+              sx={{
+                border: "none",
+                background: "none",
+                cursor: "pointer",
+                color: "primary.main",
+                fontWeight: 700,
+                fontSize: 12,
+                fontFamily: '"open sans", sans-serif',
+                p: 0,
+              }}
+            >
+              Clear all
+            </Typography>
+          )}
+
+          {/* Mobile/tablet-only toggle — hidden from md breakpoint (desktop/
+              laptop) up. Opens the filter body as a right-to-left sliding
+              Drawer on mobile and tablet. */}
+          <IconButton
+            aria-label={mobileFilterOpen ? "Collapse filters" : "Expand filters"}
+            onClick={() => setMobileFilterOpen((prev) => !prev)}
+            size="small"
+            sx={{
+              display: { xs: "inline-flex", md: "none" },
+              p: 0.5,
+              color: "primary.main",
+              transition: "transform 0.2s ease",
+              transform: mobileFilterOpen ? "rotate(180deg)" : "rotate(0deg)",
+            }}
+          >
+            <ArrowForwardIosIcon sx={{ fontSize: 19 }} />
+          </IconButton>
+        </Box>
+      </Box>
+
+      {/* Desktop/laptop body — always visible inline, exactly as before.
+          Hidden on mobile/tablet since the same content now lives in the
+          Drawer below. */}
+      <Box
+        sx={{
+          display: { xs: "none", md: "flex" },
+          flexDirection: "column",
+          flex: 1,
+          minHeight: 0,
+        }}
+      >
+        {filterBody}
+      </Box>
+
+      {/* Mobile/tablet-only Drawer — slides in from the right (like a side
+          menu) instead of expanding the card downward. Desktop/laptop never
+          render this since it's only ever opened via the md:none toggle above. */}
+      <Drawer
+        anchor="right"
+        open={mobileFilterOpen}
+        onClose={() => setMobileFilterOpen(false)}
+        sx={{ display: { xs: "block", md: "none" } }}
+        PaperProps={{
+          sx: {
+            width: "85vw",
+            maxWidth: 340,
+            display: "flex",
+            flexDirection: "column",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            px: 2.5,
+            py: 1.5,
+            flexShrink: 0,
+          }}
+        >
+          <Typography
+            sx={{ fontWeight: 800, fontSize: 16, fontFamily: '"Montserrat", sans-serif' }}
+          >
+            Filters
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {hasActiveFilters && (
+              <Typography
+                component="button"
+                onClick={onClearAll}
+                sx={{
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer",
+                  color: "primary.main",
+                  fontWeight: 700,
+                  fontSize: 12,
+                  fontFamily: '"open sans", sans-serif',
+                  p: 0,
+                }}
+              >
+                Clear all
+              </Typography>
+            )}
+            <IconButton
+              aria-label="Close filters"
+              onClick={() => setMobileFilterOpen(false)}
+              size="small"
+              sx={{ p: 0.5, color: "primary.main" }}
+            >
+              <CloseIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+          </Box>
+        </Box>
+        <Divider sx={{ flexShrink: 0 }} />
+        {filterBody}
+      </Drawer>
     </Box>
   );
 }

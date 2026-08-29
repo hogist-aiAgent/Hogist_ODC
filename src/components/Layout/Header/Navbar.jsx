@@ -15,6 +15,7 @@ import {
   Menu,
   MenuItem,
   Typography,
+  Divider,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -23,6 +24,13 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import logo from '../../../assets/CompanyLogo/logo.png';
 import SystemUpdateOutlinedIcon from '@mui/icons-material/SystemUpdateOutlined';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LoginPopup from '../../Common/LoginForm/LoginPopup'; // Import the LoginPopup component
 
 const navLinks = [
@@ -33,8 +41,7 @@ const navLinks = [
   { label: 'Contact Us', sectionId: 'contact-us' },
 ];
 
-// Small pill badge that shows "Chennai" plus the pincode (when one can be
-// found in the confirmed location) — used only on the Menu page navbar.
+
 function LocationBadge({ text }) {
   return (
     <Stack
@@ -45,7 +52,7 @@ function LocationBadge({ text }) {
         border: '1.5px solid rgba(154,0,2,0.25)',
         borderRadius: 999,
         px: { xs: 1.1, md: 1.4 },
-        py: { xs: 0.4, md: 0.5 },
+        py: { xs: 0.5, md: 0.6 },
         bgcolor: 'rgba(154,0,2,0.04)',
         flexShrink: 0,
       }}
@@ -66,12 +73,103 @@ function LocationBadge({ text }) {
   );
 }
 
+
+function MenuPageActions({ onNotificationClick, onCartClick, onProfileClick, locationText, userName }) {
+  return (
+    <Stack direction="row" alignItems="center" spacing={{ xs: 0.75, md: 1.5 }}>
+      {/* Location badge — hidden on mobile (xs) only; still shows on tablet (sm) and desktop/laptop (md+) */}
+      <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
+        <LocationBadge text={locationText} />
+      </Box>
+      <IconButton
+        onClick={onNotificationClick}
+        aria-label="Notifications"
+        sx={{
+          color: '#9a0002',
+          border: '1.5px solid rgba(154,0,2,0.3)',
+          p: { xs: 0.5, md: 0.6, lg: 0.5 },
+          '&:hover': {
+            bgcolor: 'rgba(154,0,2,0.06)',
+          },
+        }}
+      >
+        <NotificationsNoneOutlinedIcon sx={{ fontSize: { xs: 20, md: 22, lg: 24 } }} />
+      </IconButton>
+
+      <IconButton
+        onClick={onCartClick}
+        aria-label="Cart"
+        sx={{
+          color: '#9a0002',
+          border: '1.5px solid rgba(154,0,2,0.3)',
+         p: { xs: 0.5, md: 0.6, lg: 0.5 },
+          '&:hover': {
+            bgcolor: 'rgba(154,0,2,0.06)',
+          },
+        }}
+      >
+        <ShoppingCartOutlinedIcon sx={{ fontSize: { xs: 20, md: 21, lg: 24 } }} />
+      </IconButton>
+
+      {/* Profile pill — icon + Guest/user name + chevron, opens the profile dropdown */}
+      <Box
+        component="button"
+        type="button"
+        onClick={onProfileClick}
+        aria-label="Profile menu"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: { xs: 0.4, md: 0.6 },
+          cursor: 'pointer',
+          background: 'none',
+          color: '#9a0002',
+          border: '1.5px solid rgba(154,0,2,0.3)',
+          borderRadius: 999,
+          pl: { xs: 0.5, md: 0.6 },
+          pr: { xs: 1, md: 1.2 },
+          py: { xs: 0.35, sm:0.4,md: 0.4 },
+          '&:hover': {
+            bgcolor: 'rgba(154,0,2,0.06)',
+          },
+        }}
+      >
+        <AccountCircleOutlinedIcon sx={{ fontSize: { xs: 20, md: 22, lg: 24 }, color: '#9a0002' }} />
+        <Typography
+          sx={{
+            fontSize: { xs: '0.72rem', md: '0.8rem' },
+            fontWeight: 700,
+            color: '#9a0002',
+            textTransform: 'uppercase',
+            fontFamily: '"open sans", sans-serif',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {userName || 'Guest'}
+        </Typography>
+        <ExpandMoreIcon sx={{ fontSize: { xs: 16, md: 18 }, color: '#9a0002' }} />
+      </Box>
+    </Stack>
+  );
+}
+
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Dropdown Menu State
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
+
+  // Profile dropdown Menu state — opened from the profile icon, contains
+  // Profile / Settings / Login (Guest) or Profile / Settings / Logout (logged in).
+  const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+  const isProfileMenuOpen = Boolean(profileAnchorEl);
+
+  // Logged-in user's display name — shown next to the profile icon in place
+  // of "Guest" once available (e.g. set after a successful login). Also used
+  // to decide which options the profile dropdown shows.
+  const [userName, setUserName] = useState(null);
+  const isLoggedIn = Boolean(userName);
 
   // Selected nav link toggle state
   const [selectedLink, setSelectedLink] = useState('Home');
@@ -117,6 +215,22 @@ export default function Navbar() {
     setAnchorEl(null);
   };
 
+  const handleProfileMenuOpen = (event) => {
+    setProfileAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setProfileAnchorEl(null);
+  };
+
+  const handleNotificationClick = () => {
+    // TODO: route to notifications page
+  };
+
+  const handleCartClick = () => {
+    // TODO: route to cart page
+  };
+
   const handleWhatsAppClick = (event) => {
     if (event.ctrlKey || event.metaKey || event.button === 1) {
       return;
@@ -142,6 +256,11 @@ export default function Navbar() {
 
   const handleLoginPopupClose = () => {
     setLoginPopupOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    // TODO: call real logout / clear auth session
+    setUserName(null);
   };
 
   const handleNavClick = (link) => {
@@ -315,61 +434,14 @@ export default function Navbar() {
               }}
             >
               {isMenuPage || isMyPlan ? (
-                <>
-                  {/* Location badge (Chennai + pincode) — Menu page only */}
-                  <LocationBadge text={locationBadgeText} />
-
-                  <IconButton
-                    onClick={handleProfileClick}
-                    sx={{
-                      color: '#9a0002',
-                      border: '1.5px solid rgba(154,0,2,0.3)',
-                      p: { md: 0.8, lg: 0.9 },
-                      '&:hover': {
-                        bgcolor: 'rgba(154,0,2,0.06)',
-                      },
-                    }}
-                  >
-                    <AccountCircleOutlinedIcon
-                      sx={{ fontSize: { md: 22, lg: 24 } }}
-                    />
-                  </IconButton>
-
-                  <Button
-                    variant="contained"
-                    onClick={handleLoginClick}
-                    sx={{
-                      px: { md: 2.1, lg: 3 },
-                      py: { md: 0.75, lg: 0.9 },
-                      borderRadius: 999,
-                      textTransform: 'none',
-                      fontWeight: 800,
-                      fontFamily: '"open sans", sans-serif',
-                      fontSize: { md: '0.8rem', lg: '0.9rem' },
-                      letterSpacing: '0.3px',
-                      background:
-                        'linear-gradient(135deg, #ac1f1f 0%, #d6293e 45%, #9a0002 100%)',
-                      color: '#fff',
-                      boxShadow: '0 4px 14px rgba(154,0,2,0.45)',
-                      border: 'none',
-
-                      '@media (min-width:1400px) and (max-width:1600px)': {
-                        px: 2.6,
-                        py: 0.9,
-                        fontSize: '1rem',
-                      },
-
-                      '&:hover': {
-                        background:
-                          'linear-gradient(135deg, #ac1f1f 0%, #e12e45 45%, #ae0003 100%)',
-                      },
-                      transition:
-                        'transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease',
-                    }}
-                  >
-                    Login
-                  </Button>
-                </>
+                <MenuPageActions
+                  locationText={locationBadgeText}
+                  userName={userName}
+                  onNotificationClick={handleNotificationClick}
+                  onCartClick={handleCartClick}
+                  onProfileClick={handleProfileMenuOpen}
+                  
+                />
               ) : (
                 <Button
                   component="a"
@@ -508,13 +580,127 @@ export default function Navbar() {
               </Menu>
             </Stack>
 
-            {/* Mobile toggle */}
-            <IconButton
-              sx={{ display: { xs: 'flex', md: 'none' } }}
-              onClick={() => setMobileOpen(true)}
+            {/* Mobile: Notification / Cart / Profile / Location shown directly
+                in the toolbar (Menu/MyPlan pages only) — not in the sidebar. */}
+            {(isMenuPage || isMyPlan) && (
+              <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
+                <MenuPageActions
+                locationText={locationBadgeText}
+                userName={userName}
+                  onNotificationClick={handleNotificationClick}
+                  onCartClick={handleCartClick}
+                  onProfileClick={handleProfileMenuOpen}
+                />
+              </Box>
+            )}
+
+            {/* Profile dropdown — Guest shows only Login; logged-in shows
+                Profile / Settings / Logout. Shared by both the desktop CTA
+                profile icon and the mobile toolbar profile icon. */}
+            <Menu
+              anchorEl={profileAnchorEl}
+              open={isProfileMenuOpen}
+              onClose={handleProfileMenuClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              PaperProps={{
+                elevation: 4,
+                sx: {
+                  mt: 1,
+                  borderRadius: 2,
+                  minWidth: 200,
+                  py: 0.5,
+                },
+              }}
             >
-              <MenuIcon />
-            </IconButton>
+              {isLoggedIn ? (
+                [
+                  <MenuItem
+                    key="profile"
+                    onClick={() => {
+                      handleProfileMenuClose();
+                      handleProfileClick();
+                    }}
+                    sx={{
+                      fontSize: '0.9rem',
+                      py: 1,
+                      fontFamily: '"open sans", sans-serif',
+                    }}
+                  >
+                    <PersonOutlineOutlinedIcon sx={{ fontSize: 18, mr: 1.25, color: '#9a0002' }} />
+                    Profile
+                  </MenuItem>,
+
+                  <MenuItem
+                    key="settings"
+                    onClick={handleProfileMenuClose}
+                    sx={{
+                      fontSize: '0.9rem',
+                      py: 1,
+                      fontFamily: '"open sans", sans-serif',
+                    }}
+                  >
+                    <SettingsOutlinedIcon sx={{ fontSize: 18, mr: 1.25, color: '#9a0002' }} />
+                    Settings
+                  </MenuItem>,
+
+                  <Divider key="divider" sx={{ my: 0.5 }} />,
+
+                  <MenuItem
+                    key="logout"
+                    onClick={() => {
+                      handleProfileMenuClose();
+                      handleLogoutClick();
+                    }}
+                    sx={{
+                      fontSize: '0.9rem',
+                      py: 1,
+                      fontWeight: 700,
+                      color: '#9a0002',
+                      fontFamily: '"open sans", sans-serif',
+                    }}
+                  >
+                    <LogoutOutlinedIcon sx={{ fontSize: 18, mr: 1.25 }} />
+                    Logout
+                  </MenuItem>,
+                ]
+              ) : (
+                <MenuItem
+                  onClick={() => {
+                    handleProfileMenuClose();
+                    handleLoginClick();
+                  }}
+                  sx={{
+                    fontSize: '0.9rem',
+                    py: 1,
+                    fontWeight: 700,
+                    color: '#9a0002',
+                    fontFamily: '"open sans", sans-serif',
+                  }}
+                >
+                  <LoginOutlinedIcon sx={{ fontSize: 18, mr: 1.25 }} />
+                  Login
+                </MenuItem>
+              )}
+            </Menu>
+
+            {/* Mobile toggle — only for non Menu/MyPlan pages, since those
+                pages now show their controls directly in the toolbar above
+                instead of via the sidebar. */}
+            {!isMenuPage && !isMyPlan && (
+              <IconButton
+                sx={{ display: { xs: 'flex', md: 'none' } }}
+                onClick={() => setMobileOpen(true)}
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
           </Toolbar>
         </Container>
 
@@ -555,50 +741,7 @@ export default function Navbar() {
                 ))}
 
               <Box sx={{ px: 2, pt: 2 }}>
-                {isMenuPage || isMyPlan ? (
-                  <Stack spacing={1.5}>
-                    {/* Location badge (Chennai + pincode) — Menu page only */}
-                    <Box sx={{ display: 'flex' }}>
-                      <LocationBadge text={locationBadgeText} />
-                    </Box>
-
-                    <Stack direction="row" spacing={1.5}>
-                      <IconButton
-                        onClick={handleProfileClick}
-                        sx={{
-                          color: '#9a0002',
-                          border: '1.5px solid rgba(154,0,2,0.3)',
-                        }}
-                      >
-                        <AccountCircleOutlinedIcon sx={{ fontSize: 22 }} />
-                      </IconButton>
-
-                      <Button
-                        fullWidth
-                        variant="contained"
-                        onClick={handleLoginClick}
-                        sx={{
-                          borderRadius: 999,
-                          textTransform: 'none',
-                          fontWeight: 800,
-                          letterSpacing: '0.3px',
-                          fontFamily: '"open sans", sans-serif',
-                          background:
-                            'linear-gradient(135deg, #ac1f1f 0%, #d6293e 45%, #9a0002 100%)',
-                          color: '#fff',
-                          boxShadow: '0 4px 14px rgba(154,0,2,0.45)',
-                          border: 'none',
-                          '&:hover': {
-                            background:
-                              'linear-gradient(135deg, #ac1f1f 0%, #e12e45 45%, #ae0003 100%)',
-                          },
-                        }}
-                      >
-                        Login
-                      </Button>
-                    </Stack>
-                  </Stack>
-                ) : (
+                {!isMenuPage && !isMyPlan && (
                   <Button
                     fullWidth
                     component="a"
