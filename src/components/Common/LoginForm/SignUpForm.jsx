@@ -30,7 +30,7 @@ const SignUpForm = ({
 }) => {
   return (
     <>
-      <Box sx={{ textAlign: 'center', mb: 1.4,mt:3  }}>
+      <Box sx={{ textAlign: 'center', mb: 1.4,mt:3 }}>
         <Box sx={{ position: 'relative', display: 'inline-block', mb: 0 }}>
           <Box component="img" src={dinnarIcon} alt="" sx={{ width: 40, height: 40 }} />
           <FavoriteRoundedIcon

@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import BrandPanel from './BrandPanel';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
+import OtpVerification from './OtpVerification';
 import { loginUser, registerUser, clearAuthErrors, clearRegisterSuccess } from '../../../store/slices/authSlice';
 
 const LoginPopup = ({ open, onClose }) => {
@@ -26,17 +27,37 @@ const LoginPopup = ({ open, onClose }) => {
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
 
+  // ─── OTP step ────────────────────────────────────────────────────────
+  // The send-OTP / verify-OTP endpoints aren't built yet (backend side is
+  // being handled separately), so this only controls which screen is shown.
+  // Once those endpoints exist, wire the actual API calls into
+  // handleSendOtp / handleVerifyOtp below — the real login/register calls
+  // are already correctly placed to run only *after* OTP verification.
+  const [step, setStep] = useState('form'); // 'form' | 'otp'
+  const [otpFlow, setOtpFlow] = useState(null); // 'login' | 'register'
+
+  const resetLoginFields = () => {
+    setMobile('');
+    setPassword('');
+  };
+
+  const resetSignupFields = () => {
+    setFullName('');
+    setSignupMobile('');
+    setSignupEmail('');
+    setSignupPassword('');
+  };
+
+  const handleSendOtp = (flow) => {
+    // TODO: call the send-OTP API here once it's available, using `mobile`
+    // for the login flow or `signupMobile` for the register flow.
+    dispatch(clearAuthErrors());
+    setOtpFlow(flow);
+    setStep('otp');
+  };
+
   const handleContinue = () => {
-    dispatch(loginUser({ userName: mobile, password }))
-      .unwrap()
-      .then(() => {
-        setMobile('');
-        setPassword('');
-        onClose();
-      })
-      .catch(() => {
-        // loginError from the store is already shown in SignInForm
-      });
+    handleSendOtp('login');
   };
 
   const handleGoogleLogin = () => {
@@ -45,26 +66,54 @@ const LoginPopup = ({ open, onClose }) => {
   };
 
   const handleSignUp = () => {
-    dispatch(
-      registerUser({
-        fullName,
-        email: signupEmail,
-        mobile: signupMobile,
-        password: signupPassword,
-      })
-    )
-      .unwrap()
-      .then(() => {
-        setFullName('');
-        setSignupMobile('');
-        setSignupEmail('');
-        setSignupPassword('');
-        setIsSignUp(false);
-        dispatch(clearRegisterSuccess());
-      })
-      .catch(() => {
-        // registerError from the store is already shown in SignUpForm
-      });
+    handleSendOtp('register');
+  };
+
+  const handleVerifyOtp = () => {
+    // TODO: verify the code against the real verify-OTP endpoint before
+    // proceeding. For now, entering a complete 6-digit code goes straight
+    // to the real login/register call below.
+    if (otpFlow === 'login') {
+      dispatch(loginUser({ userName: mobile, password }))
+        .unwrap()
+        .then(() => {
+          resetLoginFields();
+          setStep('form');
+          onClose();
+        })
+        .catch(() => {
+          // loginError from the store is already shown on the OTP screen
+        });
+    } else if (otpFlow === 'register') {
+      dispatch(
+        registerUser({
+          fullName,
+          email: signupEmail,
+          mobile: signupMobile,
+          password: signupPassword,
+        })
+      )
+        .unwrap()
+        .then(() => {
+          resetSignupFields();
+          setStep('form');
+          setIsSignUp(false);
+          dispatch(clearRegisterSuccess());
+        })
+        .catch(() => {
+          // registerError from the store is already shown on the OTP screen
+        });
+    }
+  };
+
+  const handleResendOtp = () => {
+    // TODO: call the resend-OTP API here once it's available.
+    dispatch(clearAuthErrors());
+  };
+
+  const handleBackFromOtp = () => {
+    dispatch(clearAuthErrors());
+    setStep('form');
   };
 
   const switchToSignUp = () => {
@@ -76,19 +125,32 @@ const LoginPopup = ({ open, onClose }) => {
     setIsSignUp(false);
   };
 
+  const handleClose = () => {
+    setStep('form');
+    onClose();
+  };
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       maxWidth="md"
       fullWidth
       PaperProps={{
         sx: {
+          // Mobile (xs): edge-to-edge full-screen card — no radius, no margin,
+          // fills the entire viewport, matching the reference mobile UI.
+          // sm and up: unchanged (same floating card as before).
           borderRadius: { xs: 0, sm: '18px' },
           overflow: 'hidden',
           maxWidth: { xs: '100%', sm: 860 },
           width: { xs: '100%', sm: '100%' },
           m: { xs: 0, sm: 3 },
+          // Fixed height from sm up (where the two panels sit side by side and
+          // slide against each other) so switching between the shorter Sign In
+          // content and the taller Sign Up content never resizes the card —
+          // only the inner panels scroll if they need more room than this.
+          // maxHeight stays as a safety cap for short viewports.
           height: { xs: '100%', sm: 600 },
           maxHeight: { xs: '100%', sm: '90vh' },
         },
@@ -106,7 +168,7 @@ const LoginPopup = ({ open, onClose }) => {
         }}
       >
         <IconButton
-          onClick={onClose}
+          onClick={handleClose}
           size="small"
           sx={{
             position: 'absolute',
@@ -137,7 +199,16 @@ const LoginPopup = ({ open, onClose }) => {
             transition: 'transform 0.65s cubic-bezier(0.65, 0, 0.35, 1)',
           }}
         >
-          {!isSignUp ? (
+          {step === 'otp' ? (
+            <OtpVerification
+              mobile={otpFlow === 'login' ? mobile : signupMobile}
+              onVerify={handleVerifyOtp}
+              onResend={handleResendOtp}
+              onBack={handleBackFromOtp}
+              loading={otpFlow === 'login' ? loginLoading : registerLoading}
+              error={otpFlow === 'login' ? loginError : registerError}
+            />
+          ) : !isSignUp ? (
             <SignInForm
               mobile={mobile}
               setMobile={setMobile}
