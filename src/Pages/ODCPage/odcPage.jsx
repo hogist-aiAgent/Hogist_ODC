@@ -25,14 +25,10 @@ function OdcPage() {
 
   const closeNotice = () => setNotice((prev) => ({ ...prev, open: false }));
 
-  // Called by Hero (via LocationSearchBox's confirm()) once a location is
-  // picked. Only navigates to the Menu page if the picked location is
-  // inside the Chennai/Chengalpattu/Kanchipuram service metro; otherwise
-  // it stays on this page and shows a snackbar instead.
   const handleLocationConfirm = (selectedLocation) => {
     const locationText = selectedLocation?.full || selectedLocation?.label || '';
 
-    if (isChennaiLocation(locationText)) {
+    if (isChennaiLocation(locationText, { lat: selectedLocation?.lat, lon: selectedLocation?.lon })) {
       navigate('/Menu', { state: { selectedLocation } });
     } else {
       setNotice({

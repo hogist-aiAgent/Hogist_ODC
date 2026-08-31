@@ -194,9 +194,7 @@ const MENU_DETAILS_BY_ID = {
   },
 };
 
-// Restaurants that don't have a curated menu yet fall back to this minimal,
-// clearly-labelled placeholder so the page never breaks — swap it out by
-// adding a real entry for that id in MENU_DETAILS_BY_ID above.
+
 function buildPlaceholderMenu(restaurant) {
   return {
     category: "Menu",

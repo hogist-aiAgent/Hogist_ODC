@@ -1,8 +1,4 @@
-// Shared helper to decide whether a picked location falls inside the
-// Chennai / Chengalpattu / Kanchipuram service metro. Mirrors the keyword
-// list LocationSearchBox already uses internally to filter its
-// suggestions, so this stays consistent with what the user is actually
-// allowed to pick in the search box.
+
 
 export const CHENNAI_METRO_KEYWORDS = [
   // Chennai district / city
@@ -19,6 +15,9 @@ export const CHENNAI_METRO_KEYWORDS = [
   'perungalathur',
   'st thomas mount',
   'tambaram',
+  'kaiveli',
+  'medavakkam',
+  'pallikaranai',
   // OMR / IT corridor
   'siruseri',
   'sholinganallur',
@@ -60,8 +59,23 @@ export const CHENNAI_METRO_KEYWORDS = [
   'thiruvallur',
 ];
 
-// Checks a free-text address/label (any case) against the metro keyword list.
-export const isChennaiLocation = (text) => {
+const CHENNAI_BBOX = '79.45,12.00,80.35,13.35';
+const [BBOX_MIN_LON, BBOX_MIN_LAT, BBOX_MAX_LON, BBOX_MAX_LAT] = CHENNAI_BBOX
+  .split(',')
+  .map(Number);
+
+export const isWithinChennaiBbox = (lat, lon) =>
+  typeof lat === 'number' &&
+  typeof lon === 'number' &&
+  !Number.isNaN(lat) &&
+  !Number.isNaN(lon) &&
+  lon >= BBOX_MIN_LON &&
+  lon <= BBOX_MAX_LON &&
+  lat >= BBOX_MIN_LAT &&
+  lat <= BBOX_MAX_LAT;
+
+export const isChennaiLocation = (text, coords) => {
+  if (coords && isWithinChennaiBbox(coords.lat, coords.lon)) return true;
   if (!text) return false;
   const lower = text.toLowerCase();
   return CHENNAI_METRO_KEYWORDS.some((keyword) => lower.includes(keyword));

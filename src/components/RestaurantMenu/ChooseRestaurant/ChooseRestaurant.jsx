@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Container,
@@ -14,17 +15,49 @@ import {
   Select,
   MenuItem,
   FormControl,
+  CircularProgress,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 import allRestaurants, { filterNearbyRestaurants } from "../../../data/restaurants";
+import fallbackImg from "../../../assets/menu/chosseRestaurent/img1.jpg";
+import { fetchVendorsNear } from "../../../store/slices/catalogSlice";
 import FilterSortBar, {
   FILTER_GROUPS,
   SORTING_OPTIONS,
   getActiveFilterChips,
 } from "../../Common/FilterSortBar/FilterSortBar";
+
+function normalizeVendor(v) {
+  return {
+    id: v.slug || v._id || v.id,
+    slug: v.slug,
+    vendorId: v._id || v.id,
+    name: v.fullName || v.name || "Caterer",
+    area: v.area || v.city || "",
+    matchKeywords: [],
+    fssai: v.fssai || v.fssaiNo || "-",
+    tags: Array.isArray(v.tags)
+      ? v.tags
+      : typeof v.tags === "string" && v.tags.trim() !== ""
+      ? v.tags.split(",").map((t) => t.trim()).filter(Boolean)
+      : Array.isArray(v.cuisine)
+      ? v.cuisine
+      : typeof v.cuisine === "string" && v.cuisine.trim() !== ""
+      ? v.cuisine.split(",").map((t) => t.trim()).filter(Boolean)
+      : [],
+    rating: v.rating != null ? String(v.rating) : "4.0",
+    ribbon: v.ribbon,
+    img: v.img || v.logo || v.banner || fallbackImg,
+    isVeg: typeof v.isVeg === "boolean" ? v.isVeg : undefined,
+    isNonVeg: typeof v.isNonVeg === "boolean" ? v.isNonVeg : undefined,
+    price: v.price ?? v.startingPrice ?? v.pricePerPerson,
+    minPlates: v.minPlates ?? v.min,
+    eventsCount: v.eventsCount,
+  };
+}
 
 
 const GOLD = "#F5A623";
@@ -43,7 +76,12 @@ function getVegNonVegFlags(c) {
     };
   }
 
-  const tagText = (c.tags || []).join(" ").toLowerCase();
+  const tagsArray = Array.isArray(c.tags)
+    ? c.tags
+    : typeof c.tags === "string"
+    ? c.tags.split(",")
+    : [];
+  const tagText = tagsArray.join(" ").toLowerCase();
   const tagHasVeg = /(^|\s)veg(\s|$)/.test(tagText);
   const tagHasNonVeg = /non[\s-]?veg/.test(tagText);
 
@@ -54,18 +92,6 @@ function getVegNonVegFlags(c) {
   // No explicit signal available — assume the caterer offers both.
   return { veg: true, nonVeg: true };
 }
-
-// The caterer data stores diet as isVeg/isNonVeg booleans (not as text
-// inside tags/cuisine/etc), so "Diet" filter values are matched against
-// those flags directly instead of the generic text haystack below.
-//
-// Many caterers have BOTH isVeg and isNonVeg set to true (they serve both).
-// Matching "Veg" against `veg === true` alone therefore also pulled in
-// those mixed Veg & Non-Veg caterers whenever "Vegetarian" was selected.
-// To actually filter down to vegetarian-only (or non-veg-only) results,
-// "Veg" must require veg && !nonVeg, and "Non-Vege" must require
-// nonVeg && !veg — i.e. strictly pure veg / pure non-veg, matching the
-// "PURE VEG" style badge shown in the reference design.
 function matchesDietaryFilter(caterer, value) {
   if (value === "Veg" || value === "Non-Vege") {
     const { veg, nonVeg } = getVegNonVegFlags(caterer);
@@ -75,7 +101,7 @@ function matchesDietaryFilter(caterer, value) {
   // Jain / Vegan / Eggless — no dedicated flag exists on the caterer data
   // yet, so fall back to the same text-matching used by the other groups.
   const haystack = [
-    ...(caterer.tags || []),
+    ...(Array.isArray(caterer.tags) ? caterer.tags : caterer.tags ? [caterer.tags] : []),
     caterer.cuisine,
     caterer.mealType,
     caterer.foodType,
@@ -263,7 +289,7 @@ function CatererCard({ c, onView }) {
         </Stack>
 
         <Stack direction="row" flexWrap="wrap" gap={0.75} sx={{ mt: 1.5 }}>
-          {c.tags.map((tag) => (
+          {(Array.isArray(c.tags) ? c.tags : c.tags ? [c.tags] : []).map((tag) => (
             <Chip
               key={tag}
               label={tag}
@@ -351,18 +377,41 @@ const SORT_COMPARATORS = {
 export default function ChooseRestaurant() {
   const routerLocation = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const selectedLocation = routerLocation.state?.selectedLocation;
   const selectedLocationText = selectedLocation?.full || selectedLocation?.label || "";
+  const hasCoords = typeof selectedLocation?.lat === "number" && typeof selectedLocation?.lon === "number";
+
+  const {
+    vendorsNear,
+    vendorsNearLoading,
+    vendorsNearError,
+  } = useSelector((state) => state.catalog);
+
+  useEffect(() => {
+    if (hasCoords) {
+      dispatch(fetchVendorsNear({ lat: selectedLocation.lat, long: selectedLocation.lon }));
+    }
+  }, [dispatch, hasCoords, selectedLocation?.lat, selectedLocation?.lon]);
 
   const { list: caterers, isFallback } = useMemo(() => {
-    if (!selectedLocationText) {
-      return { list: allRestaurants, isFallback: false };
+    if (!hasCoords) {
+      if (!selectedLocationText) {
+        return { list: allRestaurants, isFallback: false };
+      }
+      const nearby = filterNearbyRestaurants(selectedLocationText);
+      return nearby.length > 0
+        ? { list: nearby, isFallback: false }
+        : { list: allRestaurants, isFallback: true };
     }
-    const nearby = filterNearbyRestaurants(selectedLocationText);
-    return nearby.length > 0
-      ? { list: nearby, isFallback: false }
-      : { list: allRestaurants, isFallback: true };
-  }, [selectedLocationText]);
+    if (vendorsNearError || vendorsNear.length === 0) {
+      const nearby = filterNearbyRestaurants(selectedLocationText);
+      return nearby.length > 0
+        ? { list: nearby, isFallback: true }
+        : { list: allRestaurants, isFallback: true };
+    }
+    return { list: vendorsNear.map(normalizeVendor), isFallback: false };
+  }, [hasCoords, selectedLocationText, vendorsNear, vendorsNearError]);
 
   const [searchValue, setSearchValue] = useState("");
   const [selectedFilters, setSelectedFilters] = useState(DEFAULT_SELECTED_FILTERS);
@@ -389,17 +438,12 @@ export default function ChooseRestaurant() {
     navigate(-1);
   };
 
-  // Navigates to the menu detail page for the clicked caterer, carrying the
-  // restaurant's id in the URL (so the page is linkable/refreshable) and the
-  // full record + confirmed location in router state for convenience.
   const handleViewMenu = (restaurant) => {
     navigate(`/menu-detail/${restaurant.id}`, {
       state: { restaurant, selectedLocation },
     });
   };
 
-  // Per-option counts (against the unfiltered list for this location), used by
-  // the "Cuisine" checklist section in FilterSortBar to match the reference design.
   const optionCounts = useMemo(() => {
     const counts = {};
     FILTER_GROUPS.forEach((group) => {
@@ -414,7 +458,7 @@ export default function ChooseRestaurant() {
             return matchesDietaryFilter(c, opt.value);
           }
           const haystack = [
-            ...(c.tags || []),
+            ...(Array.isArray(c.tags) ? c.tags : c.tags ? [c.tags] : []),
             c.cuisine,
             c.mealType,
             c.foodType,
@@ -443,7 +487,9 @@ export default function ChooseRestaurant() {
         (c) =>
           c.name?.toLowerCase().includes(query) ||
           c.area?.toLowerCase().includes(query) ||
-          c.tags?.some((t) => t.toLowerCase().includes(query))
+          (Array.isArray(c.tags) ? c.tags : c.tags ? [c.tags] : []).some((t) =>
+            String(t).toLowerCase().includes(query)
+          )
       );
     }
 
@@ -454,7 +500,7 @@ export default function ChooseRestaurant() {
     if (activeGroups.length > 0) {
       result = result.filter((c) => {
         const haystack = [
-          ...(c.tags || []),
+          ...(Array.isArray(c.tags) ? c.tags : c.tags ? [c.tags] : []),
           c.cuisine,
           c.mealType,
           c.foodType,
@@ -496,8 +542,6 @@ export default function ChooseRestaurant() {
     return result;
   }, [caterers, searchValue, selectedFilters]);
 
-  // Display text for the location the counts below are shown against —
-  // falls back to "your area" when no location was picked/passed in.
   const locationCountLabel = selectedLocation?.label || selectedLocationText || "your area";
 
   return (
@@ -643,13 +687,19 @@ export default function ChooseRestaurant() {
               </Stack>
             )}
 
-            <Grid container spacing={{ xs: 4, md: 5 }}>
-              {filteredCaterers.map((c) => (
-                <Grid item xs={12} sm={6} lg={4} key={c.id}>
-                  <CatererCard c={c} onView={handleViewMenu} />
-                </Grid>
-              ))}
-            </Grid>
+            {hasCoords && vendorsNearLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+                <CircularProgress size={28} />
+              </Box>
+            ) : (
+              <Grid container spacing={{ xs: 4, md: 5 }}>
+                {filteredCaterers.map((c) => (
+                  <Grid item xs={12} sm={6} lg={4} key={c.id}>
+                    <CatererCard c={c} onView={handleViewMenu} />
+                  </Grid>
+                ))}
+              </Grid>
+            )}
           </Grid>
         </Grid>
       </Container>

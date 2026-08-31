@@ -1,37 +1,49 @@
 import { createTheme } from '@mui/material/styles';
 
+export const tokens = {
+  red: '#D6293E',
+  redDark: '#A81F30',
+  redSoft: '#FFE6E1',
+  ink: '#241C1A',
+  inkSoft: '#6B5C56',
+  cream: '#FFF7F0',
+  gold: '#F5A623',
+  plum: '#3A1620',
+};
+
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#9a0002',      // Hogist red
-      dark: '#B4021F',
-      light: '#FF4D5E',
-      contrastText: '#fff',
+      main: tokens.red,
+      dark: tokens.redDark,
+      light: '#FF6B5A',
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#1A1A2E',      // deep charcoal for dark sections
-    },
-    text: {
-      primary: '#1B1B23',
-      secondary: '#6B6B76',
+      main: tokens.gold,
+      contrastText: tokens.ink,
     },
     background: {
-      default: '#f7f1e8',
-      paper: '#ffffff',
+      default: tokens.cream,
+      paper: '#FFFFFF',
+    },
+    text: {
+      primary: tokens.ink,
+      secondary: tokens.inkSoft,
     },
   },
   shape: {
-    borderRadius: 14,
+    borderRadius: 18,
   },
   typography: {
-    fontFamily: `'Poppins', 'Roboto', 'Helvetica', 'Arial', sans-serif`,
-    h1: { fontWeight: 700 },
-    h2: { fontWeight: 700 },
-    h3: { fontWeight: 700 },
-    h4: { fontWeight: 700 },
+    fontFamily: '"Plus Jakarta Sans", "Segoe UI", sans-serif',
+    h1: { fontFamily: '"Fraunces", serif', fontWeight: 600 },
+    h2: { fontFamily: '"Fraunces", serif', fontWeight: 600 },
+    h3: { fontFamily: '"Fraunces", serif', fontWeight: 600 },
+    h4: { fontFamily: '"Fraunces", serif', fontWeight: 600 },
     h5: { fontWeight: 600 },
     h6: { fontWeight: 600 },
-    button: { textTransform: 'none', fontWeight: 600 },
+    button: { textTransform: 'none', fontWeight: 700 },
   },
   components: {
     MuiButton: {

@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Container,
@@ -14,6 +15,7 @@ import {
   Divider,
   Tabs,
   Tab,
+  CircularProgress,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -23,6 +25,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 
 import { getMenuDetailById } from "../../../data/menuDetails";
 import { addPlanMeal } from "../../../utils/planStorage";
+import { fetchVendorWithMenu, clearVendorDetail } from "../../../store/slices/catalogSlice";
 
 const RED = "#9a0002";
 const VEG_GREEN = "#2E7D32";
@@ -138,8 +141,7 @@ function GalleryPlaceholder({ img, label, overlayCount }) {
   );
 }
 
-// A single selectable menu item. `control` is "checkbox" (multiple sections)
-// or "radio" (single sections) — purely visual, both just toggle selection.
+
 function SelectableItemCard({ item, control, selected, onToggle }) {
   return (
     <Box
@@ -266,24 +268,92 @@ export default function MenuDetail() {
   const { restaurantId } = useParams();
   const routerLocation = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const menu = useMemo(
-    () => getMenuDetailById(restaurantId ?? routerLocation.state?.restaurant?.id),
-    [restaurantId, routerLocation.state]
+  const isApiVendor = !!restaurantId && !/^\d+$/.test(restaurantId);
+
+  const {
+    vendorDetail,
+    vendorDetailMenu,
+    vendorDetailReviews,
+    vendorDetailLoading,
+    vendorDetailError,
+  } = useSelector((state) => state.catalog);
+
+  useEffect(() => {
+    if (isApiVendor) {
+      dispatch(fetchVendorWithMenu({ slug: restaurantId }));
+    }
+    return () => {
+      if (isApiVendor) dispatch(clearVendorDetail());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, isApiVendor, restaurantId]);
+
+  const localMenu = useMemo(
+    () => (isApiVendor ? null : getMenuDetailById(restaurantId ?? routerLocation.state?.restaurant?.id)),
+    [isApiVendor, restaurantId, routerLocation.state]
   );
 
-  const bodySections = useMemo(() => menu.sections.filter((s) => s.location !== "sidebar"), [menu]);
-  const sidebarSections = useMemo(() => menu.sections.filter((s) => s.location === "sidebar"), [menu]);
+  const apiMenu = useMemo(() => {
+    if (!isApiVendor || !vendorDetail) return null;
+    const fallbackRestaurant = routerLocation.state?.restaurant;
+    return {
+      restaurantId: vendorDetail.slug || vendorDetail._id,
+      caterer: vendorDetail.fullName || fallbackRestaurant?.name || "Caterer",
+      area: vendorDetail.area || vendorDetail.city || fallbackRestaurant?.area || "",
+      rating: vendorDetail.rating != null ? String(vendorDetail.rating) : fallbackRestaurant?.rating || "4.0",
+      fssai: vendorDetail.fssai || fallbackRestaurant?.fssai || "-",
+      img: vendorDetail.img || vendorDetail.logo || vendorDetail.banner || fallbackRestaurant?.img,
+      dishTitle: vendorDetail.fullName ? `${vendorDetail.fullName} Menu` : "Menu",
+      badges: [
+        ...(vendorDetail.isVeg && !vendorDetail.isNonVeg ? ["PURE VEG"] : []),
+        ...(vendorDetail.fssai ? ["FSSAI CERTIFIED"] : []),
+      ],
+      description: vendorDetail.description || "",
+      eventContext: { occasion: "Event", guests: 100, date: "TBD", slot: "TBD" },
+      reviewsCount: vendorDetailReviews.length,
+      pricing: {
+        minPlates: vendorDetail.min || 50,
+        defaultPlates: vendorDetail.min || 50,
+        plateStep: 10,
+        transportFee: 0,
+        seasonOffer: { code: "", amount: 0 },
+      },
+      sections: [
+        {
+          id: "menu-items",
+          title: "Menu items",
+          type: "multiple",
+          location: "body",
+          items: vendorDetailMenu.map((card) => ({
+            id: card._id || card.id,
+            name: card.name || card.title || "Menu item",
+            subtitle: card.description || card.category || "",
+            pricePerPlate: card.price ?? card.pricePerPlate ?? 0,
+          })),
+        },
+      ],
+    };
+  }, [isApiVendor, vendorDetail, vendorDetailMenu, vendorDetailReviews, routerLocation.state]);
+
+  const menu = apiMenu || localMenu;
+
+  const bodySections = useMemo(() => (menu?.sections || []).filter((s) => s.location !== "sidebar"), [menu]);
+  const sidebarSections = useMemo(() => (menu?.sections || []).filter((s) => s.location === "sidebar"), [menu]);
 
 
   const [selections, setSelections] = useState({});
-  const [plates, setPlates] = useState(menu.pricing.defaultPlates);
+  const [plates, setPlates] = useState(menu?.pricing?.defaultPlates ?? 0);
   const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    if (menu) setPlates(menu.pricing.defaultPlates);
+  }, [menu?.restaurantId]);
 
   const handleToggle = (sectionId, itemId, type) => {
     setSelections((prev) => {
       if (type === "single") {
-        // Clicking the already-selected option deselects it (stays fully manual).
         const next = prev[sectionId] === itemId ? null : itemId;
         return { ...prev, [sectionId]: next };
       }
@@ -299,14 +369,11 @@ export default function MenuDetail() {
     setPlates((prev) => Math.max(menu.pricing.minPlates, prev + delta * menu.pricing.plateStep));
   };
 
-  /* --------------------------- pricing calculation --------------------------- */
-  // Purely a function of what's currently selected — nothing is assumed.
-
   const pricing = useMemo(() => {
     let pricePerPlate = 0;
     let selectedCount = 0;
 
-    menu.sections.forEach((section) => {
+    (menu?.sections || []).forEach((section) => {
       const selection = selections[section.id];
       if (section.type === "single") {
         if (selection) {
@@ -329,16 +396,14 @@ export default function MenuDetail() {
 
     const hasSelection = selectedCount > 0;
     const foodTotal = pricePerPlate * plates;
-    const seasonOfferAmount = hasSelection ? menu.pricing.seasonOffer.amount : 0;
-    const transportFee = hasSelection ? menu.pricing.transportFee : 0;
+    const seasonOfferAmount = hasSelection ? (menu?.pricing?.seasonOffer?.amount || 0) : 0;
+    const transportFee = hasSelection ? (menu?.pricing?.transportFee || 0) : 0;
     const estimatedTotal = foodTotal + transportFee - seasonOfferAmount;
 
     return { pricePerPlate, foodTotal, estimatedTotal, hasSelection, selectedCount };
   }, [selections, plates, menu]);
 
   const handleAddToPlan = () => {
-    // Build the list of actually-selected item names — nothing assumed or
-    // pre-filled, only what the user ticked on this page.
     const itemsSelected = [];
     let serviceNote = "";
 
@@ -397,6 +462,24 @@ export default function MenuDetail() {
     });
   };
 
+  if (isApiVendor && vendorDetailLoading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", py: 14, pt: { xs: "72px", md: "88px" } }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isApiVendor && (vendorDetailError || !menu)) {
+    return (
+      <Box sx={{ textAlign: "center", py: 14, pt: { xs: "72px", md: "88px" } }}>
+        <Typography sx={{ fontFamily: FONT, color: INK_SOFT }}>
+          {vendorDetailError || "This caterer's menu isn't available right now."}
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ bgcolor: "#FFF", minHeight: "100vh", pt: { xs: "72px", md: "88px" } }}>
       {/* Event context bar */}
@@ -430,7 +513,7 @@ export default function MenuDetail() {
 
       <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
         <Grid container spacing={{ xs: 3, md: 5 }}>
-          {/* ------------------------------ LEFT ------------------------------ */}
+         
           <Grid item xs={12} md={7.5} lg={8}>
             {/* Gallery */}
             <Grid container spacing={1} sx={{ height: { xs: 220, sm: 280, md: 300 }, mb: 3 }}>

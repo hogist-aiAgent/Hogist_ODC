@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -6,9 +6,13 @@ import {
   Button,
   Divider,
   Stack,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
 import dinnarIcon from '../../../assets/login/dinnerIcon.png'
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 
 import { RED, compactFieldSx, trustItems } from './LoginConstants';
 
@@ -26,6 +30,9 @@ const SignUpForm = ({
   loading,
   error,
 }) => {
+  // Show/hide toggle for the sign-up password field.
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <>
       <Box sx={{ textAlign: 'center', mb: 1.4,mt:3 }}>
@@ -145,11 +152,29 @@ const SignUpForm = ({
 
       <TextField
         fullWidth
-        type="password"
+        type={showPassword ? 'text' : 'password'}
         placeholder="Enter your password"
         value={signupPassword}
         onChange={(e) => setSignupPassword(e.target.value)}
         sx={compactFieldSx}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() => setShowPassword((v) => !v)}
+                edge="end"
+                size="small"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <VisibilityOffOutlinedIcon sx={{ fontSize: 19, color: '#8a8a8a' }} />
+                ) : (
+                  <VisibilityOutlinedIcon sx={{ fontSize: 19, color: '#8a8a8a' }} />
+                )}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
 
       {error && (

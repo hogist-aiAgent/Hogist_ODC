@@ -98,7 +98,6 @@ const CHENNAI_METRO_KEYWORDS = [
   'thiruvallur',
 ];
 
-// Checks a lowercased blob of address text against the Chennai/Chengalpattu/Kanchipuram keyword list
 const isWithinChennaiMetro = (cityFieldsText) =>
   CHENNAI_METRO_KEYWORDS.some((keyword) => cityFieldsText.includes(keyword));
 
@@ -270,7 +269,7 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
     const shortLabel = item.display_name.split(',').slice(0, 2).join(',');
     skipNextSearchRef.current = true;
     setLocationQuery(shortLabel);
-    setConfirmedLocation({ label: shortLabel, full: item.display_name });
+    setConfirmedLocation({ label: shortLabel, full: item.display_name, lat: item.lat, lon: item.lon });
     setShowSuggestions(false);
     setSuggestions([]);
     setRawResultsCount(0);
@@ -306,7 +305,7 @@ const LocationSearchBox = forwardRef(({ onLocationConfirm } = {}, ref) => {
             const label = mapped.display_name.split(',').slice(0, 2).join(',');
             skipNextSearchRef.current = true;
             setLocationQuery(label);
-            setConfirmedLocation({ label, full: mapped.display_name });
+            setConfirmedLocation({ label, full: mapped.display_name, lat: latitude, lon: longitude });
             setShowSuggestions(false);
             setSuggestions([]);
             setRawResultsCount(0);

@@ -79,7 +79,7 @@ function LocationBadge({ text }) {
 function MenuPageActions({ onNotificationClick, onCartClick, onProfileClick, locationText, userName }) {
   return (
     <Stack direction="row" alignItems="center" spacing={{ xs: 0.75, md: 1.5 }}>
-      {/* Location badge */}
+      {/* Location badge — hidden on mobile (xs) only; still shows on tablet (sm) and desktop/laptop (md+) */}
       <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
         <LocationBadge text={locationText} />
       </Box>
@@ -113,7 +113,7 @@ function MenuPageActions({ onNotificationClick, onCartClick, onProfileClick, loc
         <ShoppingCartOutlinedIcon sx={{ fontSize: { xs: 20, md: 21, lg: 24 } }} />
       </IconButton>
 
-      {/* Profile*/}
+      {/* Profile pill — icon + Guest/user name + chevron, opens the profile dropdown */}
       <Box
         component="button"
         type="button"
@@ -161,10 +161,8 @@ export default function Navbar() {
   // Dropdown Menu State
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
-
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
   const isProfileMenuOpen = Boolean(profileAnchorEl);
-
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.auth.user);
   const userName = authUser?.fullName || null;
@@ -351,7 +349,7 @@ export default function Navbar() {
               </Box>
             </Stack>
 
-            {/* Desktop nav */}
+            {/* Desktop nav - hide on menu page */}
             {!isMenuPage && !isMyPlan &&(
               <Stack
                 direction="row"
@@ -436,6 +434,7 @@ export default function Navbar() {
                   onNotificationClick={handleNotificationClick}
                   onCartClick={handleCartClick}
                   onProfileClick={handleProfileMenuOpen}
+                  
                 />
               ) : (
                 <Button
@@ -575,8 +574,6 @@ export default function Navbar() {
               </Menu>
             </Stack>
 
-            {/* Mobile: Notification / Cart / Profile / Location shown directly
-                in the toolbar (Menu/MyPlan pages only) — not in the sidebar. */}
             {(isMenuPage || isMyPlan) && (
               <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                 <MenuPageActions
@@ -589,9 +586,6 @@ export default function Navbar() {
               </Box>
             )}
 
-            {/* Profile dropdown — Guest shows only Login; logged-in shows
-                Profile / Settings / Logout. Shared by both the desktop CTA
-                profile icon and the mobile toolbar profile icon. */}
             <Menu
               anchorEl={profileAnchorEl}
               open={isProfileMenuOpen}
@@ -685,9 +679,6 @@ export default function Navbar() {
               )}
             </Menu>
 
-            {/* Mobile toggle — only for non Menu/MyPlan pages, since those
-                pages now show their controls directly in the toolbar above
-                instead of via the sidebar. */}
             {!isMenuPage && !isMyPlan && (
               <IconButton
                 sx={{ display: { xs: 'flex', md: 'none' } }}

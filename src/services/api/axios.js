@@ -8,6 +8,7 @@ const axiosInstance = axios.create({
   timeout: 15000,
 });
 
+// ─── Request: attach the customer JWT
 
 axiosInstance.interceptors.request.use((config) => {
   const token = safeStorage.getItem(STORAGE_KEYS.CUSTOMER_TOKEN);
