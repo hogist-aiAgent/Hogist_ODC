@@ -1,6 +1,6 @@
 // src/store/slices/catalogSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { listVendorsNear, getVendorWithMenu } from '../../services/catalogService';
+import { listVendorsNear, getVendorWithMenu, listMenuCards } from '../../services/catalogService';
 
 export const fetchVendorsNear = createAsyncThunk(
   'catalog/fetchVendorsNear',
@@ -58,6 +58,36 @@ export const fetchVendorWithMenu = createAsyncThunk(
   }
 );
 
+// POST /v2/odc-menu-list — dedicated, independently-paginated menu list for
+// a vendor (Section 2.7). Used by MenuDetail so the menu section isn't
+// limited to whatever page of items vendor-with-menu happened to embed.
+export const fetchMenuList = createAsyncThunk(
+  'catalog/fetchMenuList',
+  async (
+    { vendor, search = '', page = 1, limit = 50, events = 'All', mealSlot, featured },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await listMenuCards({ vendor, search, page, limit, events, mealSlot, featured });
+      const data = response.data;
+
+      if (data?.status) {
+        return {
+          list: data.data || [],
+          page: data.page,
+          pages: data.pages,
+          total: data.total,
+        };
+      }
+      return rejectWithValue(data?.error || 'Could not load the menu');
+    } catch (error) {
+      return rejectWithValue(
+        error.friendlyMessage || error.response?.data?.error || 'Could not load the menu'
+      );
+    }
+  }
+);
+
 const initialState = {
   // odc-vendor-list-near
   vendorsNear: [],
@@ -71,6 +101,12 @@ const initialState = {
   vendorDetailMenu: [],
   vendorDetailLoading: false,
   vendorDetailError: null,
+
+  // odc-menu-list (dedicated menu-card list for a vendor)
+  menuCards: [],
+  menuCardsMeta: { page: 1, pages: 1, total: 0 },
+  menuCardsLoading: false,
+  menuCardsError: null,
 };
 
 const catalogSlice = createSlice({
@@ -82,6 +118,9 @@ const catalogSlice = createSlice({
       state.vendorDetailReviews = [];
       state.vendorDetailMenu = [];
       state.vendorDetailError = null;
+      state.menuCards = [];
+      state.menuCardsMeta = { page: 1, pages: 1, total: 0 };
+      state.menuCardsError = null;
     },
   },
   extraReducers: (builder) => {
@@ -124,6 +163,26 @@ const catalogSlice = createSlice({
         state.vendorDetailReviews = [];
         state.vendorDetailMenu = [];
         state.vendorDetailError = action.payload;
+      })
+
+      // ─── Menu list (dedicated menu API)
+      .addCase(fetchMenuList.pending, (state) => {
+        state.menuCardsLoading = true;
+        state.menuCardsError = null;
+      })
+      .addCase(fetchMenuList.fulfilled, (state, action) => {
+        state.menuCardsLoading = false;
+        state.menuCards = action.payload.list;
+        state.menuCardsMeta = {
+          page: action.payload.page,
+          pages: action.payload.pages,
+          total: action.payload.total,
+        };
+      })
+      .addCase(fetchMenuList.rejected, (state, action) => {
+        state.menuCardsLoading = false;
+        state.menuCards = [];
+        state.menuCardsError = action.payload;
       });
   },
 });

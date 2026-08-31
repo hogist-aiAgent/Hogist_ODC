@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Container,
@@ -9,11 +10,13 @@ import {
   Stack,
   Button,
   Divider,
+  TextField,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 
 import myPlanData from "../../data/MyPlanData";
-import { getPlanMeals } from "../../utils/planStorage";
+import { getPlanMeals, removePlanMeal } from "../../utils/planStorage";
+import { submitCart, clearCartError } from "../../store/slices/cartSlice";
 
 const RED = "#9a0002";
 const VEG_GREEN = "#2E7D32";
@@ -158,10 +161,16 @@ function MealPhotoPlaceholder({ img }) {
   );
 }
 
-function MealCard({ meal }) {
+function MealCard({ meal, onRemove }) {
   // Only include the meta parts that actually have a real value — no blank
   // "· ·" left behind when a field wasn't captured for this selection.
   const metaParts = [meal.caterer, meal.area, meal.serviceNote].filter(Boolean);
+
+  const handleRemove = () => {
+    if (onRemove) {
+      onRemove(meal.id);
+    }
+  };
 
   return (
     <Box
@@ -217,7 +226,7 @@ function MealCard({ meal }) {
         spacing={1}
       >
         <Stack direction="row" spacing={2.5}>
-          {["Edit items", "Change plates", "Remove"].map((action) => (
+          {["Edit items", "Change plates"].map((action) => (
             <Typography
               key={action}
               sx={{
@@ -226,12 +235,24 @@ function MealCard({ meal }) {
                 color: RED,
                 fontFamily: FONT,
                 cursor: "pointer",
-                "&:hover": { textDecoration: "underline" },
+               
               }}
             >
               {action}
             </Typography>
           ))}
+          <Typography
+            onClick={handleRemove}
+            sx={{
+              fontSize: 12.5,
+              fontWeight: 700,
+              color: RED,
+              fontFamily: FONT,
+              cursor: "pointer",
+            }}
+          >
+            Remove
+          </Typography>
         </Stack>
 
         {meal.kitchenAvailableOn && (
@@ -247,7 +268,7 @@ function MealCard({ meal }) {
   );
 }
 
-function MealSlotSection({ meal }) {
+function MealSlotSection({ meal, onRemove }) {
   return (
     <Box>
       <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 1.25 }}>
@@ -266,7 +287,7 @@ function MealSlotSection({ meal }) {
         </Typography>
         <Box sx={{ flexGrow: 1, height: "1px", bgcolor: CARD_BORDER }} />
       </Stack>
-      <MealCard meal={meal} />
+      <MealCard meal={meal} onRemove={onRemove} />
     </Box>
   );
 }
@@ -321,7 +342,17 @@ function AddOnPrompt({ addOnPrompt }) {
 
 /* ------------------------------- cost summary ------------------------------ */
 
-function CostSummaryCard({ costSummary }) {
+function CostSummaryCard({
+  costSummary,
+  canSubmitCart,
+  hasMultipleVendors,
+  serviceDate,
+  onServiceDateChange,
+  onSubmitCart,
+  cart,
+  cartLoading,
+  cartError,
+}) {
   return (
     <Box
       sx={{
@@ -371,6 +402,52 @@ function CostSummaryCard({ costSummary }) {
         ₹{costSummary.perGuest} per guest
       </Typography>
 
+      {cart && (
+        <Box
+          sx={{
+            border: `1px solid ${CARD_BORDER}`,
+            borderRadius: 2,
+            px: 1.75,
+            py: 1.25,
+            mt: 1.5,
+          }}
+        >
+          <Typography sx={{ fontSize: 11, fontWeight: 800, letterSpacing: 0.4, color: INK_SOFT, fontFamily: FONT, mb: 0.75 }}>
+            CART (SAVED ON SERVER)
+          </Typography>
+          <Stack spacing={0.5}>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography sx={{ fontSize: 12.5, color: INK_SOFT, fontFamily: FONT }}>Subtotal</Typography>
+              <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: INK, fontFamily: FONT }}>
+                {currency(cart.subtotal || 0)}
+              </Typography>
+            </Stack>
+            {cart.discount > 0 && (
+              <Stack direction="row" justifyContent="space-between">
+                <Typography sx={{ fontSize: 12.5, color: INK_SOFT, fontFamily: FONT }}>Discount</Typography>
+                <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: RED, fontFamily: FONT }}>
+                  -{currency(cart.discount)}
+                </Typography>
+              </Stack>
+            )}
+            {cart.deliveryFee > 0 && (
+              <Stack direction="row" justifyContent="space-between">
+                <Typography sx={{ fontSize: 12.5, color: INK_SOFT, fontFamily: FONT }}>Delivery fee</Typography>
+                <Typography sx={{ fontSize: 12.5, fontWeight: 700, color: INK, fontFamily: FONT }}>
+                  {currency(cart.deliveryFee)}
+                </Typography>
+              </Stack>
+            )}
+            <Stack direction="row" justifyContent="space-between">
+              <Typography sx={{ fontSize: 13, fontWeight: 800, color: INK, fontFamily: FONT }}>Cart total</Typography>
+              <Typography sx={{ fontSize: 13, fontWeight: 800, color: INK, fontFamily: FONT }}>
+                {currency(cart.total || 0)}
+              </Typography>
+            </Stack>
+          </Stack>
+        </Box>
+      )}
+
       <Box
         sx={{
           bgcolor: BANNER_BG,
@@ -395,9 +472,37 @@ function CostSummaryCard({ costSummary }) {
         </Typography>
       </Box>
 
+      {canSubmitCart && (
+        <TextField
+          fullWidth
+          type="date"
+          size="small"
+          label="Event / service date"
+          InputLabelProps={{ shrink: true }}
+          value={serviceDate}
+          onChange={(e) => onServiceDateChange(e.target.value)}
+          sx={{ mb: 1.5 }}
+        />
+      )}
+
+      {hasMultipleVendors && (
+        <Typography sx={{ fontSize: 11.5, color: RED, fontFamily: FONT, mb: 1.25 }}>
+          Your plan has menus from more than one caterer — the cart only supports one caterer at a
+          time. Remove all but one before continuing.
+        </Typography>
+      )}
+
+      {cartError && (
+        <Typography sx={{ fontSize: 11.5, color: RED, fontFamily: FONT, mb: 1.25 }}>
+          {cartError}
+        </Typography>
+      )}
+
       <Button
         fullWidth
         variant="contained"
+        onClick={onSubmitCart}
+        disabled={!canSubmitCart || !serviceDate || cartLoading}
         sx={{
           bgcolor: RED,
           color: "#fff",
@@ -409,9 +514,10 @@ function CostSummaryCard({ costSummary }) {
           boxShadow: "0 4px 14px rgba(154,0,2,0.35)",
           mb: 1.25,
           "&:hover": { bgcolor: "#7d0002" },
+          "&.Mui-disabled": { bgcolor: "rgba(154,0,2,0.35)", color: "#fff" },
         }}
       >
-        Continue to payment
+        {cartLoading ? "Saving cart..." : "Continue to payment"}
       </Button>
       <Button
         fullWidth
@@ -484,7 +590,6 @@ function ExecutiveCard({ executive }) {
             fontFamily: FONT,
             cursor: "pointer",
             flexShrink: 0,
-            "&:hover": { textDecoration: "underline" },
           }}
         >
           Chat
@@ -621,7 +726,9 @@ function buildCostSummary(meals) {
 
 export default function MyPlan() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user, event, steps, addOnPrompt, executive } = myPlanData;
+  const { cart, cartLoading, cartError } = useSelector((state) => state.cart);
 
   const [rawMeals, setRawMeals] = useState(() => getPlanMeals());
   useEffect(() => {
@@ -632,6 +739,43 @@ export default function MyPlan() {
   const hasMeals = meals.length > 0;
   const planMenuCount = meals.length;
   const costSummary = useMemo(() => buildCostSummary(rawMeals), [rawMeals]);
+
+  // Only meals added from a real (API-backed) vendor carry real ODCMenuCard
+  // ids — those are the only ones the cart API can accept.
+  const apiMeals = useMemo(
+    () => rawMeals.filter((m) => m.isApiSourced && Array.isArray(m.itemIds) && m.itemIds.length > 0),
+    [rawMeals]
+  );
+  const apiVendorIds = useMemo(
+    () => [...new Set(apiMeals.map((m) => m.restaurantId))],
+    [apiMeals]
+  );
+  const hasMultipleVendors = apiVendorIds.length > 1;
+  const canSubmitCart = apiMeals.length > 0 && !hasMultipleVendors;
+
+  const [serviceDate, setServiceDate] = useState("");
+
+  const handleServiceDateChange = (value) => {
+    setServiceDate(value);
+    if (cartError) dispatch(clearCartError());
+  };
+
+  // POST /v2/odc-cart — builds services from every selected item across the
+  // (single-vendor) API-sourced meals, using each meal's plate count as that
+  // item's cart count.
+  const handleSubmitCart = () => {
+    if (!canSubmitCart || !serviceDate) return;
+    const services = apiMeals.flatMap((meal) =>
+      (meal.itemIds || []).map((itemId) => ({ _id: itemId, count: meal.plates }))
+    );
+    dispatch(submitCart({ services, serviceDate, additional: [] }));
+  };
+
+  const handleRemoveMeal = (mealId) => {
+    const updatedMeals = rawMeals.filter((meal) => meal.id !== mealId);
+    setRawMeals(updatedMeals);
+    removePlanMeal(mealId);
+  };
 
   return (
     <Box sx={{ bgcolor: "#FFF", minHeight: "100vh" }}>
@@ -659,7 +803,7 @@ export default function MyPlan() {
           <Grid item xs={12} md={7.5} lg={8}>
             <Stack spacing={3}>
               {hasMeals ? (
-                meals.map((meal) => <MealSlotSection key={meal.id} meal={meal} />)
+                meals.map((meal) => <MealSlotSection key={meal.id} meal={meal} onRemove={handleRemoveMeal} />)
               ) : (
                 <EmptyPlanState onBrowseMenus={() => navigate("/Menu")} />
               )}
@@ -670,7 +814,19 @@ export default function MyPlan() {
           {/* RIGHT: cost summary + executive contact */}
           <Grid item xs={12} md={4.5} lg={4}>
             <Box sx={{ position: { md: "sticky" }, top: { md: 100 } }}>
-              {hasMeals && <CostSummaryCard costSummary={costSummary} />}
+              {hasMeals && (
+                <CostSummaryCard
+                  costSummary={costSummary}
+                  canSubmitCart={canSubmitCart}
+                  hasMultipleVendors={hasMultipleVendors}
+                  serviceDate={serviceDate}
+                  onServiceDateChange={handleServiceDateChange}
+                  onSubmitCart={handleSubmitCart}
+                  cart={cart}
+                  cartLoading={cartLoading}
+                  cartError={cartError}
+                />
+              )}
               <ExecutiveCard executive={executive} />
             </Box>
           </Grid>
@@ -678,4 +834,4 @@ export default function MyPlan() {
       </Container>
     </Box>
   );
-}   
+}

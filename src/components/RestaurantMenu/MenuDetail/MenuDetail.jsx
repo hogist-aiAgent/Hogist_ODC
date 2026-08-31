@@ -25,7 +25,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 
 import { getMenuDetailById } from "../../../data/menuDetails";
 import { addPlanMeal } from "../../../utils/planStorage";
-import { fetchVendorWithMenu, clearVendorDetail } from "../../../store/slices/catalogSlice";
+import { fetchVendorWithMenu, fetchMenuList, clearVendorDetail } from "../../../store/slices/catalogSlice";
 
 const RED = "#9a0002";
 const VEG_GREEN = "#2E7D32";
@@ -278,6 +278,7 @@ export default function MenuDetail() {
     vendorDetailReviews,
     vendorDetailLoading,
     vendorDetailError,
+    menuCards,
   } = useSelector((state) => state.catalog);
 
   useEffect(() => {
@@ -289,6 +290,13 @@ export default function MenuDetail() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isApiVendor, restaurantId]);
+
+
+  useEffect(() => {
+    if (isApiVendor && vendorDetail?._id) {
+      dispatch(fetchMenuList({ vendor: vendorDetail._id }));
+    }
+  }, [dispatch, isApiVendor, vendorDetail?._id]);
 
   const localMenu = useMemo(
     () => (isApiVendor ? null : getMenuDetailById(restaurantId ?? routerLocation.state?.restaurant?.id)),
@@ -326,7 +334,7 @@ export default function MenuDetail() {
           title: "Menu items",
           type: "multiple",
           location: "body",
-          items: vendorDetailMenu.map((card) => ({
+          items: (menuCards.length > 0 ? menuCards : vendorDetailMenu).map((card) => ({
             id: card._id || card.id,
             name: card.name || card.title || "Menu item",
             subtitle: card.description || card.category || "",
@@ -335,7 +343,7 @@ export default function MenuDetail() {
         },
       ],
     };
-  }, [isApiVendor, vendorDetail, vendorDetailMenu, vendorDetailReviews, routerLocation.state]);
+  }, [isApiVendor, vendorDetail, vendorDetailMenu, vendorDetailReviews, menuCards, routerLocation.state]);
 
   const menu = apiMenu || localMenu;
 
@@ -405,6 +413,7 @@ export default function MenuDetail() {
 
   const handleAddToPlan = () => {
     const itemsSelected = [];
+    const itemIds = [];
     let serviceNote = "";
 
     menu.sections.forEach((section) => {
@@ -414,6 +423,7 @@ export default function MenuDetail() {
           const item = section.items.find((i) => i.id === selection);
           if (item) {
             itemsSelected.push(item.name);
+            itemIds.push(item.id);
             if (section.location === "sidebar" && item.subtitle) {
               serviceNote = item.subtitle;
             }
@@ -422,7 +432,10 @@ export default function MenuDetail() {
       } else {
         (selection || []).forEach((itemId) => {
           const item = section.items.find((i) => i.id === itemId);
-          if (item) itemsSelected.push(item.name);
+          if (item) {
+            itemsSelected.push(item.name);
+            itemIds.push(item.id);
+          }
         });
       }
     });
@@ -438,6 +451,11 @@ export default function MenuDetail() {
       area: menu.area,
       serviceNote,
       itemsSelected,
+      // Real ODCMenuCard ids for the selected items — only meaningful for
+      // API-backed vendors; this is what the cart API needs as
+      // services[]._id. Local/mock menus don't have real backend ids.
+      itemIds,
+      isApiSourced: isApiVendor,
       isVeg,
       slotLabel: `${menu.eventContext.occasion} · ${menu.eventContext.slot}`,
       kitchenAvailableOn: menu.eventContext.date,
