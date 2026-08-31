@@ -20,3 +20,24 @@ export const CATALOG_ENDPOINTS = {
   COMBO_LIST: '/odc-combo-list',
   COMBO_DETAIL: (id) => `/odc-combo/${id}`,
 };
+
+// One cart per customer — POST replaces (upserts) the existing cart.
+export const CART_ENDPOINTS = {
+  CREATE: '/odc-cart',
+  GET: '/odc-cart',
+};
+
+export const ORDER_ENDPOINTS = {
+  CREATE: '/odc-order',
+  LIST: '/odc-orders',
+  DETAIL: (id) => `/odc-order/${id}`,
+  REVIEW: (id) => `/review-odc-order/${id}`,
+  UNPAID_LIST: '/odc-unpaid-list',
+};
+
+export const PAYMENT_ENDPOINTS = {
+  // Verify a Razorpay payment against an order (also used again after a repayment)
+  VERIFY: (orderId) => `/odc-order-pay/${orderId}`,
+  // Create a fresh Razorpay order for the remaining balance on an order
+  REPAY: (orderId) => `/odc-repayment/${orderId}`,
+};
