@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import dinnarIcon from '../../../assets/login/dinnerIcon.png'
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-import GoogleIcon from '@mui/icons-material/Google';
 
 import { RED, compactFieldSx, trustItems } from './LoginConstants';
 
@@ -23,7 +22,6 @@ const SignUpForm = ({
   signupPassword,
   setSignupPassword,
   handleSignUp,
-  handleGoogleLogin,
   switchToSignIn,
   loading,
   error,

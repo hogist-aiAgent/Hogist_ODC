@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import dinnarIcon from '../../../assets/login/dinnerIcon.png';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
-import GoogleIcon from '@mui/icons-material/Google';
+
 
 import { RED, compactFieldSx, trustItems } from './LoginConstants';
 
@@ -20,7 +20,6 @@ const SignInForm = ({
   password,
   setPassword,
   handleContinue,
-  handleGoogleLogin,
   switchToSignUp,
   loading,
   error,
