@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
+import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import { RED } from './LoginConstants';
 
@@ -101,198 +102,204 @@ const OtpVerification = ({ mobile, onVerify, onResend, onBack, loading, error })
   };
 
   return (
-    <Box sx={{ textAlign: 'center' }}>
-      <Box
-        component="button"
-        type="button"
-        onClick={onBack}
-        sx={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 0.5,
-          border: 'none',
-          bgcolor: 'transparent',
-          cursor: 'pointer',
-          color: '#8a8a8a',
-          fontFamily: '"open sans", sans-serif',
-          fontSize: '0.8rem',
-          fontWeight: 600,
-          p: 0,
-          mb: { xs: 2, sm: 3 },
-          alignSelf: 'flex-start',
-          '&:hover': { color: RED },
-        }}
-      >
-        <ArrowBackRoundedIcon sx={{ fontSize: 16 }} />
-        Back
-      </Box>
-
-      <Box
-        sx={{
-          width: 56,
-          height: 56,
-          borderRadius: '50%',
-          bgcolor: 'rgba(227,34,39,0.08)',
-          color: RED,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          mx: 'auto',
-          mb: 2,
-        }}
-      >
-        <ShieldOutlinedIcon sx={{ fontSize: 26 }} />
-      </Box>
-
-      <Typography
-        sx={{
-          fontFamily: '"Montserrat", sans-serif',
-          fontWeight: 800,
-          fontSize: { xs: '1.15rem', sm: '1.25rem' },
-          color: '#1f1f1f',
-          mb: 0.75,
-        }}
-      >
-        Verify your mobile number
-      </Typography>
-
-      <Typography
-        sx={{
-          fontFamily: '"open sans", sans-serif',
-          fontSize: '0.85rem',
-          color: '#6a6a6a',
-          mb: { xs: 2.5, sm: 3 },
-        }}
-      >
-        We've sent a {OTP_LENGTH}-digit OTP to{' '}
-        <Box component="span" sx={{ fontWeight: 700, color: '#2a2a2a' }}>
-          {formatMobileDisplay(mobile)}
+    <Box>
+      {/* Left-aligned regardless of the centered content below — it lives in
+          its own full-width, text-align:left row rather than being an
+          inline-flex item inside the centered block. */}
+      <Box sx={{ textAlign: 'left', mb: { xs: 1.5, sm: 1.25 } }}>
+        <Box
+          component="button"
+          type="button"
+          onClick={onBack}
+          sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 0.5,
+            border: 'none',
+            bgcolor: 'transparent',
+            cursor: 'pointer',
+            color: '#8a8a8a',
+            fontFamily: '"open sans", sans-serif',
+            fontSize: '0.8rem',
+            fontWeight: 600,
+            p: 0,
+            '&:hover': { color: RED },
+          }}
+        >
+          <ArrowBackRoundedIcon sx={{ fontSize: 16 }} />
+          Back
         </Box>
-      </Typography>
-
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: { xs: 1, sm: 1.25 },
-          mb: 2,
-        }}
-      >
-        {digits.map((digit, index) => (
-          <Box
-            key={index}
-            component="input"
-            inputMode="numeric"
-            maxLength={OTP_LENGTH}
-            value={digit}
-            onChange={(e) => handleChange(index, e.target.value)}
-            onKeyDown={(e) => handleKeyDown(index, e)}
-            ref={(el) => (inputRefs.current[index] = el)}
-            sx={{
-              width: { xs: 38, sm: 44 },
-              height: { xs: 44, sm: 50 },
-              textAlign: 'center',
-              fontSize: '1.1rem',
-              fontWeight: 700,
-              fontFamily: '"open sans", sans-serif',
-              color: '#1f1f1f',
-              borderRadius: '10px',
-              border: digit ? `1.5px solid ${RED}` : '1.5px solid #e2e2e2',
-              outline: 'none',
-              '&:focus': { borderColor: RED },
-            }}
-          />
-        ))}
       </Box>
 
-      {error && (
-        <Typography
+      <Box sx={{ textAlign: 'center' }}>
+        <Box
           sx={{
-            fontFamily: '"open sans", sans-serif',
-            fontSize: '0.78rem',
+            width: { xs: 50, sm: 52 },
+            height: { xs: 50, sm: 52 },
+            borderRadius: '50%',
+            bgcolor: '#fff',
+            border: `1.5px solid ${RED}`,
             color: RED,
-            mb: 1.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mx: 'auto',
+            mb: { xs: 1.5, sm: 1.25 },
           }}
         >
-          {error}
+          <GppGoodOutlinedIcon sx={{ fontSize: 24 }} />
+        </Box>
+
+        <Typography
+          sx={{
+            fontFamily: '"Montserrat", sans-serif',
+            fontWeight: 800,
+            fontSize: { xs: '1.1rem', sm: '1.15rem' },
+            color: '#1f1f1f',
+            mb: 0.5,
+          }}
+        >
+          Verify your mobile number
         </Typography>
-      )}
 
-      <Button
-        fullWidth
-        variant="contained"
-        disableElevation
-        disabled={!isComplete || loading}
-        onClick={handleVerifyClick}
-        sx={{
-          py: 1.1,
-          mb: 2,
-          borderRadius: '10px',
-          textTransform: 'none',
-          fontWeight: 700,
-          fontFamily: '"open sans", sans-serif',
-          fontSize: '0.9rem',
-          bgcolor: RED,
-          color: '#fff',
-          '&:hover': { bgcolor: '#c81c20' },
-          '&.Mui-disabled': { bgcolor: '#e8b4b5', color: '#fff' },
-        }}
-      >
-        {loading ? 'Verifying...' : 'Verify & Continue'}
-      </Button>
-
-      <Typography
-        sx={{
-          fontFamily: '"open sans", sans-serif',
-          fontSize: '0.82rem',
-          color: '#6a6a6a',
-          mb: { xs: 2.5, sm: 3 },
-        }}
-      >
-        {secondsLeft > 0 ? (
-          <>
-            Resend OTP in{' '}
-            <Box component="span" sx={{ fontWeight: 700, color: '#2a2a2a' }}>
-              00:{String(secondsLeft).padStart(2, '0')}
-            </Box>
-          </>
-        ) : (
-          <Box
-            component="span"
-            onClick={handleResendClick}
-            sx={{ color: RED, fontWeight: 700, cursor: 'pointer' }}
-          >
-            Resend OTP
-          </Box>
-        )}
-      </Typography>
-
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-          bgcolor: 'rgba(227,34,39,0.06)',
-          borderRadius: '10px',
-          px: 1.5,
-          py: 1,
-          textAlign: 'left',
-        }}
-      >
-        <ShieldOutlinedIcon sx={{ fontSize: 18, color: RED, flexShrink: 0 }} />
         <Typography
           sx={{
             fontFamily: '"open sans", sans-serif',
-            fontSize: '0.74rem',
-            color: '#5a5a5a',
-            lineHeight: 1.35,
+            fontSize: '0.85rem',
+            color: '#6a6a6a',
+            mb: { xs: 2, sm: 1.5 },
           }}
         >
+          We've sent a {OTP_LENGTH}-digit OTP to{' '}
           <Box component="span" sx={{ fontWeight: 700, color: '#2a2a2a' }}>
-            Your details are safe with Hogist.
-          </Box>{' '}
-          We never share your information with anyone.
+            {formatMobileDisplay(mobile)}
+          </Box>
         </Typography>
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: { xs: 1, sm: 1 },
+            mb: { xs: 1.75, sm: 1.5 },
+          }}
+        >
+          {digits.map((digit, index) => (
+            <Box
+              key={index}
+              component="input"
+              inputMode="numeric"
+              maxLength={OTP_LENGTH}
+              value={digit}
+              onChange={(e) => handleChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              ref={(el) => (inputRefs.current[index] = el)}
+              sx={{
+                width: { xs: 36, sm: 40 },
+                height: { xs: 42, sm: 46 },
+                textAlign: 'center',
+                fontSize: '1.1rem',
+                fontWeight: 700,
+                fontFamily: '"open sans", sans-serif',
+                color: '#1f1f1f',
+                borderRadius: '10px',
+                border: digit ? `1.5px solid ${RED}` : '1.5px solid #e2e2e2',
+                outline: 'none',
+                '&:focus': { borderColor: RED },
+              }}
+            />
+          ))}
+        </Box>
+
+        {error && (
+          <Typography
+            sx={{
+              fontFamily: '"open sans", sans-serif',
+              fontSize: '0.78rem',
+              color: RED,
+              mb: 1.25,
+            }}
+          >
+            {error}
+          </Typography>
+        )}
+
+        <Button
+          fullWidth
+          variant="contained"
+          disableElevation
+          disabled={!isComplete || loading}
+          onClick={handleVerifyClick}
+          sx={{
+            py: 1.1,
+            mb: { xs: 1.5, sm: 1.25 },
+            borderRadius: '10px',
+            textTransform: 'none',
+            fontWeight: 700,
+            fontFamily: '"open sans", sans-serif',
+            fontSize: '0.9rem',
+            bgcolor: RED,
+            color: '#fff',
+            '&:hover': { bgcolor: '#c81c20' },
+            '&.Mui-disabled': { bgcolor: '#e8b4b5', color: '#fff' },
+          }}
+        >
+          {loading ? 'Verifying...' : 'Verify & Continue'}
+        </Button>
+
+        <Typography
+          sx={{
+            fontFamily: '"open sans", sans-serif',
+            fontSize: '0.82rem',
+            color: '#6a6a6a',
+            mb: { xs: 1.75, sm: 1.5 },
+          }}
+        >
+          {secondsLeft > 0 ? (
+            <>
+              Resend OTP in{' '}
+              <Box component="span" sx={{ fontWeight: 700, color: RED }}>
+                00:{String(secondsLeft).padStart(2, '0')}
+              </Box>
+            </>
+          ) : (
+            <Box
+              component="span"
+              onClick={handleResendClick}
+              sx={{ color: RED, fontWeight: 700, cursor: 'pointer' }}
+            >
+              Resend OTP
+            </Box>
+          )}
+        </Typography>
+
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: 1,
+            bgcolor: 'rgba(227,34,39,0.06)',
+            borderRadius: '10px',
+            px: 1.5,
+            py: { xs: 1.1, sm: 0.9 },
+            textAlign: 'left',
+          }}
+        >
+          <LockOutlinedIcon sx={{ fontSize: 18, color: RED, flexShrink: 0, mt: '2px' }} />
+          <Typography
+            sx={{
+              fontFamily: '"open sans", sans-serif',
+              fontSize: '0.74rem',
+              color: '#5a5a5a',
+              lineHeight: 1.35,
+            }}
+          >
+            <Box component="span" sx={{ fontWeight: 700, color: '#2a2a2a' }}>
+              Your details are safe with Hogist.
+            </Box>{' '}
+            We never share your information with anyone.
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );
