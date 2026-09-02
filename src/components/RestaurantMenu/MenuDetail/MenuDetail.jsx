@@ -23,7 +23,9 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import VerifiedIcon from "@mui/icons-material/Verified";
 
-import { getMenuDetailById } from "../../../data/menuDetails";
+// Hardcoded menu-detail data — disabled. All menu data now comes from the
+// ODC vendor/menu APIs (fetchVendorWithMenu + fetchMenuList).
+// import { getMenuDetailById } from "../../../data/menuDetails";
 import { addPlanMeal } from "../../../utils/planStorage";
 import { fetchVendorWithMenu, fetchMenuList, clearVendorDetail } from "../../../store/slices/catalogSlice";
 
@@ -270,8 +272,8 @@ export default function MenuDetail() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const isApiVendor = !!restaurantId && !/^\d+$/.test(restaurantId);
-
+  // Every restaurant/caterer id now comes from the ODC vendor API (slug or
+  // _id) — the hardcoded numeric-id local menu path has been removed.
   const {
     vendorDetail,
     vendorDetailMenu,
@@ -282,29 +284,24 @@ export default function MenuDetail() {
   } = useSelector((state) => state.catalog);
 
   useEffect(() => {
-    if (isApiVendor) {
+    if (restaurantId) {
       dispatch(fetchVendorWithMenu({ slug: restaurantId }));
     }
     return () => {
-      if (isApiVendor) dispatch(clearVendorDetail());
+      if (restaurantId) dispatch(clearVendorDetail());
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, isApiVendor, restaurantId]);
+  }, [dispatch, restaurantId]);
 
 
   useEffect(() => {
-    if (isApiVendor && vendorDetail?._id) {
+    if (vendorDetail?._id) {
       dispatch(fetchMenuList({ vendor: vendorDetail._id }));
     }
-  }, [dispatch, isApiVendor, vendorDetail?._id]);
-
-  const localMenu = useMemo(
-    () => (isApiVendor ? null : getMenuDetailById(restaurantId ?? routerLocation.state?.restaurant?.id)),
-    [isApiVendor, restaurantId, routerLocation.state]
-  );
+  }, [dispatch, vendorDetail?._id]);
 
   const apiMenu = useMemo(() => {
-    if (!isApiVendor || !vendorDetail) return null;
+    if (!vendorDetail) return null;
     const fallbackRestaurant = routerLocation.state?.restaurant;
     return {
       restaurantId: vendorDetail.slug || vendorDetail._id,
@@ -343,9 +340,10 @@ export default function MenuDetail() {
         },
       ],
     };
-  }, [isApiVendor, vendorDetail, vendorDetailMenu, vendorDetailReviews, menuCards, routerLocation.state]);
+  }, [vendorDetail, vendorDetailMenu, vendorDetailReviews, menuCards, routerLocation.state]);
 
-  const menu = apiMenu || localMenu;
+  // Menu data now comes exclusively from the ODC vendor/menu API.
+  const menu = apiMenu;
 
   const bodySections = useMemo(() => (menu?.sections || []).filter((s) => s.location !== "sidebar"), [menu]);
   const sidebarSections = useMemo(() => (menu?.sections || []).filter((s) => s.location === "sidebar"), [menu]);
@@ -451,11 +449,8 @@ export default function MenuDetail() {
       area: menu.area,
       serviceNote,
       itemsSelected,
-      // Real ODCMenuCard ids for the selected items — only meaningful for
-      // API-backed vendors; this is what the cart API needs as
-      // services[]._id. Local/mock menus don't have real backend ids.
       itemIds,
-      isApiSourced: isApiVendor,
+      isApiSourced: true,
       isVeg,
       slotLabel: `${menu.eventContext.occasion} · ${menu.eventContext.slot}`,
       kitchenAvailableOn: menu.eventContext.date,
@@ -480,7 +475,7 @@ export default function MenuDetail() {
     });
   };
 
-  if (isApiVendor && vendorDetailLoading) {
+  if (vendorDetailLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 14, pt: { xs: "72px", md: "88px" } }}>
         <CircularProgress />
@@ -488,7 +483,7 @@ export default function MenuDetail() {
     );
   }
 
-  if (isApiVendor && (vendorDetailError || !menu)) {
+  if (vendorDetailError || !menu) {
     return (
       <Box sx={{ textAlign: "center", py: 14, pt: { xs: "72px", md: "88px" } }}>
         <Typography sx={{ fontFamily: FONT, color: INK_SOFT }}>

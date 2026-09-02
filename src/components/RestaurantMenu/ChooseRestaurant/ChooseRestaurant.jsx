@@ -21,7 +21,9 @@ import StarIcon from "@mui/icons-material/Star";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
-import allRestaurants, { filterNearbyRestaurants } from "../../../data/restaurants";
+// Hardcoded restaurant/caterer data — disabled. All caterer data now comes
+// from the ODC vendor API (fetchVendorsNear -> GET/POST odc-vendor-list-near).
+// import allRestaurants, { filterNearbyRestaurants } from "../../../data/restaurants";
 import fallbackImg from "../../../assets/menu/chosseRestaurent/img1.jpg";
 import { fetchVendorsNear } from "../../../store/slices/catalogSlice";
 import FilterSortBar, {
@@ -374,6 +376,12 @@ const SORT_COMPARATORS = {
     (a.price ?? a.startingPrice ?? a.pricePerPerson ?? -Infinity),
 };
 
+// Fallback coordinates (Chennai city center) used only when the visitor
+// hasn't picked a specific location yet — the odc-vendor-list-near API
+// requires lat/long on every call, so we can no longer fall back to the
+// hardcoded restaurants list when coordinates are missing.
+const DEFAULT_LOCATION = { lat: 13.0827, lon: 80.2707 };
+
 export default function ChooseRestaurant() {
   const routerLocation = useLocation();
   const navigate = useNavigate();
@@ -382,6 +390,12 @@ export default function ChooseRestaurant() {
   const selectedLocationText = selectedLocation?.full || selectedLocation?.label || "";
   const hasCoords = typeof selectedLocation?.lat === "number" && typeof selectedLocation?.lon === "number";
 
+  // Always call the API — use the visitor's chosen coordinates when
+  // available, otherwise fall back to the default Chennai coordinates so
+  // the vendor list still loads from the backend instead of local mock data.
+  const effectiveLat = hasCoords ? selectedLocation.lat : DEFAULT_LOCATION.lat;
+  const effectiveLon = hasCoords ? selectedLocation.lon : DEFAULT_LOCATION.lon;
+
   const {
     vendorsNear,
     vendorsNearLoading,
@@ -389,29 +403,15 @@ export default function ChooseRestaurant() {
   } = useSelector((state) => state.catalog);
 
   useEffect(() => {
-    if (hasCoords) {
-      dispatch(fetchVendorsNear({ lat: selectedLocation.lat, long: selectedLocation.lon }));
-    }
-  }, [dispatch, hasCoords, selectedLocation?.lat, selectedLocation?.lon]);
+    dispatch(fetchVendorsNear({ lat: effectiveLat, long: effectiveLon }));
+  }, [dispatch, effectiveLat, effectiveLon]);
 
-  const { list: caterers, isFallback } = useMemo(() => {
-    if (!hasCoords) {
-      if (!selectedLocationText) {
-        return { list: allRestaurants, isFallback: false };
-      }
-      const nearby = filterNearbyRestaurants(selectedLocationText);
-      return nearby.length > 0
-        ? { list: nearby, isFallback: false }
-        : { list: allRestaurants, isFallback: true };
-    }
-    if (vendorsNearError || vendorsNear.length === 0) {
-      const nearby = filterNearbyRestaurants(selectedLocationText);
-      return nearby.length > 0
-        ? { list: nearby, isFallback: true }
-        : { list: allRestaurants, isFallback: true };
-    }
-    return { list: vendorsNear.map(normalizeVendor), isFallback: false };
-  }, [hasCoords, selectedLocationText, vendorsNear, vendorsNearError]);
+  // Caterer list now comes exclusively from the ODC vendor API — no more
+  // hardcoded/mock fallback data.
+  const caterers = useMemo(
+    () => (Array.isArray(vendorsNear) ? vendorsNear.map(normalizeVendor) : []),
+    [vendorsNear]
+  );
 
   const [searchValue, setSearchValue] = useState("");
   const [selectedFilters, setSelectedFilters] = useState(DEFAULT_SELECTED_FILTERS);
@@ -687,9 +687,21 @@ export default function ChooseRestaurant() {
               </Stack>
             )}
 
-            {hasCoords && vendorsNearLoading ? (
+            {vendorsNearLoading ? (
               <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
                 <CircularProgress size={28} />
+              </Box>
+            ) : vendorsNearError ? (
+              <Box sx={{ textAlign: "center", py: 8 }}>
+                <Typography sx={{ color: "text.secondary", fontFamily: '"open sans", sans-serif' }}>
+                  {vendorsNearError}
+                </Typography>
+              </Box>
+            ) : filteredCaterers.length === 0 ? (
+              <Box sx={{ textAlign: "center", py: 8 }}>
+                <Typography sx={{ color: "text.secondary", fontFamily: '"open sans", sans-serif' }}>
+                  No caterers found near {locationCountLabel}.
+                </Typography>
               </Box>
             ) : (
               <Grid container spacing={{ xs: 4, md: 5 }}>
