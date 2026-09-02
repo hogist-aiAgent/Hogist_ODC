@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Box, Container, Grid, Typography, Stack, TextField } from "@mui/material";
 
 import myPlanData from "../../data/MyPlanData";
-import { getPlanMeals } from "../../../src/utils/planStorage";
+import { getPlanMeals } from "../../../src/utils/PlanStorage";
 import { submitCart, clearCartError } from "../../store/slices/cartSlice";
 
 import { FieldLabel } from "../EventDetails/EventFolder/SectionLabel";
