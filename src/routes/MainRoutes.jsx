@@ -6,6 +6,7 @@ import OdcPage from '../Pages/ODCPage/odcPage';
 import MenuPage from '../Pages/MenuPage/menuPage';
 import MenuDetailPage from '../Pages/MenuDetailPage/menuDetailPage';
 import MyPlanPage from '../Pages/MyPlan/MyPlanPage';
+import EventDetailsPage from '../Pages/EventDetails/EventDetailsPage';
 import ScrollToTop from '../components/Common/ScrollToTop/ScrollToTop';
 
 const MainRoutes = () => {
@@ -19,6 +20,7 @@ const MainRoutes = () => {
             <Route path='/Menu' element={<MenuPage/>}/>
             <Route path='/menu-detail/:restaurantId' element={<MenuDetailPage/>}/>
             <Route path='/my-plan' element={<MyPlanPage/>}/>
+            <Route path='/event-details' element={<EventDetailsPage/>}/>
 
         </Routes>
         </BrowserRouter>

@@ -349,6 +349,7 @@ function CostSummaryCard({
   serviceDate,
   onServiceDateChange,
   onSubmitCart,
+  onGoToEventDetails,
   cart,
   cartLoading,
   cartError,
@@ -472,18 +473,6 @@ function CostSummaryCard({
         </Typography>
       </Box>
 
-      {canSubmitCart && (
-        <TextField
-          fullWidth
-          type="date"
-          size="small"
-          label="Event / service date"
-          InputLabelProps={{ shrink: true }}
-          value={serviceDate}
-          onChange={(e) => onServiceDateChange(e.target.value)}
-          sx={{ mb: 1.5 }}
-        />
-      )}
 
       {hasMultipleVendors && (
         <Typography sx={{ fontSize: 11.5, color: RED, fontFamily: FONT, mb: 1.25 }}>
@@ -501,8 +490,7 @@ function CostSummaryCard({
       <Button
         fullWidth
         variant="contained"
-        onClick={onSubmitCart}
-        disabled={!canSubmitCart || !serviceDate || cartLoading}
+        onClick={onGoToEventDetails}
         sx={{
           bgcolor: RED,
           color: "#fff",
@@ -517,7 +505,7 @@ function CostSummaryCard({
           "&.Mui-disabled": { bgcolor: "rgba(154,0,2,0.35)", color: "#fff" },
         }}
       >
-        {cartLoading ? "Saving cart..." : "Continue to payment"}
+        Event details
       </Button>
       <Button
         fullWidth
@@ -822,6 +810,7 @@ export default function MyPlan() {
                   serviceDate={serviceDate}
                   onServiceDateChange={handleServiceDateChange}
                   onSubmitCart={handleSubmitCart}
+                  onGoToEventDetails={() => navigate("/event-details")}
                   cart={cart}
                   cartLoading={cartLoading}
                   cartError={cartError}

@@ -19,8 +19,8 @@ const myPlanData = {
   steps: [
     { id: 1, label: "Menus chosen", status: "done" },
     { id: 2, label: "Review plan", status: "active" },
-    { id: 3, label: "Payment", status: "upcoming" },
-    { id: 4, label: "Kitchen confirmation", status: "upcoming" },
+    { id: 3, label: "Event Details", status: "upcoming" },
+    { id: 4, label: "Payment", status: "upcoming" },
   ],
 
   meals: [
