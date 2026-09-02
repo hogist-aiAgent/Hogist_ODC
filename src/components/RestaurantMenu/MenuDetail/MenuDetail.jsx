@@ -23,7 +23,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import VerifiedIcon from "@mui/icons-material/Verified";
 
-import { addPlanMeal } from "../../../../src/utils/planStorage";
+import { addPlanMeal } from "../../../utils/planStorage";
 
 import { fetchVendorWithMenu, fetchMenuList, clearVendorDetail } from "../../../store/slices/catalogSlice";
 
