@@ -5,7 +5,6 @@ import { Box, Container, Grid, Typography, Stack, TextField } from "@mui/materia
 
 import myPlanData from "../../data/MyPlanData";
 import { getPlanMeals } from "../../utils/planStorage";
-
 import { submitCart, clearCartError } from "../../store/slices/cartSlice";
 
 import { FieldLabel } from "../EventDetails/EventFolder/SectionLabel";
