@@ -18,7 +18,8 @@ import myPlanData from "../../data/MyPlanData";
 import { getPlanMeals, removePlanMeal } from "../../utils/planStorage";
 import { submitCart, clearCartError } from "../../store/slices/cartSlice";
 
-const RED = "#9a0002";
+
+const RED = "#9a0002"; 
 const VEG_GREEN = "#2E7D32";
 const AMBER = "#B5720F";
 const BLUE = "#1565C0";
