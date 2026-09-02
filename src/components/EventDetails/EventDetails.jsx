@@ -39,9 +39,6 @@ export default function EventDetails() {
   const apiVendorIds = useMemo(() => [...new Set(apiMeals.map((m) => m.restaurantId))], [apiMeals]);
   const canSubmitCart = apiMeals.length > 0 && apiVendorIds.length === 1;
 
-  // Everything below is filled in by the user on this page — nothing is
-  // pre-populated with sample data. Only the plan itself (rawMeals, above)
-  // comes from what they actually selected earlier in the flow.
   const [occasion, setOccasion] = useState("");
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
@@ -123,10 +120,10 @@ export default function EventDetails() {
           {/* LEFT: form */}
           <Grid item xs={12} md={7.5} lg={8}>
             <Stack spacing={3.5}>
-              <OccasionSelector value={occasion} onChange={setOccasion} />
+              <OccasionSelector sx={{mt:0}} value={occasion} onChange={setOccasion} />
 
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={7}>
+              <Grid container gap={2} >
+                <Grid item xs={12} sm={6.5} >
                   <FieldLabel>Event name so you can find it later</FieldLabel>
                   <TextField
                     fullWidth
@@ -136,7 +133,7 @@ export default function EventDetails() {
                     placeholder="e.g. Kumar & Divya — wedding reception"
                   />
                 </Grid>
-                <Grid item xs={12} sm={5}>
+                <Grid item xs={12} sm={5.2} >
                   <FieldLabel>Event date</FieldLabel>
                   <TextField
                     fullWidth

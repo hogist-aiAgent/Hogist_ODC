@@ -19,7 +19,7 @@ export default function MealsNeeded({ value, onToggle }) {
                   bgcolor: checked ? "rgba(154,0,2,0.04)" : "#fff",
                   borderRadius: 1.5,
                   px: 1.5,
-                  py: 1.25,
+                  py: 1,
                   cursor: "pointer",
                   "&:hover": { borderColor: RED },
                 }}

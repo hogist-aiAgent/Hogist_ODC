@@ -1,4 +1,3 @@
-
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Box, Grid, TextField, Typography, Stack, Button, IconButton, Tooltip } from "@mui/material";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
@@ -76,7 +75,6 @@ export default function VenueSection({ venue, onChange, eventDateLabel }) {
 
   const [locating, setLocating] = useState(false);
   const [locateError, setLocateError] = useState("");
-  const [resolvedAddress, setResolvedAddress] = useState("");
   const hasAutoLocated = useRef(false);
   const geocodeAbortRef = useRef(null);
 
@@ -119,10 +117,11 @@ export default function VenueSection({ venue, onChange, eventDateLabel }) {
     if (!venue.pin) handleUseMyLocation();
   }, []);
 
-  
+  // Reverse-geocode whenever the pin changes (auto-locate, "Use my location", drag, or click),
+  // and fill the "Hall or address" and "Pincode" fields with the result directly — no separate
+  // confirmation step. Debounced so a drag doesn't fire a request per frame.
   useEffect(() => {
     if (!venue.pin) {
-      setResolvedAddress("");
       return;
     }
     if (geocodeAbortRef.current) geocodeAbortRef.current.abort();
@@ -132,7 +131,13 @@ export default function VenueSection({ venue, onChange, eventDateLabel }) {
     const timer = setTimeout(() => {
       reverseGeocode(venue.pin.lat, venue.pin.lng, controller.signal)
         .then((data) => {
-          if (data && data.display_name) setResolvedAddress(data.display_name);
+          if (data && data.display_name) {
+            onChange({
+              ...venue,
+              address: data.display_name,
+              pincode: (data.address && data.address.postcode) || venue.pincode,
+            });
+          }
         })
         .catch(() => {
           /* ignore — user can still type the address manually */
@@ -143,11 +148,8 @@ export default function VenueSection({ venue, onChange, eventDateLabel }) {
       clearTimeout(timer);
       controller.abort();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [venue.pin]);
-
-  const handleUseResolvedAddress = () => {
-    if (resolvedAddress) onChange({ ...venue, address: resolvedAddress });
-  };
 
   const center = venue.pin || DEFAULT_CENTER;
 
@@ -283,7 +285,7 @@ export default function VenueSection({ venue, onChange, eventDateLabel }) {
             sx={{
               position: "relative",
               height: 220,
-              borderRadius: 2,
+              borderRadius: 1.5,
               border: `1px solid ${CARD_BORDER}`,
               overflow: "hidden",
               boxShadow: "0 4px 18px rgba(27,27,35,0.08)",
@@ -377,31 +379,6 @@ export default function VenueSection({ venue, onChange, eventDateLabel }) {
             placeholder="e.g. Opposite the water tank"
             sx={{ mb: 1.5 }}
           />
-
-          {resolvedAddress && (
-            <Box
-              sx={{
-                border: `1px dashed ${CARD_BORDER}`,
-                borderRadius: 1.5,
-                px: 1.5,
-                py: 1.25,
-                mb: 1.5,
-              }}
-            >
-              <Typography sx={{ fontSize: 11, color: INK_SOFT, fontFamily: FONT, mb: 0.5 }}>
-                Address detected from the pin
-              </Typography>
-              <Typography sx={{ fontSize: 12, color: INK, fontFamily: FONT, mb: 1 }}>
-                {resolvedAddress}
-              </Typography>
-              <Typography
-                onClick={handleUseResolvedAddress}
-                sx={{ fontSize: 12, fontWeight: 700, color: RED, fontFamily: FONT, cursor: "pointer" }}
-              >
-                Use this as the address
-              </Typography>
-            </Box>
-          )}
 
           {venue.pin ? (
             <Box
