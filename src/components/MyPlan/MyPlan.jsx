@@ -15,7 +15,7 @@ import {
 import CheckIcon from "@mui/icons-material/Check";
 
 import myPlanData from "../../data/MyPlanData";
-import { getPlanMeals, removePlanMeal } from "../../utils/PlanStorage";
+import { getPlanMeals, removePlanMeal } from "../../utils/planStorage";
 import { submitCart, clearCartError } from "../../store/slices/cartSlice";
 
 
