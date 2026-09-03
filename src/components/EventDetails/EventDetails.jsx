@@ -94,6 +94,7 @@ export default function EventDetails() {
       (meal.itemIds || []).map((itemId) => ({ _id: itemId, count: meal.plates }))
     );
     dispatch(submitCart({ services, serviceDate: eventDate, additional: [] }));
+    navigate("/payment");
   };
 
   const venueShortLabel = venue.address

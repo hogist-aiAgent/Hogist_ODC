@@ -15,8 +15,8 @@ export const currency = (n) => {
 
 export const EVENT_DETAILS_STEPS = [
   { id: 1, label: "Menus chosen", status: "done" },
-  { id: 2, label: "Plan reviewed", status: "done" },
-  { id: 3, label: "Event details", status: "active" },
+  { id: 2, label: "Review plan", status: "done" },
+  { id: 3, label: "Event Details", status: "active" },
   { id: 4, label: "Payment", status: "upcoming" },
   { id: 5, label: "Kitchen Confirmation", status: "upcoming" },
 ];

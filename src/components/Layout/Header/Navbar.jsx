@@ -177,10 +177,11 @@ export default function Navbar() {
 
   const routerLocation = useLocation();
   const isMenuPage = routerLocation.pathname.toLowerCase().includes('menu');
-  const isMyPlan = routerLocation.pathname.toLowerCase().includes('plan'); // ← add this
-  const isEventDetails = routerLocation.pathname.toLowerCase().includes('event-details'); // ← add this
+  const isMyPlan = routerLocation.pathname.toLowerCase().includes('plan'); 
+  const isEventDetails = routerLocation.pathname.toLowerCase().includes('event-details'); 
+  const isPayment = routerLocation.pathname.toLowerCase().includes('payment'); 
 
-  const showBackground = scrolled || isMenuPage || isMyPlan || isEventDetails;
+  const showBackground = scrolled || isMenuPage || isMyPlan || isEventDetails || isPayment;
 
   const selectedLocation = routerLocation.state?.selectedLocation;
 
@@ -351,7 +352,7 @@ export default function Navbar() {
             </Stack>
 
             {/* Desktop nav - hide on menu page */}
-            {!isMenuPage && !isMyPlan && !isEventDetails && (
+            {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && (
               <Stack
                 direction="row"
                 spacing={0.5}
@@ -428,7 +429,7 @@ export default function Navbar() {
                 },
               }}
             >
-              {isMenuPage || isMyPlan || isEventDetails ? (
+              {isMenuPage || isMyPlan || isEventDetails || isPayment ? (
                 <MenuPageActions
                   locationText={locationBadgeText}
                   userName={userName}
@@ -575,7 +576,7 @@ export default function Navbar() {
               </Menu>
             </Stack>
 
-            {(isMenuPage || isMyPlan || isEventDetails) && (
+            {(isMenuPage || isMyPlan || isEventDetails || isPayment) && (
               <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                 <MenuPageActions
                 locationText={locationBadgeText}
@@ -680,7 +681,7 @@ export default function Navbar() {
               )}
             </Menu>
 
-            {!isMenuPage && !isMyPlan && !isEventDetails && (
+            {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && (
               <IconButton
                 sx={{ display: { xs: 'flex', md: 'none' } }}
                 onClick={() => setMobileOpen(true)}
@@ -705,7 +706,7 @@ export default function Navbar() {
 
             <List>
               {/* Show nav links only on non-menu pages */}
-              {!isMenuPage && !isMyPlan && !isEventDetails &&
+              {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment &&
                 navLinks.map((link) => (
                   <ListItemButton
                     key={link.label}
@@ -728,7 +729,7 @@ export default function Navbar() {
                 ))}
 
               <Box sx={{ px: 2, pt: 2 }}>
-                {!isMenuPage && !isMyPlan && !isEventDetails && (
+                {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && (
                   <Button
                     fullWidth
                     component="a"
