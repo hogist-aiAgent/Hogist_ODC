@@ -511,14 +511,14 @@ export default function MenuDetail() {
             alignItems={{ xs: "flex-start", sm: "center" }}
             justifyContent="space-between"
             spacing={0.5}
-            sx={{ py: 0 }}
+            sx={{ py: 1.25 }}
           >
             <Breadcrumbs separator={<NavigateNextIcon sx={{ fontSize: 15 }} />}>
               <Link
                 component="button"
                 variant="body2"
                 onClick={() => navigate(-1)}
-                sx={{ color: RED, fontWeight: 700, fontSize: 12.5, fontFamily: FONT, textDecoration: "none" }}
+                sx={{ color: RED, fontWeight: 700, fontSize: 12.5, fontFamily: FONT, textDecoration: "none", mt: -0.7 }}
               >
                 Menus
               </Link>
