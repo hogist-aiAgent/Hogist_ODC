@@ -35,6 +35,11 @@ const INK_SOFT = "#6B6B76";
 const CARD_BORDER = "rgba(43,33,28,0.12)";
 const FONT = '"open sans", sans-serif';
 
+// Headcount rules: step by 10, minimum 30 guests, with quick-add jumps for large counts.
+const PLATES_MIN = 30;
+const PLATES_STEP = 10;
+const QUICK_ADD_AMOUNTS = [50, 100, 500];
+
 const currency = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
 /* ----------------------------- small pieces ----------------------------- */
@@ -221,9 +226,7 @@ function SectionBlock({ section, selection, onToggle }) {
           <Typography sx={{ fontWeight: 800, fontSize: 15, color: INK, fontFamily: FONT }}>
             {section.title}
           </Typography>
-          <Typography sx={{ fontSize: 12, color: INK_SOFT, fontFamily: FONT }}>
-            · {section.type === "single" ? "choose 1" : "select any"}
-          </Typography>
+      
         </Stack>
         {selectedCount > 0 && (
           <Typography sx={{ fontSize: 12, fontWeight: 700, color: RED, fontFamily: FONT }}>
@@ -359,11 +362,26 @@ export default function MenuDetail() {
 
   const [selections, setSelections] = useState({});
   const [plates, setPlates] = useState(menu?.pricing?.defaultPlates ?? 0);
+  // Per-item guest count — lets someone set e.g. 100 veg / 50 non-veg
+  // instead of every selected item following the total headcount.
+  const [itemQuantities, setItemQuantities] = useState({});
   const [activeTab, setActiveTab] = useState(0);
 
+  // Raw text being typed into the PLATES count field — kept separate from
+  // the numeric `plates` state so the field can be freely cleared/retyped.
+  const [platesInputValue, setPlatesInputValue] = useState(String(plates));
+  // Raw text being typed into each item's quantity field, keyed by item id.
+  const [itemQuantityInputs, setItemQuantityInputs] = useState({});
+
   useEffect(() => {
-    if (menu) setPlates(menu.pricing.defaultPlates);
+    if (menu) setPlates(Math.max(PLATES_MIN, menu.pricing.defaultPlates));
   }, [menu?.restaurantId]);
+
+  // Keep the editable PLATES text field in sync whenever the numeric value
+  // changes via the +/- buttons or the quick-add pills.
+  useEffect(() => {
+    setPlatesInputValue(String(plates));
+  }, [plates]);
 
   const handleToggle = (sectionId, itemId, type) => {
     setSelections((prev) => {
@@ -379,13 +397,83 @@ export default function MenuDetail() {
     });
   };
 
+  // Headcount: +/- move by 10, floor of 30 guests.
   const handlePlatesChange = (delta) => {
-    setPlates((prev) => Math.max(menu.pricing.minPlates, prev + delta * menu.pricing.plateStep));
+    setPlates((prev) => Math.max(PLATES_MIN, prev + delta * PLATES_STEP));
+  };
+
+  // Quick-add pills (+50 / +100 / +500) for jumping to large headcounts fast.
+  const handleQuickAddPlates = (amount) => {
+    setPlates((prev) => prev + amount);
+  };
+
+  // Manual typing into the PLATES field — allow free editing (including
+  // empty/partial text) and only commit + clamp on blur or Enter.
+  const handlePlatesInputChange = (event) => {
+    const raw = event.target.value;
+    if (raw === "" || /^[0-9]+$/.test(raw)) {
+      setPlatesInputValue(raw);
+    }
+  };
+
+  const commitPlatesInput = () => {
+    const parsed = parseInt(platesInputValue, 10);
+    const next = Number.isNaN(parsed) ? PLATES_MIN : Math.max(PLATES_MIN, parsed);
+    setPlates(next);
+    setPlatesInputValue(String(next));
+  };
+
+  const handlePlatesInputBlur = () => {
+    commitPlatesInput();
+  };
+
+  const handlePlatesInputKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.target.blur();
+    }
+  };
+
+  // Per-item guest count — defaults to the overall headcount until adjusted.
+  const handleItemQuantityChange = (itemId, delta) => {
+    setItemQuantities((prev) => {
+      const current = prev[itemId] ?? plates;
+      const next = Math.max(0, current + delta);
+      return { ...prev, [itemId]: next };
+    });
+  };
+
+  // Manual typing into a per-item quantity field — same free-edit pattern
+  // as the PLATES field, committed on blur/Enter.
+  const handleItemQuantityInputChange = (itemId, event) => {
+    const raw = event.target.value;
+    if (raw === "" || /^[0-9]+$/.test(raw)) {
+      setItemQuantityInputs((prev) => ({ ...prev, [itemId]: raw }));
+    }
+  };
+
+  const commitItemQuantityInput = (itemId) => {
+    const raw = itemQuantityInputs[itemId];
+    const parsed = parseInt(raw, 10);
+    const next = Number.isNaN(parsed) ? 0 : Math.max(0, parsed);
+    setItemQuantities((prev) => ({ ...prev, [itemId]: next }));
+    setItemQuantityInputs((prev) => ({ ...prev, [itemId]: String(next) }));
+  };
+
+  const handleItemQuantityInputBlur = (itemId) => {
+    commitItemQuantityInput(itemId);
+  };
+
+  const handleItemQuantityInputKeyDown = (itemId, event) => {
+    if (event.key === "Enter") {
+      event.target.blur();
+    }
   };
 
   const pricing = useMemo(() => {
     let pricePerPlate = 0;
+    let foodTotal = 0;
     let selectedCount = 0;
+    const selectedItemsList = [];
 
     (menu?.sections || []).forEach((section) => {
       const selection = selections[section.id];
@@ -393,29 +481,34 @@ export default function MenuDetail() {
         if (selection) {
           const item = section.items.find((i) => i.id === selection);
           if (item) {
+            const qty = itemQuantities[item.id] ?? plates;
             pricePerPlate += item.pricePerPlate || 0;
+            foodTotal += (item.pricePerPlate || 0) * qty;
             selectedCount += 1;
+            selectedItemsList.push({ sectionId: section.id, item, qty });
           }
         }
       } else {
         (selection || []).forEach((itemId) => {
           const item = section.items.find((i) => i.id === itemId);
           if (item) {
+            const qty = itemQuantities[item.id] ?? plates;
             pricePerPlate += item.pricePerPlate || 0;
+            foodTotal += (item.pricePerPlate || 0) * qty;
             selectedCount += 1;
+            selectedItemsList.push({ sectionId: section.id, item, qty });
           }
         });
       }
     });
 
     const hasSelection = selectedCount > 0;
-    const foodTotal = pricePerPlate * plates;
     const seasonOfferAmount = hasSelection ? (menu?.pricing?.seasonOffer?.amount || 0) : 0;
     const transportFee = hasSelection ? (menu?.pricing?.transportFee || 0) : 0;
     const estimatedTotal = foodTotal + transportFee - seasonOfferAmount;
 
-    return { pricePerPlate, foodTotal, estimatedTotal, hasSelection, selectedCount };
-  }, [selections, plates, menu]);
+    return { pricePerPlate, foodTotal, estimatedTotal, hasSelection, selectedCount, selectedItemsList };
+  }, [selections, plates, itemQuantities, menu]);
 
   const handleAddToPlan = () => {
     const itemsSelected = [];
@@ -684,7 +777,7 @@ export default function MenuDetail() {
               </Typography>
               <Typography sx={{ fontSize: 12, color: INK_SOFT, fontFamily: FONT, mb: 2 }}>
                 {pricing.hasSelection
-                  ? `Minimum ${menu.pricing.minPlates} plates · Taxes extra`
+                  ? `Minimum ${PLATES_MIN} plates · Taxes extra`
                   : "Select items from the menu to see pricing"}
               </Typography>
 
@@ -698,17 +791,38 @@ export default function MenuDetail() {
                 direction="row"
                 alignItems="center"
                 justifyContent="space-between"
-                sx={{ border: `1px solid ${CARD_BORDER}`, borderRadius: 2, px: 1, py: 0.5, mb: 0.5 }}
+                sx={{ border: `1px solid ${CARD_BORDER}`, borderRadius: 1, px: 1, py: 0.5, mb: 0.75 }}
               >
                 <IconButton
                   size="small"
                   onClick={() => handlePlatesChange(-1)}
-                  disabled={plates <= menu.pricing.minPlates}
+                  disabled={plates <= PLATES_MIN}
                   sx={{ border: `1px solid ${CARD_BORDER}` }}
                 >
                   <RemoveIcon sx={{ fontSize: 16 }} />
                 </IconButton>
-                <Typography sx={{ fontWeight: 800, fontSize: 16, fontFamily: FONT }}>{plates}</Typography>
+                <Box
+                  component="input"
+                  type="text"
+                  inputMode="numeric"
+                  value={platesInputValue}
+                  onChange={handlePlatesInputChange}
+                  onBlur={handlePlatesInputBlur}
+                  onKeyDown={handlePlatesInputKeyDown}
+                  aria-label="Plates count"
+                  sx={{
+                    fontWeight: 800,
+                    fontSize: 16,
+                    fontFamily: FONT,
+                    color: INK,
+                    textAlign: "center",
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    width: 64,
+                    p: 0,
+                  }}
+                />
                 <IconButton
                   size="small"
                   onClick={() => handlePlatesChange(1)}
@@ -717,9 +831,113 @@ export default function MenuDetail() {
                   <AddIcon sx={{ fontSize: 16 }} />
                 </IconButton>
               </Stack>
+
+              {/* Quick-add jumps for large headcounts */}
+              <Stack direction="row" spacing={1} sx={{ mb: 0.75 }}>
+                {QUICK_ADD_AMOUNTS.map((amount) => (
+                  <Button
+                    key={amount}
+                    onClick={() => handleQuickAddPlates(amount)}
+                    variant="outlined"
+                    sx={{
+                      flex: 1,
+                      minWidth: 0,
+                      borderColor: CARD_BORDER,
+                      color: INK,
+                      fontWeight: 700,
+                      fontSize: 12.5,
+                      textTransform: "none",
+                      borderRadius: 999,
+                      py: 0.6,
+                      fontFamily: FONT,
+                      "&:hover": { borderColor: RED, color: RED, bgcolor: "rgba(154,0,2,0.03)" },
+                    }}
+                  >
+                    +{amount}
+                  </Button>
+                ))}
+              </Stack>
+
               <Typography sx={{ fontSize: 11, color: INK_SOFT, fontFamily: FONT, mb: 2 }}>
                 Final headcount can be revised up to 48h before
               </Typography>
+
+              {/* Your selection — per-item guest counts, independent of the overall headcount */}
+              {pricing.selectedItemsList.length > 0 && (
+                <Box sx={{ mb: 2 }}>
+                  <Typography
+                    sx={{ fontSize: 11, fontWeight: 800, letterSpacing: 0.6, color: INK_SOFT, fontFamily: FONT, mb: 0.75 }}
+                  >
+                    YOUR SELECTION
+                  </Typography>
+                  <Stack spacing={1}>
+                    {pricing.selectedItemsList.map(({ item, qty }) => (
+                      <Stack
+                        key={item.id}
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        spacing={1}
+                        sx={{ border: `1px solid ${CARD_BORDER}`, borderRadius: 2, px: 1.25, py: 1 }}
+                      >
+                        <Box sx={{ minWidth: 0 }}>
+                          <Typography sx={{ fontWeight: 700, fontSize: 13, color: INK, fontFamily: FONT }} noWrap>
+                            {item.name}
+                          </Typography>
+                          {item.subtitle && (
+                            <Typography sx={{ fontSize: 11, color: INK_SOFT, fontFamily: FONT }} noWrap>
+                              {item.subtitle}
+                            </Typography>
+                          )}
+                        </Box>
+                        <Stack direction="row" alignItems="center" spacing={0.75} sx={{ flexShrink: 0 }}>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleItemQuantityChange(item.id, -1)}
+                            disabled={qty <= 0}
+                            sx={{ border: `1px solid ${CARD_BORDER}`, width: 26, height: 26 }}
+                          >
+                            <RemoveIcon sx={{ fontSize: 14 }} />
+                          </IconButton>
+                          <Box
+                            component="input"
+                            type="text"
+                            inputMode="numeric"
+                            value={itemQuantityInputs[item.id] ?? String(qty)}
+                            onChange={(event) => handleItemQuantityInputChange(item.id, event)}
+                            onBlur={() => handleItemQuantityInputBlur(item.id)}
+                            onKeyDown={(event) => handleItemQuantityInputKeyDown(item.id, event)}
+                            aria-label={`${item.name} quantity`}
+                            sx={{
+                              fontWeight: 800,
+                              fontSize: 13,
+                              fontFamily: FONT,
+                              color: INK,
+                              textAlign: "center",
+                              border: "none",
+                              outline: "none",
+                              background: "transparent",
+                              width: 36,
+                              p: 0,
+                              
+                            }}
+                          />
+                          <IconButton
+                            size="small"
+                            onClick={() => handleItemQuantityChange(item.id, 1)}
+                            sx={{ bgcolor: INK, color: "#fff", width: 26, height: 26, "&:hover": { bgcolor: "#000" } }}
+                          >
+                            <AddIcon sx={{ fontSize: 14 }} />
+                          </IconButton>
+                        </Stack>
+                      </Stack>
+                    ))}
+                  </Stack>
+                  <Typography sx={{ fontSize: 10.5, color: INK_SOFT, fontFamily: FONT, mt: 1 }}>
+                    Quantities are per guest — adjust an item if some guests need a different count.
+                  </Typography>
+                </Box>
+              )}
 
               {/* Sidebar-located sections (e.g. service style) — data-driven, same rules: nothing pre-selected */}
               {sidebarSections.map((section) => (
@@ -755,7 +973,7 @@ export default function MenuDetail() {
               <Stack spacing={1}>
                 <Stack direction="row" justifyContent="space-between">
                   <Typography sx={{ fontSize: 13, color: INK_SOFT, fontFamily: FONT }}>
-                    Food: {plates} x {currency(pricing.pricePerPlate)}
+                    Food total
                   </Typography>
                   <Typography sx={{ fontSize: 13, fontWeight: 700, color: INK, fontFamily: FONT }}>
                     {currency(pricing.foodTotal)}
