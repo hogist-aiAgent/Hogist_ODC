@@ -21,6 +21,7 @@ const myPlanData = {
     { id: 2, label: "Review plan", status: "active" },
     { id: 3, label: "Event Details", status: "upcoming" },
     { id: 4, label: "Payment", status: "upcoming" },
+    { id: 5, label: "Kitchen Confirmation", status: "upcoming" },
   ],
 
   meals: [

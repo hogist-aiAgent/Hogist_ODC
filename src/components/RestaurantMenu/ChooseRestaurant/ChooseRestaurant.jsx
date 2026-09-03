@@ -21,9 +21,7 @@ import StarIcon from "@mui/icons-material/Star";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
-// Hardcoded restaurant/caterer data — disabled. All caterer data now comes
-// from the ODC vendor API (fetchVendorsNear -> GET/POST odc-vendor-list-near).
-// import allRestaurants, { filterNearbyRestaurants } from "../../../data/restaurants";
+import allRestaurants from "../../../data/restaurants";
 import fallbackImg from "../../../assets/menu/chosseRestaurent/img1.jpg";
 import { fetchVendorsNear } from "../../../store/slices/catalogSlice";
 import FilterSortBar, {
@@ -403,14 +401,21 @@ export default function ChooseRestaurant() {
   } = useSelector((state) => state.catalog);
 
   useEffect(() => {
-    dispatch(fetchVendorsNear({ lat: effectiveLat, long: effectiveLon }));
+    // TEMP: API call commented out — using dummy data to test the flow.
+    // dispatch(fetchVendorsNear({ lat: effectiveLat, long: effectiveLon }));
   }, [dispatch, effectiveLat, effectiveLon]);
 
-  // Caterer list now comes exclusively from the ODC vendor API — no more
-  // hardcoded/mock fallback data.
-  const caterers = useMemo(
+  // Caterer list comes from the ODC vendor API when it has data; otherwise
+  // falls back to the hardcoded dummy list so the flow can still be tested.
+  const apiCaterers = useMemo(
     () => (Array.isArray(vendorsNear) ? vendorsNear.map(normalizeVendor) : []),
     [vendorsNear]
+  );
+  const caterers = useMemo(
+    // TEMP: forcing dummy data — restore the line below to use the API again.
+    // () => (apiCaterers.length > 0 ? apiCaterers : allRestaurants),
+    () => allRestaurants,
+    [apiCaterers]
   );
 
   const [searchValue, setSearchValue] = useState("");
@@ -691,7 +696,7 @@ export default function ChooseRestaurant() {
               <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
                 <CircularProgress size={28} />
               </Box>
-            ) : vendorsNearError ? (
+            ) : vendorsNearError && caterers.length === 0 ? (
               <Box sx={{ textAlign: "center", py: 8 }}>
                 <Typography sx={{ color: "text.secondary", fontFamily: '"open sans", sans-serif' }}>
                   {vendorsNearError}

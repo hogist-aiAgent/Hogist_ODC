@@ -24,6 +24,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import VerifiedIcon from "@mui/icons-material/Verified";
 
 import { addPlanMeal } from "@/utils/planStorage";
+import getMenuDetailById from "../../../data/menuDetails";
 
 import { fetchVendorWithMenu, fetchMenuList, clearVendorDetail } from "../../../store/slices/catalogSlice";
 
@@ -282,9 +283,10 @@ export default function MenuDetail() {
   } = useSelector((state) => state.catalog);
 
   useEffect(() => {
-    if (restaurantId) {
-      dispatch(fetchVendorWithMenu({ slug: restaurantId }));
-    }
+    // TEMP: API call commented out — using dummy data to test the flow.
+    // if (restaurantId) {
+    //   dispatch(fetchVendorWithMenu({ slug: restaurantId }));
+    // }
     return () => {
       if (restaurantId) dispatch(clearVendorDetail());
     };
@@ -293,9 +295,10 @@ export default function MenuDetail() {
 
 
   useEffect(() => {
-    if (vendorDetail?._id) {
-      dispatch(fetchMenuList({ vendor: vendorDetail._id }));
-    }
+    // TEMP: API call commented out — using dummy data to test the flow.
+    // if (vendorDetail?._id) {
+    //   dispatch(fetchMenuList({ vendor: vendorDetail._id }));
+    // }
   }, [dispatch, vendorDetail?._id]);
 
   const apiMenu = useMemo(() => {
@@ -340,8 +343,15 @@ export default function MenuDetail() {
     };
   }, [vendorDetail, vendorDetailMenu, vendorDetailReviews, menuCards, routerLocation.state]);
 
-  // Menu data now comes exclusively from the ODC vendor/menu API.
-  const menu = apiMenu;
+  // Menu data comes from the ODC vendor/menu API when available; otherwise
+  // falls back to the hardcoded dummy menu so the flow can still be tested.
+  const fallbackMenu = useMemo(
+    () => (restaurantId ? getMenuDetailById(restaurantId) : null),
+    [restaurantId]
+  );
+  // TEMP: forcing dummy data — restore the line below to use the API again.
+  // const menu = apiMenu || fallbackMenu;
+  const menu = fallbackMenu;
 
   const bodySections = useMemo(() => (menu?.sections || []).filter((s) => s.location !== "sidebar"), [menu]);
   const sidebarSections = useMemo(() => (menu?.sections || []).filter((s) => s.location === "sidebar"), [menu]);
@@ -481,7 +491,7 @@ export default function MenuDetail() {
     );
   }
 
-  if (vendorDetailError || !menu) {
+  if (!menu) {
     return (
       <Box sx={{ textAlign: "center", py: 14, pt: { xs: "72px", md: "88px" } }}>
         <Typography sx={{ fontFamily: FONT, color: INK_SOFT }}>

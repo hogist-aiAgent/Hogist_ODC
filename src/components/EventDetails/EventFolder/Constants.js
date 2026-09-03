@@ -18,6 +18,7 @@ export const EVENT_DETAILS_STEPS = [
   { id: 2, label: "Plan reviewed", status: "done" },
   { id: 3, label: "Event details", status: "active" },
   { id: 4, label: "Payment", status: "upcoming" },
+  { id: 5, label: "Kitchen Confirmation", status: "upcoming" },
 ];
 
 export const OCCASIONS = ["Wedding", "Reception", "Birthday", "House warming", "Corporate", "Other"];
