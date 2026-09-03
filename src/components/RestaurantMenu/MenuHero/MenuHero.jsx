@@ -98,7 +98,7 @@ useEffect(() => {
         '@media (min-width: 961px) and (max-width: 1400px)': {
           objectFit: 'contain',
           objectPosition: 'center center',
-          height: '95%',
+          height: '100%',
           width: '100%',
         },
         // Above 1400px - keep as is

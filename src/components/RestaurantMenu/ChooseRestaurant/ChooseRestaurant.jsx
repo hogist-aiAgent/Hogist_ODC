@@ -374,6 +374,10 @@ const SORT_COMPARATORS = {
     (a.price ?? a.startingPrice ?? a.pricePerPerson ?? -Infinity),
 };
 
+// Fallback coordinates (Chennai city center) used only when the visitor
+// hasn't picked a specific location yet — the odc-vendor-list-near API
+// requires lat/long on every call, so we can no longer fall back to the
+// hardcoded restaurants list when coordinates are missing.
 const DEFAULT_LOCATION = { lat: 13.0827, lon: 80.2707 };
 
 export default function ChooseRestaurant() {
@@ -383,7 +387,10 @@ export default function ChooseRestaurant() {
   const selectedLocation = routerLocation.state?.selectedLocation;
   const selectedLocationText = selectedLocation?.full || selectedLocation?.label || "";
   const hasCoords = typeof selectedLocation?.lat === "number" && typeof selectedLocation?.lon === "number";
-  
+
+  // Always call the API — use the visitor's chosen coordinates when
+  // available, otherwise fall back to the default Chennai coordinates so
+  // the vendor list still loads from the backend instead of local mock data.
   const effectiveLat = hasCoords ? selectedLocation.lat : DEFAULT_LOCATION.lat;
   const effectiveLon = hasCoords ? selectedLocation.lon : DEFAULT_LOCATION.lon;
 
@@ -543,7 +550,7 @@ export default function ChooseRestaurant() {
   const locationCountLabel = selectedLocation?.label || selectedLocationText || "your area";
 
   return (
-    <Box sx={{ bgcolor: "#FFF", py: { xs: 6, md: 4 } }}>
+    <Box sx={{ bgcolor: "#FFF", py: { xs: 0, md: 1 } }}>
       <Container
         maxWidth="lg"
         sx={{
