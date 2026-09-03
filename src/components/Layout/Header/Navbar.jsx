@@ -303,7 +303,7 @@ export default function Navbar() {
         >
           <Toolbar
             sx={{
-              py: { xs: 1, md: 0.7, lg: 1 },
+              py: { xs: 1, md: 0.7, lg: 0.4 },
               px: { xs: 2, sm: 2.5, md: 0 },
 
               '@media (min-width: 1400px) and (max-width: 1600px)': {

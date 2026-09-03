@@ -5,6 +5,7 @@ import { Box, Container, Grid, Typography, Stack, TextField } from "@mui/materia
 
 import myPlanData from "../../data/MyPlanData";
 import { getPlanMeals } from "@/utils/planStorage";
+import { getEventDetails, saveEventDetails } from "@/utils/eventDetailsStorage";
 import { submitCart, clearCartError } from "../../store/slices/cartSlice";
 
 import { FieldLabel } from "../EventDetails/EventFolder/SectionLabel";
@@ -39,25 +40,35 @@ export default function EventDetails() {
   const apiVendorIds = useMemo(() => [...new Set(apiMeals.map((m) => m.restaurantId))], [apiMeals]);
   const canSubmitCart = apiMeals.length > 0 && apiVendorIds.length === 1;
 
-  const [occasion, setOccasion] = useState("");
-  const [eventName, setEventName] = useState("");
-  const [eventDate, setEventDate] = useState("");
-  const [guests, setGuests] = useState(0);
-  const [meals, setMeals] = useState({ breakfast: false, lunch: false, eveningSnacks: false, dinner: false });
-  const [venue, setVenue] = useState({
-    address: "",
-    pincode: "",
-    setupAccessFrom: "",
-    landmark: "",
-    pin: null,
-  });
-  const [host, setHost] = useState({ name: "", phone: "" });
-  const [contacts, setContacts] = useState([
-    { label: "On-site contact during the event", name: "", phone: "" },
-    { label: "Alternate number optional", name: "", phone: "" },
-  ]);
-  const [whatsapp, setWhatsapp] = useState(false);
-  const [notes, setNotes] = useState("");
+  // If this device already filled out Event Details before (e.g. came back
+  // from Payment to edit something), restore it instead of starting blank.
+  const savedDetails = useMemo(() => getEventDetails(), []);
+
+  const [occasion, setOccasion] = useState(savedDetails?.occasion ?? "");
+  const [eventName, setEventName] = useState(savedDetails?.eventName ?? "");
+  const [eventDate, setEventDate] = useState(savedDetails?.eventDate ?? "");
+  const [guests, setGuests] = useState(savedDetails?.guests ?? 0);
+  const [meals, setMeals] = useState(
+    savedDetails?.meals ?? { breakfast: false, lunch: false, eveningSnacks: false, dinner: false }
+  );
+  const [venue, setVenue] = useState(
+    savedDetails?.venue ?? {
+      address: "",
+      pincode: "",
+      setupAccessFrom: "",
+      landmark: "",
+      pin: null,
+    }
+  );
+  const [host, setHost] = useState(savedDetails?.host ?? { name: "", phone: "" });
+  const [contacts, setContacts] = useState(
+    savedDetails?.contacts ?? [
+      { label: "On-site contact during the event", name: "", phone: "" },
+      { label: "Alternate number optional", name: "", phone: "" },
+    ]
+  );
+  const [whatsapp, setWhatsapp] = useState(savedDetails?.whatsapp ?? false);
+  const [notes, setNotes] = useState(savedDetails?.notes ?? "");
 
   const eventDateLabel = useMemo(() => {
     if (!eventDate) return "Not set yet";
@@ -94,6 +105,9 @@ export default function EventDetails() {
       (meal.itemIds || []).map((itemId) => ({ _id: itemId, count: meal.plates }))
     );
     dispatch(submitCart({ services, serviceDate: eventDate, additional: [] }));
+    // Save the host/contact details collected here so Payment can prefill
+    // its billing & contact fields from them instead of asking again.
+    saveEventDetails({ occasion, eventName, eventDate, guests, meals, venue, host, contacts, whatsapp, notes });
     navigate("/payment");
   };
 

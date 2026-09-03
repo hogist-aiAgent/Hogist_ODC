@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Box,
   Container,
@@ -13,6 +14,9 @@ import {
 import CheckIcon from "@mui/icons-material/Check";
 
 import myPlanData from "../../data/MyPlanData";
+import { getPlanMeals } from "@/utils/planStorage";
+import { getEventDetails } from "@/utils/eventDetailsStorage";
+import { buildCostSummary } from "../EventDetails/EventFolder/CostSummary";
 import { FieldLabel } from "../EventDetails/EventFolder/SectionLabel";
 import {
   RED,
@@ -55,6 +59,7 @@ const PAYMENT_METHOD_SHORT_LABEL = {
 
 // A full-payment booking gets a small discount vs. paying the 25% advance.
 const FULL_PAYMENT_DISCOUNT_RATE = 0.01;
+const ADVANCE_RATE = 0.25;
 const HOLD_MINUTES = 30;
 
 function formatCountdown(totalSeconds) {
@@ -71,6 +76,17 @@ function parseEventDate(dateStr) {
   const datePart = parts.length > 1 ? parts.slice(1).join(", ") : parts[0];
   const d = new Date(datePart);
   return Number.isNaN(d.getTime()) ? null : d;
+}
+
+// Picks the "on-site contact" row saved on the Event Details page and
+// formats it the way this page's field expects, e.g. "Suresh · +91 90000 00000".
+function formatOnsiteContact(contacts) {
+  if (!Array.isArray(contacts)) return "";
+  const onsite = contacts.find((c) => c.label === "On-site contact during the event") || contacts[0];
+  if (!onsite) return "";
+  const { name, phone } = onsite;
+  if (name && phone) return `${name} · ${phone}`;
+  return name || phone || "";
 }
 
 /* --------------------------------- pieces --------------------------------- */
@@ -224,7 +240,7 @@ function ScheduleOption({ selected, title, amount, subtitle, subtitleColor, onSe
         cursor: "pointer",
         border: `1.5px solid ${selected ? RED : CARD_BORDER}`,
         bgcolor: selected ? BANNER_BG : "#fff",
-        borderRadius: 2,
+        borderRadius: 1,
         p: 2,
         height: "100%",
         transition: "border-color .15s, background-color .15s",
@@ -253,7 +269,7 @@ function PaymentMethodRow({ method, selected, onSelect, children }) {
       sx={{
         border: `1.5px solid ${selected ? RED : CARD_BORDER}`,
         bgcolor: selected ? BANNER_BG : "#fff",
-        borderRadius: 2,
+        borderRadius: 1.5,
         px: 2,
         py: 1.5,
         transition: "border-color .15s, background-color .15s",
@@ -289,19 +305,75 @@ function PaymentMethodRow({ method, selected, onSelect, children }) {
 /* --------------------------------- main ---------------------------------- */
 
 export default function Payment() {
-  const { event, meals, costSummary } = myPlanData;
+ 
+  const rawMeals = useMemo(() => getPlanMeals(), []);
+  const savedEventDetails = useMemo(() => getEventDetails(), []);
+  const hasLivePlan = rawMeals.length > 0;
+
+  const meals = hasLivePlan ? rawMeals : myPlanData.meals;
+
+  const event = useMemo(() => {
+    const hasSavedEvent =
+      savedEventDetails?.eventName || savedEventDetails?.eventDate || savedEventDetails?.venue?.address || savedEventDetails?.guests;
+    if (!hasSavedEvent) return myPlanData.event;
+
+    const d = savedEventDetails.eventDate ? new Date(`${savedEventDetails.eventDate}T00:00:00`) : null;
+    const dateLabel =
+      d && !Number.isNaN(d.getTime())
+        ? d.toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short", year: "numeric" })
+        : "Date not set";
+
+    return {
+      title: savedEventDetails.eventName || "Your event",
+      date: dateLabel,
+      venue: savedEventDetails.venue?.address || "Venue not set",
+      guests: savedEventDetails.guests || 0,
+    };
+  }, [savedEventDetails]);
+
+  const costSummary = useMemo(() => {
+    if (hasLivePlan) {
+      const c = buildCostSummary(rawMeals);
+      const vendorCount = new Set(rawMeals.map((m) => m.restaurantId)).size || 1;
+      return {
+        total: c.total,
+        perGuest: c.perGuest,
+        breakdown: [
+          c.transportTotal > 0 && {
+            label: `Transport · ${vendorCount} kitchen${vendorCount === 1 ? "" : "s"}`,
+            amount: c.transportTotal,
+          },
+          c.offerTotal > 0 && { label: "Season offer", amount: -c.offerTotal },
+          c.gst > 0 && { label: "GST 5%", amount: c.gst },
+        ].filter(Boolean),
+      };
+    }
+    return {
+      total: myPlanData.costSummary.total,
+      perGuest: myPlanData.costSummary.perGuest,
+      breakdown: myPlanData.costSummary.lineItems.slice(-3),
+    };
+  }, [hasLivePlan, rawMeals]);
+
+  const authUser = useSelector((state) => state.auth?.user);
 
   const [schedule, setSchedule] = useState("advance"); // "advance" | "full"
   const [method, setMethod] = useState("upi");
-  const [vpa, setVpa] = useState("rkumar@okhdfcbank");
+  const [vpa, setVpa] = useState("");
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
 
-  const [fullName, setFullName] = useState("R. Kumar");
-  const [mobile, setMobile] = useState("+91 98840 21174");
-  const [email, setEmail] = useState("kumar.r@gmail.com");
+  const [fullName, setFullName] = useState(
+    authUser?.fullName || savedEventDetails?.host?.name || ""
+  );
+  const [mobile, setMobile] = useState(
+    authUser?.mobile || savedEventDetails?.host?.phone || ""
+  );
+  const [email, setEmail] = useState(authUser?.email || "");
   const [gstin, setGstin] = useState("");
-  const [onsiteContact, setOnsiteContact] = useState("Suresh (brother) · +91 90030 55218");
+  const [onsiteContact, setOnsiteContact] = useState(
+    formatOnsiteContact(savedEventDetails?.contacts)
+  );
   const [agree, setAgree] = useState(true);
 
   const [paying, setPaying] = useState(false);
@@ -317,7 +389,7 @@ export default function Payment() {
   }, []);
 
   const total = costSummary.total;
-  const advanceAmount = costSummary.advance.amount;
+  const advanceAmount = Math.round(total * ADVANCE_RATE);
   const balanceAmount = total - advanceAmount;
 
   const fullPayDiscount = Math.round(total * FULL_PAYMENT_DISCOUNT_RATE);
@@ -335,7 +407,7 @@ export default function Payment() {
   const shortDate = event.date.split(", ").slice(1).join(", ") || event.date;
   const shortVenue = event.venue.split(",").pop().trim();
 
-  const breakdownLines = costSummary.lineItems.slice(-3); // Transport, Season offer, GST
+  const breakdownLines = costSummary.breakdown;
 
   const payingNowAmount = schedule === "advance" ? advanceAmount : fullPayAmount;
 
@@ -595,7 +667,7 @@ export default function Payment() {
                       </Box>
                     </Stack>
                     <Typography sx={{ fontWeight: 700, fontSize: 13, color: INK, fontFamily: FONT, flexShrink: 0 }}>
-                      {currency(meal.total)}
+                      {currency(meal.foodTotal ?? meal.total)}
                     </Typography>
                   </Stack>
                 ))}
@@ -634,7 +706,7 @@ export default function Payment() {
                 </Typography>
               </Stack>
 
-              <Box sx={{ bgcolor: INK, borderRadius: 2, p: 2, mb: 2 }}>
+              <Box sx={{ bgcolor: INK, borderRadius: 1, p: 2, mb: 2 }}>
                 <Typography sx={{ fontSize: 10.5, fontWeight: 800, letterSpacing: 0.6, color: "rgba(255,255,255,0.6)", fontFamily: FONT, textTransform: "uppercase" }}>
                   Paying now
                 </Typography>

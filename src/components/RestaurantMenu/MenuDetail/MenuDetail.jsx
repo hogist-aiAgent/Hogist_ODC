@@ -511,7 +511,7 @@ export default function MenuDetail() {
             alignItems={{ xs: "flex-start", sm: "center" }}
             justifyContent="space-between"
             spacing={0.5}
-            sx={{ py: 1.25 }}
+            sx={{ py: 0 }}
           >
             <Breadcrumbs separator={<NavigateNextIcon sx={{ fontSize: 15 }} />}>
               <Link
@@ -673,7 +673,6 @@ export default function MenuDetail() {
             )}
           </Grid>
 
-          {/* ------------------------------ RIGHT: sticky order card ------------------------------ */}
           <Grid item xs={12} md={4.5} lg={4}>
             <Box
               sx={{
@@ -683,13 +682,12 @@ export default function MenuDetail() {
                 borderRadius: 2,
                 p: 2.5,
                 boxShadow: "0 6px 24px rgba(27,27,35,0.06)",
-                /* Fixed height with a hidden (but still functional) scrollbar */
                 height: { xs: 480, sm: 520, md: "calc(100vh - 140px)" },
                 overflowY: "auto",
-                scrollbarWidth: "none", // Firefox
-                msOverflowStyle: "none", // IE/old Edge
+                scrollbarWidth: "none", 
+                msOverflowStyle: "none", 
                 "&::-webkit-scrollbar": {
-                  display: "none", // Chrome/Safari/Edge (Chromium)
+                  display: "none",
                 },
               }}
             >
