@@ -56,13 +56,13 @@ export default function EventDetailsStepper() {
         <Stack
           direction="row"
           alignItems="center"
-          sx={{ pt: 13, pb: 2, overflowX: { xs: "auto", md: "visible" } }}
+          sx={{ pt: { xs: 9, sm: 10, md: 11, lg: 13 }, pb: 2, overflowX: { xs: "auto", md: "visible" } }}
         >
           {EVENT_DETAILS_STEPS.map((step, idx) => (
             <React.Fragment key={step.id}>
               <StepDot step={step} />
               {idx < EVENT_DETAILS_STEPS.length - 1 && (
-                <Box sx={{ flexGrow: 1, height: "1px", bgcolor: CARD_BORDER, mx: { xs: 2, md: 3 }, minWidth: 24 }} />
+                <Box sx={{ flexGrow: 1, height: "1px", bgcolor: CARD_BORDER, mx: { xs: 1.5, sm: 2, md: 3 }, minWidth: 20 }} />
               )}
             </React.Fragment>
           ))}
