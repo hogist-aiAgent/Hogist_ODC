@@ -645,21 +645,6 @@ export default function MenuDetail() {
               </Typography>
             ) : (
               <>
-                <Box
-                  sx={{
-                    bgcolor: "#F4F2F0",
-                    border: `1px solid ${CARD_BORDER}`,
-                    borderRadius: 2,
-                    px: 2,
-                    py: 1,
-                    mb: 3,
-                  }}
-                >
-                  <Typography sx={{ fontSize: 12.5, color: INK_SOFT, fontFamily: FONT }}>
-                    Nothing is added by default — tick the items you want and the price on the right updates
-                    as you go.
-                  </Typography>
-                </Box>
 
                 {bodySections.map((section) => (
                   <SectionBlock
@@ -672,7 +657,7 @@ export default function MenuDetail() {
               </>
             )}
           </Grid>
-
+{/* Pricing Panel */}
           <Grid item xs={12} md={4.5} lg={4}>
             <Box
               sx={{

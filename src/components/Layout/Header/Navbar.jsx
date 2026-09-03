@@ -95,7 +95,7 @@ function MenuPageActions({ onNotificationClick, onCartClick, onProfileClick, loc
           },
         }}
       >
-        <NotificationsNoneOutlinedIcon sx={{ fontSize: { xs: 20, md: 22, lg: 24 } }} />
+        <NotificationsNoneOutlinedIcon sx={{ fontSize: { xs: 16, sm: 20, md: 22, lg: 24 } }} />
       </IconButton>
 
       <IconButton
@@ -110,7 +110,7 @@ function MenuPageActions({ onNotificationClick, onCartClick, onProfileClick, loc
           },
         }}
       >
-        <ShoppingCartOutlinedIcon sx={{ fontSize: { xs: 20, md: 21, lg: 24 } }} />
+        <ShoppingCartOutlinedIcon sx={{ fontSize: { xs: 16, sm: 20, md: 21, lg: 24 } }} />
       </IconButton>
 
       {/* Profile pill — icon + Guest/user name + chevron, opens the profile dropdown */}
@@ -136,10 +136,10 @@ function MenuPageActions({ onNotificationClick, onCartClick, onProfileClick, loc
           },
         }}
       >
-        <AccountCircleOutlinedIcon sx={{ fontSize: { xs: 20, md: 22, lg: 24 }, color: '#9a0002' }} />
+        <AccountCircleOutlinedIcon sx={{ fontSize: { xs: 16, sm: 20, md: 22, lg: 24 }, color: '#9a0002' }} />
         <Typography
           sx={{
-            fontSize: { xs: '0.72rem', md: '0.8rem' },
+            fontSize: { xs: '0.62rem', sm: '0.72rem', md: '0.8rem' },
             fontWeight: 700,
             color: '#9a0002',
             textTransform: 'uppercase',
@@ -149,7 +149,7 @@ function MenuPageActions({ onNotificationClick, onCartClick, onProfileClick, loc
         >
           {userName || 'Guest'}
         </Typography>
-        <ExpandMoreIcon sx={{ fontSize: { xs: 16, md: 18 }, color: '#9a0002' }} />
+        <ExpandMoreIcon sx={{ fontSize: { xs: 13, sm: 16, md: 18 }, color: '#9a0002' }} />
       </Box>
     </Stack>
   );
@@ -340,7 +340,7 @@ export default function Navbar() {
                   loading="lazy"
                   decoding="async"
                   sx={{
-                    height: { xs: 42, sm: 48, md: 48, lg: 60, xl: 66 },
+                    height: { xs: 34, sm: 48, md: 48, lg: 60, xl: 66 },
                     width: 'auto',
 
                     '@media (min-width:1400px) and (max-width:1600px)': {
@@ -686,7 +686,7 @@ export default function Navbar() {
                 sx={{ display: { xs: 'flex', md: 'none' } }}
                 onClick={() => setMobileOpen(true)}
               >
-                <MenuIcon />
+                <MenuIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
               </IconButton>
             )}
           </Toolbar>
