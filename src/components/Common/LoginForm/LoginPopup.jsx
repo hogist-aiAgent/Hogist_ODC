@@ -10,7 +10,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import BrandPanel from './BrandPanel';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
-import OtpVerification from './OtpVerification';
+// OTP verification is not used for now — sign up / sign in go straight
+// through email + password. The import, screen, and all handlers below
+// are commented out (not deleted) so the OTP flow can be switched back
+// on later without rebuilding it. See OtpVerification.jsx, which is kept
+// as-is and untouched for when that time comes.
+// import OtpVerification from './OtpVerification';
 import { loginUser, registerUser, clearAuthErrors, clearRegisterSuccess } from '../../../store/slices/authSlice';
 
 const LoginPopup = ({ open, onClose }) => {
@@ -19,7 +24,7 @@ const LoginPopup = ({ open, onClose }) => {
     (state) => state.auth
   );
 
-  const [mobile, setMobile] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [fullName, setFullName] = useState('');
@@ -27,17 +32,20 @@ const LoginPopup = ({ open, onClose }) => {
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
 
-  // ─── OTP step ────────────────────────────────────────────────────────
-  // The send-OTP / verify-OTP endpoints aren't built yet (backend side is
-  // being handled separately), so this only controls which screen is shown.
-  // Once those endpoints exist, wire the actual API calls into
-  // handleSendOtp / handleVerifyOtp below — the real login/register calls
-  // are already correctly placed to run only *after* OTP verification.
-  const [step, setStep] = useState('form'); // 'form' | 'otp'
-  const [otpFlow, setOtpFlow] = useState(null); // 'login' | 'register'
+  // ─── OTP step — DISABLED FOR NOW ───────────────────────────────────────
+  // Sign up and sign in currently go straight to the real register/login
+  // calls with email + password, no OTP step in between. To bring OTP
+  // back later: uncomment the state below, the OtpVerification import
+  // above, the handleSendOtp/handleVerifyOtp/handleResendOtp/
+  // handleBackFromOtp functions, the `step === 'otp'` render branch, and
+  // call handleSendOtp('login') / handleSendOtp('register') instead of
+  // dispatching loginUser/registerUser directly in handleContinue /
+  // handleSignUp below.
+  // const [step, setStep] = useState('form'); // 'form' | 'otp'
+  // const [otpFlow, setOtpFlow] = useState(null); // 'login' | 'register'
 
   const resetLoginFields = () => {
-    setMobile('');
+    setEmail('');
     setPassword('');
   };
 
@@ -48,16 +56,24 @@ const LoginPopup = ({ open, onClose }) => {
     setSignupPassword('');
   };
 
-  const handleSendOtp = (flow) => {
-    // TODO: call the send-OTP API here once it's available, using `mobile`
-    // for the login flow or `signupMobile` for the register flow.
-    dispatch(clearAuthErrors());
-    setOtpFlow(flow);
-    setStep('otp');
-  };
+  // const handleSendOtp = (flow) => {
+  //   // TODO: call the send-OTP API here once it's available, using `email`
+  //   // for the login flow or `signupMobile` for the register flow.
+  //   dispatch(clearAuthErrors());
+  //   setOtpFlow(flow);
+  //   setStep('otp');
+  // };
 
   const handleContinue = () => {
-    handleSendOtp('login');
+    dispatch(loginUser({ userName: email, password }))
+      .unwrap()
+      .then(() => {
+        resetLoginFields();
+        onClose();
+      })
+      .catch(() => {
+        // loginError from the store is already shown on the sign-in screen
+      });
   };
 
   const handleGoogleLogin = () => {
@@ -66,55 +82,69 @@ const LoginPopup = ({ open, onClose }) => {
   };
 
   const handleSignUp = () => {
-    handleSendOtp('register');
+    dispatch(
+      registerUser({
+        fullName,
+        email: signupEmail,
+        mobile: signupMobile,
+        password: signupPassword,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        resetSignupFields();
+        setIsSignUp(false);
+        dispatch(clearRegisterSuccess());
+      })
+      .catch(() => {
+        // registerError from the store is already shown on the sign-up screen
+      });
   };
 
-  const handleVerifyOtp = () => {
-    // TODO: verify the code against the real verify-OTP endpoint before
-    // proceeding. For now, entering a complete 6-digit code goes straight
-    // to the real login/register call below.
-    if (otpFlow === 'login') {
-      dispatch(loginUser({ userName: mobile, password }))
-        .unwrap()
-        .then(() => {
-          resetLoginFields();
-          setStep('form');
-          onClose();
-        })
-        .catch(() => {
-          // loginError from the store is already shown on the OTP screen
-        });
-    } else if (otpFlow === 'register') {
-      dispatch(
-        registerUser({
-          fullName,
-          email: signupEmail,
-          mobile: signupMobile,
-          password: signupPassword,
-        })
-      )
-        .unwrap()
-        .then(() => {
-          resetSignupFields();
-          setStep('form');
-          setIsSignUp(false);
-          dispatch(clearRegisterSuccess());
-        })
-        .catch(() => {
-          // registerError from the store is already shown on the OTP screen
-        });
-    }
-  };
+  // ─── OTP handlers — DISABLED FOR NOW, see note above ───────────────────
+  // const handleVerifyOtp = () => {
+  //   if (otpFlow === 'login') {
+  //     dispatch(loginUser({ userName: email, password }))
+  //       .unwrap()
+  //       .then(() => {
+  //         resetLoginFields();
+  //         setStep('form');
+  //         onClose();
+  //       })
+  //       .catch(() => {
+  //         // loginError from the store is already shown on the OTP screen
+  //       });
+  //   } else if (otpFlow === 'register') {
+  //     dispatch(
+  //       registerUser({
+  //         fullName,
+  //         email: signupEmail,
+  //         mobile: signupMobile,
+  //         password: signupPassword,
+  //       })
+  //     )
+  //       .unwrap()
+  //       .then(() => {
+  //         resetSignupFields();
+  //         setStep('form');
+  //         setIsSignUp(false);
+  //         dispatch(clearRegisterSuccess());
+  //       })
+  //       .catch(() => {
+  //         // registerError from the store is already shown on the OTP screen
+  //       });
+  //   }
+  // };
 
-  const handleResendOtp = () => {
-    // TODO: call the resend-OTP API here once it's available.
-    dispatch(clearAuthErrors());
-  };
+  // const handleResendOtp = () => {
+  //   // TODO: call the resend-OTP API here once it's available.
+  //   dispatch(clearAuthErrors());
+  // };
 
-  const handleBackFromOtp = () => {
-    dispatch(clearAuthErrors());
-    setStep('form');
-  };
+  // const handleBackFromOtp = () => {
+  //   dispatch(clearAuthErrors());
+  //   setStep('form');
+  // };
 
   const switchToSignUp = () => {
     dispatch(clearAuthErrors());
@@ -126,7 +156,6 @@ const LoginPopup = ({ open, onClose }) => {
   };
 
   const handleClose = () => {
-    setStep('form');
     onClose();
   };
 
@@ -199,19 +228,13 @@ const LoginPopup = ({ open, onClose }) => {
             transition: 'transform 0.65s cubic-bezier(0.65, 0, 0.35, 1)',
           }}
         >
-          {step === 'otp' ? (
-            <OtpVerification
-              mobile={otpFlow === 'login' ? mobile : signupMobile}
-              onVerify={handleVerifyOtp}
-              onResend={handleResendOtp}
-              onBack={handleBackFromOtp}
-              loading={otpFlow === 'login' ? loginLoading : registerLoading}
-              error={otpFlow === 'login' ? loginError : registerError}
-            />
-          ) : !isSignUp ? (
+          {/* OTP step disabled for now — see note above. When re-enabled,
+              restore the `step === 'otp' ? <OtpVerification ... /> :` branch
+              here in front of the ternary below. */}
+          {!isSignUp ? (
             <SignInForm
-              mobile={mobile}
-              setMobile={setMobile}
+              mobile={email}
+              setMobile={setEmail}
               password={password}
               setPassword={setPassword}
               handleContinue={handleContinue}

@@ -28,8 +28,8 @@ const labelSx = {
 };
 
 const SignInForm = ({
-  mobile,
-  setMobile,
+  mobile: email,
+  setMobile: setEmail,
   password,
   setPassword,
   handleContinue,
@@ -375,34 +375,16 @@ const SignInForm = ({
       </Box>
 
       <Typography sx={labelSx}>
-        Mobile Number
+        Email
       </Typography>
 
       <TextField
         fullWidth
-        placeholder="Enter your mobile number"
-        value={mobile}
-        onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
-        inputProps={{ maxLength: 10 }}
+        type="email"
+        placeholder="Enter your email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         sx={compactFieldSx}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Typography
-                sx={{
-                  fontFamily: '"open sans", sans-serif',
-                  fontWeight: 600,
-                  fontSize: '0.9rem',
-                  color: '#1a1a1a',
-                  pr: 1.2,
-                  borderRight: '1px solid #e2e2e2',
-                }}
-              >
-                +91
-              </Typography>
-            </InputAdornment>
-          ),
-        }}
       />
 
       <Typography sx={labelSx}>

@@ -18,11 +18,14 @@ const formatMobileDisplay = (value) => {
   return `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
 };
 
-// UI-only OTP step. There is no send-OTP / verify-OTP endpoint in the
-// backend yet — that's being built separately. For now this screen just
-// collects a 6-digit code and, once "complete", hands it back to the
-// parent via onVerify() so the real login/register call can be wired to
-// it later without touching this component again.
+// UI-only OTP step — NOT CURRENTLY USED. LoginPopup.jsx no longer imports
+// or renders this component; sign up / sign in go straight through with
+// email + password for now. This file is left as-is so it's ready to
+// plug back in later: once the send-OTP / verify-OTP endpoints exist,
+// uncomment the OTP wiring in LoginPopup.jsx (import + state + handlers +
+// the `step === 'otp'` render branch) and this screen will collect a
+// 6-digit code and hand it back via onVerify() without needing changes
+// here.
 const OtpVerification = ({ mobile, onVerify, onResend, onBack, loading, error }) => {
   const [digits, setDigits] = useState(Array(OTP_LENGTH).fill(''));
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);

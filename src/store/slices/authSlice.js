@@ -31,6 +31,9 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async ({ userName, password, type = 'desktop', fcmToken }, { rejectWithValue }) => {
+    // Real login API call — this is what returns the actual registered
+    // user (with their real fullName), so the navbar shows the correct
+    // name after login instead of whatever was typed into the email field.
     try {
       const response = await loginCustomer({ userName, password, type, fcmToken });
       const data = response.data;

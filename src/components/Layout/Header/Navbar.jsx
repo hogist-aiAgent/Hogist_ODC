@@ -624,7 +624,7 @@ export default function Navbar() {
                       fontFamily: '"open sans", sans-serif',
                     }}
                   >
-                    <PersonOutlineOutlinedIcon sx={{ fontSize: 18, mr: 1.25, color: '#9a0002' }} />
+                  <PersonOutlineOutlinedIcon sx={{ fontSize: 18, mr: 1.25, color: '#9a0002' }} />
                     Profile
                   </MenuItem>,
 
