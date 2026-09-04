@@ -33,7 +33,8 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import LoginPopup from '../../Common/LoginForm/LoginPopup'; // Import the LoginPopup component
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import LoginPopup from '../../Common/LoginForm/LoginPopup'; 
 
 const navLinks = [
   { label: 'Home', active: true, href: 'https://hogist.com/' },
@@ -628,6 +629,19 @@ export default function Navbar() {
                     Profile
                   </MenuItem>,
 
+                  <MenuItem
+                    key="settings"
+                    onClick={handleProfileMenuClose}
+                    sx={{
+                      fontSize: '0.9rem',
+                      py: 1,
+                      fontFamily: '"open sans", sans-serif',
+                    }}
+                  >
+                    <EventNoteIcon sx={{ fontSize: 18, mr: 1.25, color: '#9a0002' }} />
+                    Events
+                  </MenuItem>,
+                  
                   <MenuItem
                     key="settings"
                     onClick={handleProfileMenuClose}
