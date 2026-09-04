@@ -604,7 +604,7 @@ export default function Navbar() {
                 elevation: 4,
                 sx: {
                   mt: 1,
-                  borderRadius: 2,
+                  borderRadius: 1,
                   minWidth: 200,
                   py: 0.5,
                 },
