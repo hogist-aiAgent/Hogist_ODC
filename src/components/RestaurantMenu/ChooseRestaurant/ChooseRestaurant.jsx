@@ -248,28 +248,51 @@ function CatererCard({ c, onView }) {
           flexGrow: 1,
         }}
       >
-        <Typography
-          sx={{
-            color: "text.primary",
-            // Mobile-only: bold sentence-case title (not uppercase) matching the reference,
-            // slightly larger and tighter line-height. Tablet/desktop unchanged.
-            fontWeight: { xs: 700, sm: 800 },
-            textTransform: { xs: "none", sm: "uppercase" },
-            fontSize: { xs: 16, sm: 15 },
-            lineHeight: { xs: 1.25, sm: 1.3 },
-            fontFamily: '"open sans", sans-serif',
-            minHeight: { xs: "auto", sm: "2.6em" },
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {c.name}
-        </Typography>
+        {/* Mobile-only: title + rating on the same row, rating aligned to the right of the title. */}
+        <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={1}>
+          <Typography
+            sx={{
+              color: "text.primary",
+              // Mobile-only: bold sentence-case title (not uppercase) matching the reference,
+              // slightly larger and tighter line-height. Tablet/desktop unchanged.
+              fontWeight: { xs: 700, sm: 800 },
+              textTransform: { xs: "none", sm: "uppercase" },
+              fontSize: { xs: 16, sm: 15 },
+              lineHeight: { xs: 1.25, sm: 1.3 },
+              fontFamily: '"open sans", sans-serif',
+              minHeight: { xs: "auto", sm: "2.6em" },
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              minWidth: 0,
+              flex: 1,
+            }}
+          >
+            {c.name}
+          </Typography>
 
-        {/* Area — shown as its own line on tablet/desktop (unchanged).
-            On mobile it's folded into the rating row below, so it's hidden here. */}
+          {/* Mobile-only: rating shown beside the title, per reference. */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={0.4}
+            sx={{ display: { xs: "flex", sm: "none" }, flexShrink: 0, mt: 0.3 }}
+          >
+            <StarIcon sx={{ fontSize: 12, color: GOLD }} />
+            <Typography
+              sx={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: "text.primary",
+                fontFamily: '"open sans", sans-serif',
+              }}
+            >
+              {c.rating}
+            </Typography>
+          </Stack>
+        </Stack>
+
         <Typography
           sx={{
             display: { xs: "none", sm: "block" },
@@ -289,13 +312,20 @@ function CatererCard({ c, onView }) {
           sx={{ mt: { xs: 0.6, sm: 0.4 } }}
         >
           <Stack direction="row" alignItems="center" spacing={0.6} flexWrap="wrap">
-            <StarIcon sx={{ fontSize: { xs: 12, sm: 13 }, color: GOLD }} />
+            <StarIcon
+              sx={{
+                fontSize: { xs: 12, sm: 13 },
+                color: GOLD,
+                display: { xs: "none", sm: "inline-flex" },
+              }}
+            />
             <Typography
               sx={{
                 fontSize: { xs: 12, sm: 11 },
                 fontWeight: 700,
                 color: "text.primary",
                 fontFamily: '"open sans", sans-serif',
+                display: { xs: "none", sm: "block" },
               }}
             >
               {c.rating}
@@ -308,7 +338,7 @@ function CatererCard({ c, onView }) {
                   fontFamily: '"open sans", sans-serif',
                 }}
               >
-                · {c.eventsCount} events
+                {c.eventsCount} events
               </Typography>
             ) : null}
             {/* Mobile-only: area/distance folded inline after the rating, like the reference card. */}
@@ -321,7 +351,7 @@ function CatererCard({ c, onView }) {
                   fontFamily: '"open sans", sans-serif',
                 }}
               >
-                · {c.area}
+                {c.area}
               </Typography>
             ) : null}
           </Stack>
@@ -462,10 +492,6 @@ const SORT_COMPARATORS = {
     (a.price ?? a.startingPrice ?? a.pricePerPerson ?? -Infinity),
 };
 
-// Fallback coordinates (Chennai city center) used only when the visitor
-// hasn't picked a specific location yet — the odc-vendor-list-near API
-// requires lat/long on every call, so we can no longer fall back to the
-// hardcoded restaurants list when coordinates are missing.
 const DEFAULT_LOCATION = { lat: 13.0827, lon: 80.2707 };
 
 export default function ChooseRestaurant() {
@@ -476,9 +502,6 @@ export default function ChooseRestaurant() {
   const selectedLocationText = selectedLocation?.full || selectedLocation?.label || "";
   const hasCoords = typeof selectedLocation?.lat === "number" && typeof selectedLocation?.lon === "number";
 
-  // Always call the API — use the visitor's chosen coordinates when
-  // available, otherwise fall back to the default Chennai coordinates so
-  // the vendor list still loads from the backend instead of local mock data.
   const effectiveLat = hasCoords ? selectedLocation.lat : DEFAULT_LOCATION.lat;
   const effectiveLon = hasCoords ? selectedLocation.lon : DEFAULT_LOCATION.lon;
 
