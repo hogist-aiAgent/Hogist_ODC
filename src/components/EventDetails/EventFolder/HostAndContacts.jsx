@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Grid, Stack, Typography, TextField, Checkbox, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { SectionLabel, FieldLabel } from "./SectionLabel";
-import { CARD_BORDER, INK, INK_SOFT, RED, FONT } from "./Constants";
+import { CARD_BORDER, INK, INK_SOFT, RED, FONT } from "../../../utils/constants";
 
 export default function HostAndContacts({
   host,

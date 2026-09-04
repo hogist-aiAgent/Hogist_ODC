@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import { CARD_BORDER, INK, INK_SOFT, RED, FONT } from "./Constants";
+import { CARD_BORDER, INK, INK_SOFT, RED, FONT } from "../../../utils/constants";
 
 export default function ExecutiveCard({ executive }) {
   return (

@@ -6,7 +6,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import { SectionLabel, FieldLabel } from "./SectionLabel";
-import { CARD_BORDER, INK, INK_SOFT, RED, VEG_GREEN, FONT } from "./Constants";
+import { CARD_BORDER, INK, INK_SOFT, RED, VEG_GREEN, FONT } from "../../../utils/constants";
 
 const DEFAULT_CENTER = { lat: 13.0827, lng: 80.2707 }; // Chennai fallback, used before any pin exists
 

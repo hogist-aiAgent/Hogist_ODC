@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Stack, Typography, Divider, Button } from "@mui/material";
-import { CARD_BORDER, INK, INK_SOFT, RED, FONT, currency } from "./Constants";
+import { CARD_BORDER, INK, INK_SOFT, RED, FONT, currency } from "../../../utils/constants";
 
 export default function PlanSummaryCard({
   meals,

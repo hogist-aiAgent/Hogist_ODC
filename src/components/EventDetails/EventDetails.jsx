@@ -9,8 +9,8 @@ import { getEventDetails, saveEventDetails } from "@/utils/eventDetailsStorage";
 import { submitCart, clearCartError } from "../../store/slices/cartSlice";
 
 import { FieldLabel } from "../EventDetails/EventFolder/SectionLabel";
-import { INK, INK_SOFT, FONT, HEADING_FONT } from "../EventDetails/EventFolder/Constants";
-import { buildCostSummary } from "../EventDetails/EventFolder/CostSummary";
+import { INK, INK_SOFT, FONT, HEADING_FONT } from "../../utils/constants";
+import { buildCostSummary } from "../../utils/costSummary";
 
 import EventDetailsStepper from "../EventDetails/EventFolder/EventDetailsStepper";
 import OccasionSelector from "../EventDetails/EventFolder/OccasionSelector";

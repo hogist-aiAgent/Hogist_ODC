@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { SectionLabel } from "./SectionLabel";
-import { OCCASIONS, RED, CARD_BORDER, INK, FONT } from "./Constants";
+import { OCCASIONS, RED, CARD_BORDER, INK, FONT } from "../../../utils/constants";
 
 export default function OccasionSelector({ value, onChange }) {
   return (

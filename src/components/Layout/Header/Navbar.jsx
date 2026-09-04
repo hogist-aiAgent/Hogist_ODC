@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../store/slices/authSlice';
 import {
@@ -165,6 +165,7 @@ export default function Navbar() {
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
   const isProfileMenuOpen = Boolean(profileAnchorEl);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const authUser = useSelector((state) => state.auth.user);
   const userName = authUser?.fullName || null;
   const isLoggedIn = Boolean(userName);
@@ -181,8 +182,9 @@ export default function Navbar() {
   const isMyPlan = routerLocation.pathname.toLowerCase().includes('plan'); 
   const isEventDetails = routerLocation.pathname.toLowerCase().includes('event-details'); 
   const isPayment = routerLocation.pathname.toLowerCase().includes('payment'); 
+  const isMyEvents = routerLocation.pathname.toLowerCase().includes('my-events'); 
 
-  const showBackground = scrolled || isMenuPage || isMyPlan || isEventDetails || isPayment;
+  const showBackground = scrolled || isMenuPage || isMyPlan || isEventDetails || isPayment || isMyEvents;
 
   const selectedLocation = routerLocation.state?.selectedLocation;
 
@@ -246,6 +248,10 @@ export default function Navbar() {
 
   const handleProfileClick = () => {
     // TODO: route to profile / account page
+  };
+
+  const handleEventsClick = () => {
+    navigate('/my-events');
   };
 
   const handleLoginClick = () => {
@@ -353,7 +359,7 @@ export default function Navbar() {
             </Stack>
 
             {/* Desktop nav - hide on menu page */}
-            {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && (
+            {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && !isMyEvents && (
               <Stack
                 direction="row"
                 spacing={0.5}
@@ -430,7 +436,7 @@ export default function Navbar() {
                 },
               }}
             >
-              {isMenuPage || isMyPlan || isEventDetails || isPayment ? (
+              {isMenuPage || isMyPlan || isEventDetails || isPayment || isMyEvents ? (
                 <MenuPageActions
                   locationText={locationBadgeText}
                   userName={userName}
@@ -577,7 +583,7 @@ export default function Navbar() {
               </Menu>
             </Stack>
 
-            {(isMenuPage || isMyPlan || isEventDetails || isPayment) && (
+            {(isMenuPage || isMyPlan || isEventDetails || isPayment || isMyEvents) && (
               <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}>
                 <MenuPageActions
                 locationText={locationBadgeText}
@@ -630,8 +636,11 @@ export default function Navbar() {
                   </MenuItem>,
 
                   <MenuItem
-                    key="settings"
-                    onClick={handleProfileMenuClose}
+                    key="events"
+                    onClick={() => {
+                      handleProfileMenuClose();
+                      handleEventsClick();
+                    }}
                     sx={{
                       fontSize: '0.9rem',
                       py: 1,
@@ -695,7 +704,7 @@ export default function Navbar() {
               )}
             </Menu>
 
-            {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && (
+            {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && !isMyEvents && (
               <IconButton
                 sx={{ display: { xs: 'flex', md: 'none' } }}
                 onClick={() => setMobileOpen(true)}
@@ -720,7 +729,7 @@ export default function Navbar() {
 
             <List>
               {/* Show nav links only on non-menu pages */}
-              {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment &&
+              {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && !isMyEvents &&
                 navLinks.map((link) => (
                   <ListItemButton
                     key={link.label}
@@ -743,7 +752,7 @@ export default function Navbar() {
                 ))}
 
               <Box sx={{ px: 2, pt: 2 }}>
-                {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && (
+                {!isMenuPage && !isMyPlan && !isEventDetails && !isPayment && !isMyEvents && (
                   <Button
                     fullWidth
                     component="a"

@@ -16,7 +16,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import myPlanData from "../../data/MyPlanData";
 import { getPlanMeals } from "@/utils/planStorage";
 import { getEventDetails } from "@/utils/eventDetailsStorage";
-import { buildCostSummary } from "../EventDetails/EventFolder/CostSummary";
+import { buildCostSummary } from "../../utils/costSummary";
 import { FieldLabel } from "../EventDetails/EventFolder/SectionLabel";
 import {
   RED,
@@ -29,12 +29,11 @@ import {
   FONT,
   HEADING_FONT,
   currency,
-} from "../EventDetails/EventFolder/Constants";
+} from "../../utils/constants";
 
 /* ------------------------------- local data ------------------------------- */
 
-// Steps for this page's own progress bar — the Payment page shows a
-// shorter 4-step trail than the Event Details page's 5-step one.
+
 const PAYMENT_STEPS = [
   { id: 1, label: "Menus chosen", status: "done" },
   { id: 2, label: "Review plan", status: "done" },
@@ -78,8 +77,7 @@ function parseEventDate(dateStr) {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-// Picks the "on-site contact" row saved on the Event Details page and
-// formats it the way this page's field expects, e.g. "Suresh · +91 90000 00000".
+
 function formatOnsiteContact(contacts) {
   if (!Array.isArray(contacts)) return "";
   const onsite = contacts.find((c) => c.label === "On-site contact during the event") || contacts[0];

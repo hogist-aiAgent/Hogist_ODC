@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Grid, Stack, Typography, Checkbox } from "@mui/material";
 import { SectionLabel } from "./SectionLabel";
-import { MEAL_SLOTS, RED, CARD_BORDER, INK, INK_SOFT, FONT } from "./Constants";
+import { MEAL_SLOTS, RED, CARD_BORDER, INK, INK_SOFT, FONT } from "../../../utils/constants";
 
 export default function MealsNeeded({ value, onToggle }) {
   return (

@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@mui/material";
-import { INK_SOFT, FONT } from "./Constants";
+import { INK_SOFT, FONT } from "../../../utils/constants";
 
 export function SectionLabel({ children }) {
   return (

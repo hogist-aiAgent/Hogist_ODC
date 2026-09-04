@@ -3,7 +3,7 @@ import { Box, Stack, Typography, Chip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { SectionLabel } from "./SectionLabel";
-import { GUEST_PRESETS, AMBER, INK, CARD_BORDER, FONT } from "./Constants";
+import { GUEST_PRESETS, AMBER, INK, CARD_BORDER, FONT } from "../../../utils/constants";
 
 export default function GuestsStepper({ value, onChange }) {
   const step = 10;

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
-import { EVENT_DETAILS_STEPS, VEG_GREEN, RED, INK_SOFT, CARD_BORDER, FONT } from "./Constants";
+import { EVENT_DETAILS_STEPS, VEG_GREEN, RED, INK_SOFT, CARD_BORDER, FONT } from "../../../utils/constants";
 
 function StepDot({ step }) {
   const isDone = step.status === "done";

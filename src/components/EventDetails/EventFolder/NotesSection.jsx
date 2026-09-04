@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Stack, TextField, Chip } from "@mui/material";
 import { SectionLabel } from "./SectionLabel";
-import { NOTE_TAGS, RED, CARD_BORDER, INK, FONT } from "./Constants";
+import { NOTE_TAGS, RED, CARD_BORDER, INK, FONT } from "../../../utils/constants";
 
 export default function NotesSection({ notes, onChange, onAddTag }) {
   return (

@@ -9,6 +9,7 @@ import MyPlanPage from '../Pages/MyPlan/MyPlanPage';
 import EventDetailsPage from '../Pages/EventDetails/EventDetailsPage';
 import ScrollToTop from '../components/Common/ScrollToTop/ScrollToTop';
 import PaymentPage from '../Pages/Payment/PaymentPage';
+import MyEventsPage from '../Pages/MyEvents/MyEventsPage';
 
 const MainRoutes = () => {
     return (
@@ -23,6 +24,7 @@ const MainRoutes = () => {
             <Route path='/my-plan' element={<MyPlanPage/>}/>
             <Route path='/event-details' element={<EventDetailsPage/>}/>
             <Route path='/payment' element={<PaymentPage/>}/>
+            <Route path='/my-events' element={<MyEventsPage/>}/>
 
         </Routes>
         </BrowserRouter>
