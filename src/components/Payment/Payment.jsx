@@ -517,7 +517,7 @@ export default function Payment() {
                               color: "#fff",
                               fontWeight: 700,
                               textTransform: "none",
-                              borderRadius: 1.5,
+                              borderRadius: 1,
                               px: 2.5,
                               flexShrink: 0,
                               fontFamily: FONT,

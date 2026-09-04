@@ -174,8 +174,9 @@ function DietBadge({ veg, nonVeg }) {
 
 function CatererCard({ c, onView }) {
   const { veg, nonVeg } = getVegNonVegFlags(c);
-  // Falls back to a dummy price when the caterer record doesn't have one yet.
+
   const price = c.price ?? c.startingPrice ?? c.pricePerPerson ?? 249;
+  const tagsList = Array.isArray(c.tags) ? c.tags : c.tags ? [c.tags] : [];
 
   return (
     <Card
@@ -199,7 +200,9 @@ function CatererCard({ c, onView }) {
           loading="lazy"
           sx={{
             width: "100%",
-            height: 176,
+            // Mobile-only: slightly shorter image to match the reference card proportions.
+            // Tablet/desktop keep the original 176px height.
+            height: { xs: 160, sm: 176 },
             objectFit: "cover",
             display: "block",
             borderTopLeftRadius: (theme) => theme.shape.borderRadius,
@@ -236,9 +239,10 @@ function CatererCard({ c, onView }) {
       {/* Text content */}
       <Box
         sx={{
-          px: 2.5,
-          pt: 2,
-          pb: 2.5,
+   
+          px: { xs: 1.75, sm: 2.5 },
+          pt: { xs: 1.25, sm: 2 },
+          pb: { xs: 1.5, sm: 2.5 },
           display: "flex",
           flexDirection: "column",
           flexGrow: 1,
@@ -247,12 +251,14 @@ function CatererCard({ c, onView }) {
         <Typography
           sx={{
             color: "text.primary",
-            fontWeight: 800,
-            textTransform: "uppercase",
-            fontSize: 15,
-            lineHeight: 1.3,
+            // Mobile-only: bold sentence-case title (not uppercase) matching the reference,
+            // slightly larger and tighter line-height. Tablet/desktop unchanged.
+            fontWeight: { xs: 700, sm: 800 },
+            textTransform: { xs: "none", sm: "uppercase" },
+            fontSize: { xs: 16, sm: 15 },
+            lineHeight: { xs: 1.25, sm: 1.3 },
             fontFamily: '"open sans", sans-serif',
-            minHeight: "2.6em",
+            minHeight: { xs: "auto", sm: "2.6em" },
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
@@ -262,34 +268,100 @@ function CatererCard({ c, onView }) {
           {c.name}
         </Typography>
 
-        <Typography sx={{ color: "text.secondary", fontSize: 12, mt: 0.3, fontFamily: '"open sans", sans-serif' }}>
+        {/* Area — shown as its own line on tablet/desktop (unchanged).
+            On mobile it's folded into the rating row below, so it's hidden here. */}
+        <Typography
+          sx={{
+            display: { xs: "none", sm: "block" },
+            color: "text.secondary",
+            fontSize: 12,
+            mt: 0.3,
+            fontFamily: '"open sans", sans-serif',
+          }}
+        >
           {c.area}
         </Typography>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 1 }}>
-          <Stack direction="row" alignItems="center" spacing={0.6}>
-            <StarIcon sx={{ fontSize: 15, color: GOLD }} />
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ mt: { xs: 0.6, sm: 0.4 } }}
+        >
+          <Stack direction="row" alignItems="center" spacing={0.6} flexWrap="wrap">
+            <StarIcon sx={{ fontSize: { xs: 12, sm: 13 }, color: GOLD }} />
             <Typography
-              sx={{ fontSize: 13, fontWeight: 700, color: "text.primary", fontFamily: '"open sans", sans-serif' }}
+              sx={{
+                fontSize: { xs: 12, sm: 11 },
+                fontWeight: 700,
+                color: "text.primary",
+                fontFamily: '"open sans", sans-serif',
+              }}
             >
               {c.rating}
             </Typography>
             {c.eventsCount ? (
-              <Typography sx={{ fontSize: 12, color: "text.secondary", fontFamily: '"open sans", sans-serif' }}>
+              <Typography
+                sx={{
+                  fontSize: { xs: 11.5, sm: 12 },
+                  color: "text.secondary",
+                  fontFamily: '"open sans", sans-serif',
+                }}
+              >
                 · {c.eventsCount} events
+              </Typography>
+            ) : null}
+            {/* Mobile-only: area/distance folded inline after the rating, like the reference card. */}
+            {c.area ? (
+              <Typography
+                sx={{
+                  display: { xs: "inline", sm: "none" },
+                  fontSize: 11.5,
+                  color: "text.secondary",
+                  fontFamily: '"open sans", sans-serif',
+                }}
+              >
+                · {c.area}
               </Typography>
             ) : null}
           </Stack>
 
           <Typography
-            sx={{ color: "text.secondary", opacity: 0.7, fontSize: 11, fontFamily: '"open sans", sans-serif' }}
+            sx={{
+              // Mobile-only: FSSAI line hidden to match the reference's cleaner mobile row.
+              display: { xs: "none", sm: "block" },
+              color: "text.secondary",
+              opacity: 0.7,
+              fontSize: { xs: 10.5, sm: 11 },
+              fontFamily: '"open sans", sans-serif',
+            }}
           >
             FSSAI No: {c.fssai}
           </Typography>
         </Stack>
 
-        <Stack direction="row" flexWrap="wrap" gap={0.75} sx={{ mt: 1.5 }}>
-          {(Array.isArray(c.tags) ? c.tags : c.tags ? [c.tags] : []).map((tag) => (
+        {/* Mobile-only addition: FSSAI number under the rating/location row. */}
+        <Typography
+          sx={{
+            display: { xs: "block", sm: "none" },
+            color: "text.secondary",
+            opacity: 0.7,
+            fontSize: 10.5,
+            fontFamily: '"open sans", sans-serif',
+            mt: 0.4,
+          }}
+        >
+          FSSAI No: {c.fssai}
+        </Typography>
+
+        {/* Tags — chip pills on tablet/desktop (unchanged). */}
+        <Stack
+          direction="row"
+          flexWrap="wrap"
+          gap={0.75}
+          sx={{ mt: 1.5, display: { xs: "none", sm: "flex" } }}
+        >
+          {tagsList.map((tag) => (
             <Chip
               key={tag}
               label={tag}
@@ -297,7 +369,7 @@ function CatererCard({ c, onView }) {
               sx={{
                 bgcolor: "#f1efee",
                 color: "text.primary",
-                fontSize: 10,
+                fontSize: { xs: 10.5, sm: 11 },
                 fontWeight: 600,
                 textTransform: "uppercase",
                 height: 22,
@@ -307,7 +379,23 @@ function CatererCard({ c, onView }) {
           ))}
         </Stack>
 
-        <Stack direction="row" alignItems="flex-end" justifyContent="space-between" sx={{ mt: "auto", pt: 2 }}>
+        {/* Mobile-only: tags rendered as a single muted line (size/alignment reference),
+            instead of chip pills. */}
+        {tagsList.length > 0 && (
+          <Typography
+            sx={{
+              display: { xs: "block", sm: "none" },
+              color: "text.secondary",
+              fontSize: 12,
+              mt: 0.8,
+              fontFamily: '"open sans", sans-serif',
+            }}
+          >
+            {tagsList.join(", ")}
+          </Typography>
+        )}
+
+        <Stack direction="row" alignItems="flex-end" justifyContent="space-between" sx={{ mt: "auto", pt: 1 }}>
           <Box>
             {price != null && (
               <Typography sx={{ fontSize: 17, fontWeight: 800, color: "text.primary", fontFamily: '"open sans", sans-serif' }}>
@@ -329,14 +417,14 @@ function CatererCard({ c, onView }) {
             startIcon={<VisibilityIcon sx={{ fontSize: 16 }} />}
             onClick={() => onView(c)}
             sx={{
-              height: 34,
+              height: 28,
               px: 2,
               bgcolor: "primary.main",
               color: WHITE,
               boxShadow: 2,
               borderRadius: 999,
               textTransform: "none",
-              fontSize: 12,
+              fontSize: {xs:10,sm:12,md:12},
               fontWeight: 700,
               fontFamily: '"open sans", sans-serif',
               "&:hover": { bgcolor: "primary.dark" },
@@ -709,7 +797,12 @@ export default function ChooseRestaurant() {
                 </Typography>
               </Box>
             ) : (
-              <Grid container spacing={{ xs: 4, md: 5 }}>
+              <Grid
+                container
+                // Mobile-only: tighter gap between cards to match the reference's compact stacking.
+                // Tablet (sm=4) and desktop (md=5) keep their original spacing.
+                spacing={{ xs: 2.5, sm: 4, md: 5 }}
+              >
                 {filteredCaterers.map((c) => (
                   <Grid item xs={12} sm={6} lg={4} key={c.id}>
                     <CatererCard c={c} onView={handleViewMenu} />
