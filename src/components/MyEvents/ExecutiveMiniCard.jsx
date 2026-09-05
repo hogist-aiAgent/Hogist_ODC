@@ -10,7 +10,7 @@ export default function ExecutiveMiniCard({ executive, onChat }) {
       sx={{
         bgcolor: "#fff",
         border: `1px solid ${CARD_BORDER}`,
-        borderRadius: 2,
+        borderRadius: "14px",
         p: 2,
       }}
     >
@@ -34,7 +34,7 @@ export default function ExecutiveMiniCard({ executive, onChat }) {
           color: "#fff",
           fontWeight: 700,
           textTransform: "none",
-          borderRadius: 1.5,
+          borderRadius: "10px",
           fontFamily: FONT,
           fontSize: 13,
           boxShadow: "none",

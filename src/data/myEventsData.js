@@ -1,4 +1,7 @@
-
+// Dummy data for the "My Events" account page.
+// Structured to mirror what a future GET /api/account/overview response
+// would look like, so swapping this out for a real API call later is a
+// drop-in change — every value the page renders comes from here.
 
 const myEventsData = {
   profile: {
@@ -74,7 +77,7 @@ const myEventsData = {
       guests: 180,
       preferenceNote: "pure veg, no onion garlic",
       tags: [
-        { label: "Custom menu requested", variant: "amber" },
+        { label: "Custom menu requested", variant: "neutral" },
         { label: "3 kitchens shortlisted", variant: "neutral" },
       ],
       amount: 61200,

@@ -30,6 +30,17 @@ const BANNER_BG = "rgba(154,0,2,0.04)";
 const FONT = '"open sans", sans-serif';
 const HEADING_FONT = '"Montserrat", sans-serif';
 
+// Shared fluid container sizing: fills the viewport with sensible gutters on
+// small screens, then scales all the way up to 1600px instead of hard
+// capping at MUI's default "lg" (1200px) — which is what was causing the
+// oversized empty margins on 1400px–1600px monitors.
+const CONTAINER_SX = {
+  width: "100%",
+  maxWidth: "1600px",
+  mx: "auto",
+  px: { xs: 2, sm: 3, md: 4, lg: 5 },
+};
+
 const currency = (n) => {
   const sign = n < 0 ? "-" : "";
   return `${sign}₹${Math.abs(Math.round(n)).toLocaleString("en-IN")}`;
@@ -87,7 +98,7 @@ function StepDot({ step }) {
 function PlanStepper({ steps }) {
   return (
     <Box sx={{ bgcolor: "#fff", borderBottom: `1px solid ${CARD_BORDER}` }}>
-      <Container maxWidth="lg">
+      <Container maxWidth={false} disableGutters sx={CONTAINER_SX}>
         <Stack
           direction="row"
           alignItems="center"
@@ -772,7 +783,7 @@ export default function MyPlan() {
       <PlanStepper steps={steps} />
 
     <Box sx={{ bgcolor: "#fff", pt: { xs: 10, md: 3 } }}>
-        <Container maxWidth="lg">
+        <Container maxWidth={false} disableGutters sx={CONTAINER_SX}>
           <Typography
             sx={{
               fontWeight: 800,
@@ -786,7 +797,7 @@ export default function MyPlan() {
         </Container>
       </Box>
 
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
+      <Container maxWidth={false} disableGutters sx={{ ...CONTAINER_SX, py: { xs: 3, md: 4 } }}>
         <Grid container spacing={{ xs: 3, md: 5 }}>
           {/* LEFT: meal sections + add-on prompt */}
           <Grid item xs={12} md={7.5} lg={8}>

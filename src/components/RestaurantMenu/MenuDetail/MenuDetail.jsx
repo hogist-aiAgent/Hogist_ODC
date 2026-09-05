@@ -40,6 +40,17 @@ const PLATES_MIN = 30;
 const PLATES_STEP = 10;
 const QUICK_ADD_AMOUNTS = [50, 100, 500];
 
+// Shared fluid container sizing: fills the viewport with sensible gutters on
+// small screens, then scales all the way up to 1600px instead of hard
+// capping at MUI's default "lg" (1200px) — which is what was causing the
+// oversized empty margins on 1400px–1600px monitors.
+const CONTAINER_SX = {
+  width: "100%",
+  maxWidth: "1600px",
+  mx: "auto",
+  px: { xs: 2, sm: 3, md: 4, lg: 5 },
+};
+
 const currency = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
 
 /* ----------------------------- small pieces ----------------------------- */
@@ -598,7 +609,7 @@ export default function MenuDetail() {
     <Box sx={{ bgcolor: "#FFF", minHeight: "100vh", pt: { xs: "72px", md: "88px" } }}>
       {/* Event context bar */}
       <Box sx={{ bgcolor: "rgba(154,0,2,0.04)", borderBottom: `1px solid ${CARD_BORDER}` }}>
-        <Container maxWidth="lg">
+        <Container maxWidth={false} disableGutters sx={CONTAINER_SX}>
           <Stack
             direction={{ xs: "column", sm: "row" }}
             alignItems={{ xs: "flex-start", sm: "center" }}
@@ -625,7 +636,7 @@ export default function MenuDetail() {
         </Container>
       </Box>
 
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
+      <Container maxWidth={false} disableGutters sx={{ ...CONTAINER_SX, py: { xs: 3, md: 4 } }}>
         <Grid container spacing={{ xs: 3, md: 5 }}>
          
           <Grid item xs={12} md={7.5} lg={8}>

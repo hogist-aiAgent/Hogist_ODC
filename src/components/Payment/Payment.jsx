@@ -33,6 +33,16 @@ import {
 
 /* ------------------------------- local data ------------------------------- */
 
+// Shared fluid container sizing: fills the viewport with sensible gutters on
+// small screens, then scales all the way up to 1600px instead of hard
+// capping at MUI's default "lg" (1200px) — which is what was causing the
+// oversized empty margins on 1400px–1600px monitors.
+const CONTAINER_SX = {
+  width: "100%",
+  maxWidth: "1600px",
+  mx: "auto",
+  px: { xs: 2, sm: 3, md: 4, lg: 5 },
+};
 
 const PAYMENT_STEPS = [
   { id: 1, label: "Menus chosen", status: "done" },
@@ -77,7 +87,8 @@ function parseEventDate(dateStr) {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-
+// Picks the "on-site contact" row saved on the Event Details page and
+// formats it the way this page's field expects, e.g. "Suresh · +91 90000 00000".
 function formatOnsiteContact(contacts) {
   if (!Array.isArray(contacts)) return "";
   const onsite = contacts.find((c) => c.label === "On-site contact during the event") || contacts[0];
@@ -92,7 +103,7 @@ function formatOnsiteContact(contacts) {
 function TopBar() {
   return (
     <Box sx={{ bgcolor: "#fff" }}>
-      <Container maxWidth="lg">
+      <Container maxWidth={false} disableGutters sx={CONTAINER_SX}>
         <Stack
           direction="row"
           alignItems="center"
@@ -190,7 +201,7 @@ function StepDot({ step }) {
 function PaymentStepper() {
   return (
     <Box sx={{ bgcolor: "#fff", borderBottom: `1px solid ${CARD_BORDER}` }}>
-      <Container maxWidth="lg">
+      <Container maxWidth={false} disableGutters sx={CONTAINER_SX}>
         <Stack
           direction="row"
           alignItems="center"
@@ -434,7 +445,7 @@ export default function Payment() {
       <PaymentStepper />
 
       <Box sx={{ bgcolor: "#fff", pt: { xs: 3, md: 3 } }}>
-        <Container maxWidth="lg">
+        <Container maxWidth={false} disableGutters sx={CONTAINER_SX}>
           <Typography sx={{ fontWeight: 800, fontSize: { xs: 20, md: 24 }, color: INK, fontFamily: HEADING_FONT }}>
             Confirm and pay the advance
           </Typography>
@@ -444,7 +455,7 @@ export default function Payment() {
         </Container>
       </Box>
 
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
+      <Container maxWidth={false} disableGutters sx={{ ...CONTAINER_SX, py: { xs: 3, md: 4 } }}>
         <Grid container spacing={{ xs: 3, md: 5 }}>
           {/* LEFT: schedule + method + billing */}
           <Grid item xs={12} md={7.5} lg={8}>

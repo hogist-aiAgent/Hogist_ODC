@@ -59,7 +59,7 @@ function EventPhotoPlaceholder() {
         width: { xs: 72, sm: 96 },
         height: { xs: 72, sm: 96 },
         flexShrink: 0,
-        borderRadius: 1.5,
+        borderRadius: "10px",
         border: `1px solid ${CARD_BORDER}`,
         bgcolor: "#EDEAE6",
         display: "flex",
@@ -101,7 +101,7 @@ function EventActionButton({ action, onClick }) {
         ...variantSx[action.variant || "outlined"],
         fontWeight: 700,
         textTransform: "none",
-        borderRadius: 1.5,
+        borderRadius: "10px",
         px: 2,
         py: 0.7,
         fontFamily: FONT,
@@ -127,7 +127,7 @@ export default function EventCard({ event, onAction }) {
       sx={{
         bgcolor: "#fff",
         border: `1px solid ${CARD_BORDER}`,
-        borderRadius: 2,
+        borderRadius: "14px",
         overflow: "hidden",
       }}
     >

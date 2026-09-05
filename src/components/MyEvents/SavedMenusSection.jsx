@@ -14,7 +14,7 @@ function SavedMenuCard({ menu, onClick }) {
         width: "100%",
         textAlign: "left",
         border: `1px solid ${CARD_BORDER}`,
-        borderRadius: 2,
+        borderRadius: "14px",
         bgcolor: "#fff",
         p: 1.25,
         gap: 1.5,
@@ -27,7 +27,7 @@ function SavedMenuCard({ menu, onClick }) {
           width: 56,
           height: 56,
           flexShrink: 0,
-          borderRadius: 1.5,
+          borderRadius: "10px",
           bgcolor: "#EDEAE6",
           display: "flex",
           alignItems: "center",
@@ -35,7 +35,7 @@ function SavedMenuCard({ menu, onClick }) {
         }}
       >
         {menu.img ? (
-          <Box component="img" src={menu.img} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 1.5 }} />
+          <Box component="img" src={menu.img} alt="" sx={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "10px" }} />
         ) : (
           <Typography sx={{ fontSize: 10, color: "#B7B0A9", fontFamily: FONT }}>photo</Typography>
         )}
@@ -56,8 +56,8 @@ export default function SavedMenusSection({ menus, savedMenusCount, onSeeAll, on
   if (!menus || menus.length === 0) return null;
 
   return (
-    <Box sx={{ mt: { xs: 4, sm: 5 } }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+    <Box>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
         <Typography sx={{ fontWeight: 800, fontSize: { xs: 16, sm: 18 }, color: INK, fontFamily: HEADING_FONT }}>
           Saved menus
         </Typography>

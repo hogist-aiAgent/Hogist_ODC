@@ -8,7 +8,7 @@ function StatCard({ stat }) {
       sx={{
         bgcolor: stat.accent ? PAGE_BG : "#fff",
         border: `1px solid ${stat.accent ? "rgba(181,114,15,0.3)" : CARD_BORDER}`,
-        borderRadius: 2,
+        borderRadius: "12px",
         p: { xs: 1.5, sm: 2 },
         height: "100%",
       }}

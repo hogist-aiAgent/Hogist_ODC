@@ -22,6 +22,13 @@ import NotesSection from "../EventDetails/EventFolder/NotesSection";
 import PlanSummaryCard from "../EventDetails/EventFolder/PlanSummaryCard";
 import ExecutiveCard from "../EventDetails/EventFolder/ExecutiveCard";
 
+const CONTAINER_SX = {
+  width: "100%",
+  maxWidth: "1600px",
+  mx: "auto",
+  px: { xs: 2, sm: 3, md: 4, lg: 5 },
+};
+
 /* --------------------------------- main ---------------------------------- */
 
 export default function EventDetails() {
@@ -120,7 +127,7 @@ export default function EventDetails() {
       <EventDetailsStepper />
 
       <Box sx={{ bgcolor: "#fff", pt: { xs: 3, md: 3 } }}>
-        <Container maxWidth="lg">
+        <Container maxWidth={false} disableGutters sx={CONTAINER_SX}>
           <Typography sx={{ fontWeight: 800, fontSize: { xs: 20, md: 24 }, color: INK, fontFamily: HEADING_FONT }}>
             Where and when are we serving?
           </Typography>
@@ -130,7 +137,7 @@ export default function EventDetails() {
         </Container>
       </Box>
 
-      <Container maxWidth="lg" sx={{ py: { xs: 3, md: 4 } }}>
+      <Container maxWidth={false} disableGutters sx={{ ...CONTAINER_SX, py: { xs: 3, md: 4 } }}>
         <Grid container spacing={{ xs: 3, md: 5 }}>
           {/* LEFT: form */}
           <Grid item xs={12} md={7.5} lg={8}>

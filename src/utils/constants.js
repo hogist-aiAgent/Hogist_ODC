@@ -12,7 +12,7 @@ export const INK = "#1B1B23";
 export const INK_SOFT = "#6B6B76";
 export const CARD_BORDER = "rgba(43,33,28,0.12)";
 export const BANNER_BG = "rgba(154,0,2,0.04)";
-export const PAGE_BG = "#F4F1EB";
+export const PAGE_BG = "#FDF7F2";
 export const FONT = '"open sans", sans-serif';
 export const HEADING_FONT = '"Montserrat", sans-serif';
 
@@ -22,8 +22,8 @@ export const currency = (n) => {
 };
 
 export const STATUS_STYLES = {
-  confirmed: { color: VEG_GREEN, bg: "rgba(46,125,50,0.12)" },
-  quote_pending: { color: AMBER, bg: "rgba(181,114,15,0.14)" },
+  confirmed: { color: "#fff", bg: "#1E9E5A", timelineColor: AMBER },
+  quote_pending: { color: "#fff", bg: "#E0A01C", timelineColor: INK },
 };
 
 export const TAG_VARIANT_STYLES = {
