@@ -5,12 +5,12 @@ import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import myEventsData from "../../data/myEventsData";
 import { INK, INK_SOFT, FONT, HEADING_FONT } from "../../utils/constants";
 
-import ProfileHeader from "./ProfileHeader";
-import StatsRow from "./StatsRow";
-import AccountSidebarNav from "./AccountSidebarNav";
-import ExecutiveMiniCard from "./ExecutiveMiniCard";
-import EventCard from "./EventCard";
-import SavedMenusSection from "./SavedMenusSection";
+import ProfileHeader from "./MyEventFolder/ProfileHeader";
+import StatsRow from "./MyEventFolder/StatsRow";
+import AccountSidebarNav from "./MyEventFolder/AccountSidebarNav";
+import ExecutiveMiniCard from "./MyEventFolder/ExecutiveMiniCard";
+import EventCard from "./MyEventFolder/EventCard";
+import SavedMenusSection from "./MyEventFolder/SavedMenusSection";
 
 export default function MyEvents() {
   const navigate = useNavigate();
@@ -18,9 +18,6 @@ export default function MyEvents() {
 
   const hasUpcoming = upcomingEvents && upcomingEvents.length > 0;
 
-  // Drives which sidebar tab is highlighted. Only "My events" has a live
-  // destination today — the rest don't have their own pages/APIs yet — but
-  // the highlight itself should always respond to a click.
   const [activeSidebarId, setActiveSidebarId] = useState(
     sidebarNav.find((item) => item.active)?.id || sidebarNav[0]?.id
   );

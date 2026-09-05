@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Stack, Typography } from "@mui/material";
-import { INK, INK_SOFT, FONT } from "../../utils/constants";
+import { INK, INK_SOFT, FONT } from "../../../utils/constants";
 
 export default function AccountSidebarNav({ items, activeId, onSelect }) {
   if (!items || items.length === 0) return null;

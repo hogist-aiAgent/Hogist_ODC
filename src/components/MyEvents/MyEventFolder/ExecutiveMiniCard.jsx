@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Stack, Typography, Button } from "@mui/material";
-import { INK, INK_SOFT, CARD_BORDER, FONT } from "../../utils/constants";
+import { INK, INK_SOFT, CARD_BORDER, FONT } from "../../../utils/constants";
 
 export default function ExecutiveMiniCard({ executive, onChat }) {
   if (!executive) return null;

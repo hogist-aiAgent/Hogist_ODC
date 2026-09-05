@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Container, Stack, Typography, Button } from "@mui/material";
-import { RED, INK, INK_SOFT, CARD_BORDER, PAGE_BG, FONT, HEADING_FONT } from "../../utils/constants";
+import { RED, INK, INK_SOFT, CARD_BORDER, PAGE_BG, FONT, HEADING_FONT } from "../../../utils/constants";
 
 export default function ProfileHeader({ profile, onEditProfile, onPlanNewEvent }) {
   if (!profile) return null;

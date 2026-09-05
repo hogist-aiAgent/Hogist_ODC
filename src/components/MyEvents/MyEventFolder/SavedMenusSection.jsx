@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Grid, Stack, Typography } from "@mui/material";
-import { INK, INK_SOFT, CARD_BORDER, FONT, HEADING_FONT, currency } from "../../utils/constants";
+import { INK, INK_SOFT, CARD_BORDER, FONT, HEADING_FONT, currency } from "../../../utils/constants";
 
 function SavedMenuCard({ menu, onClick }) {
   return (

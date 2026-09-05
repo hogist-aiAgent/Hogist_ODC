@@ -11,7 +11,7 @@ import {
   currency,
   STATUS_STYLES,
   TAG_VARIANT_STYLES,
-} from "../../utils/constants";
+} from "../../../utils/constants";
 
 function StatusPill({ status, label }) {
   const style = STATUS_STYLES[status] || STATUS_STYLES.confirmed;

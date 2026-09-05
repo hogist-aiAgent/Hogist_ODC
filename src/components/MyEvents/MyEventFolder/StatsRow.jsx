@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
-import { AMBER, INK, INK_SOFT, CARD_BORDER, PAGE_BG, FONT } from "../../utils/constants";
+import { AMBER, INK, INK_SOFT, CARD_BORDER, PAGE_BG, FONT } from "../../../utils/constants";
 
 function StatCard({ stat }) {
   return (
