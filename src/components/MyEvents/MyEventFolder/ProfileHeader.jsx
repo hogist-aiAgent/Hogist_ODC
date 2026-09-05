@@ -1,13 +1,39 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Box, Container, Stack, Typography, Button } from "@mui/material";
 import { RED, INK, INK_SOFT, CARD_BORDER, PAGE_BG, FONT, HEADING_FONT } from "../../../utils/constants";
 
-export default function ProfileHeader({ profile, onEditProfile, onPlanNewEvent }) {
-  if (!profile) return null;
+// Builds "RK" style initials from a full name, e.g. "R. Kumar" -> "RK".
+function getInitialsFromName(name) {
+  if (!name) return "";
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "";
+  const first = words[0].replace(/[^a-zA-Z]/g, "")[0] || "";
+  const second = words.length > 1 ? words[1].replace(/[^a-zA-Z]/g, "")[0] || "" : "";
+  return (first + second).toUpperCase();
+}
 
-  const metaParts = [profile.phone, profile.email, profile.memberSince ? `member since ${profile.memberSince}` : null].filter(
-    Boolean
-  );
+export default function ProfileHeader({ profile, onEditProfile, onPlanNewEvent }) {
+
+  const authUser = useSelector((state) => state.auth?.user);
+
+  const resolvedProfile = authUser
+    ? {
+        name: authUser.fullName || profile?.name,
+        initials: getInitialsFromName(authUser.fullName) || profile?.initials,
+        phone: authUser.mobile || profile?.phone,
+        email: authUser.email || profile?.email,
+        memberSince: profile?.memberSince,
+      }
+    : profile;
+
+  if (!resolvedProfile) return null;
+
+  const metaParts = [
+    resolvedProfile.phone,
+    resolvedProfile.email,
+    resolvedProfile.memberSince ? `member since ${resolvedProfile.memberSince}` : null,
+  ].filter(Boolean);
 
   return (
     <Box
@@ -45,12 +71,12 @@ export default function ProfileHeader({ profile, onEditProfile, onPlanNewEvent }
               }}
             >
               <Typography sx={{ color: "#fff", fontWeight: 800, fontSize: 18, fontFamily: HEADING_FONT }}>
-                {profile.initials}
+                {resolvedProfile.initials}
               </Typography>
             </Box>
             <Box sx={{ minWidth: 0 }}>
               <Typography sx={{ fontWeight: 800, fontSize: { xs: 17, sm: 19 }, color: INK, fontFamily: HEADING_FONT }}>
-                {profile.name}
+                {resolvedProfile.name}
               </Typography>
               {metaParts.length > 0 && (
                 <Typography sx={{ fontSize: 12.5, color: INK_SOFT, fontFamily: FONT, mt: 0.25 }}>

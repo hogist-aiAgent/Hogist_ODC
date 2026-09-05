@@ -22,11 +22,6 @@ const myEventsData = {
   sidebarNav: [
     { id: "my-events", label: "My events", active: true },
     { id: "past-events", label: "Past events" },
-    { id: "saved-menus", label: "Saved menus", count: 6 },
-    { id: "addresses", label: "Addresses", count: 3 },
-    { id: "invoices", label: "Invoices & GST" },
-    { id: "payment-methods", label: "Payment methods" },
-    { id: "notifications", label: "Notifications" },
   ],
 
   executive: {
