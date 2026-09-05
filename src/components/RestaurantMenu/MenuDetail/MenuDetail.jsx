@@ -444,7 +444,7 @@ export default function MenuDetail() {
     }
   };
 
-  // Per-item guest count — defaults to the overall headcount until adjusted.
+  
   const handleItemQuantityChange = (itemId, delta) => {
     setItemQuantities((prev) => {
       const current = prev[itemId] ?? plates;
@@ -453,8 +453,7 @@ export default function MenuDetail() {
     });
   };
 
-  // Manual typing into a per-item quantity field — same free-edit pattern
-  // as the PLATES field, committed on blur/Enter.
+  
   const handleItemQuantityInputChange = (itemId, event) => {
     const raw = event.target.value;
     if (raw === "" || /^[0-9]+$/.test(raw)) {

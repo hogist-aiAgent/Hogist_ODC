@@ -1,7 +1,3 @@
-// Dummy data for the "My Plan" page.
-// Structured to mirror what a future GET /api/plans/:id response would look
-// like, so swapping this out for a real API call later is a drop-in change.
-
 const myPlanData = {
   user: {
     initials: "RK",

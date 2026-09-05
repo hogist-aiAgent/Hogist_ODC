@@ -1,8 +1,3 @@
-// Dummy data for the "My Events" account page.
-// Structured to mirror what a future GET /api/account/overview response
-// would look like, so swapping this out for a real API call later is a
-// drop-in change — every value the page renders comes from here.
-
 const myEventsData = {
   profile: {
     initials: "RK",
@@ -44,7 +39,7 @@ const myEventsData = {
       id: "evt-4419",
       status: "confirmed",
       statusLabel: "CONFIRMED",
-      timelineNote: "In 13 days · balance due in 11 days",
+     
       refCode: "HOG-2026-4419",
       title: "Kumar & Divya — wedding reception",
       dateLabel: "Sat, 14 Sep 2026",
@@ -69,7 +64,6 @@ const myEventsData = {
       id: "evt-2503",
       status: "quote_pending",
       statusLabel: "QUOTE PENDING",
-      timelineNote: "Executive replies by 4 pm today",
       refCode: "Draft EVT-2503",
       title: "Housewarming lunch — Kumar residence",
       dateLabel: "Sun, 12 Oct 2026",

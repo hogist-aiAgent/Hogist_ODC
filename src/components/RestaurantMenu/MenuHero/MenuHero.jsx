@@ -36,11 +36,6 @@ useEffect(() => {
         pt: { xs: 5, md: 4, lg: 5, xl: 9 },
         pb: { xs: 6, md: 5, lg: 1, xl: 7 },
         p: { xs: 2, sm: 2, md: 1, lg: 3 },
-        // xs kept in sync with real phone heights via clamp() — a plain
-        // 28vh shrinks too far on unusually short viewports (e.g. DevTools'
-        // custom 472px height), even though it looks right on real phones
-        // (which are taller). The floor/ceiling keep normal-height phones
-        // rendering exactly as before.
         minHeight: { xs: 'clamp(200px, 28vh, 260px)', sm: '67vh', md: '70vh', lg: '78vh', xl: '80vh' },
         display: { xs: 'block', sm: 'block', md: 'block', lg: 'flex', xl: 'block' },
         flexDirection: { lg: 'column' },
