@@ -92,6 +92,7 @@ export default function MyEvents() {
                       bgcolor: "#fff",
                     }}
                   >
+                    
                     <Typography sx={{ fontWeight: 800, fontSize: 15, color: INK, fontFamily: FONT, mb: 0.5 }}>
                       No upcoming events yet
                     </Typography>
